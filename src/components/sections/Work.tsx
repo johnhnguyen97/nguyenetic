@@ -54,9 +54,9 @@ const projects = [
 
 const enterpriseExperience = [
   { name: "SaaS Platforms", description: "Multi-tenant cloud applications" },
-  { name: "MES Systems", description: "Manufacturing execution systems" },
-  { name: "ERP Integration", description: "Enterprise resource planning" },
-  { name: "Fleet Telematics", description: "Vehicle tracking & analytics" },
+  { name: "API Development", description: "RESTful & GraphQL services" },
+  { name: "Database Design", description: "Scalable data architecture" },
+  { name: "Cloud Deployment", description: "AWS, Vercel, edge hosting" },
   { name: "IoT Dashboards", description: "Real-time sensor monitoring" },
   { name: "AI/ML Systems", description: "Intelligent automation" },
 ]

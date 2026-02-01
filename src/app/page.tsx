@@ -25,13 +25,13 @@ export default function Home() {
                 </h2>
                 <div className="space-y-4 text-muted-foreground leading-relaxed">
                   <p>
-                    With experience spanning SaaS platforms, manufacturing execution systems (MES),
-                    and ERP integrations, I bring enterprise-level expertise to projects of all sizes.
+                    With experience building SaaS platforms, real-time dashboards, and AI-powered
+                    applications, I bring full-stack expertise to projects of all sizes.
                   </p>
                   <p>
-                    From fleet telematics dashboards to AI-powered applications, I deliver
-                    full-stack solutions backed by strategic SEO, Google Ads, and comprehensive
-                    digital marketing to drive measurable results.
+                    From concept to deployment, I deliver complete digital solutions backed by
+                    strategic SEO, Google Ads, and comprehensive digital marketing to drive
+                    measurable results.
                   </p>
                 </div>
 
