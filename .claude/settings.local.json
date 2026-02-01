@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir /s /a \"C:\\\\Users\\\\jnguyen\\\\Documents\\\\Project\\\\agent-toolkit\")",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\jnguyen\\\\Documents\\\\Project\\\\agent-toolkit\" -Recurse -Force)",
+      "Bash(Select-Object FullName)",
+      "Bash(dir /s /b \"C:\\\\Users\\\\jnguyen\\\\Documents\\\\Project\\\\agent-toolkit\\\\*.md\")",
+      "Bash(findstr:*)",
+      "Bash(git checkout:*)",
+      "WebFetch(domain:www.npmjs.com)",
+      "mcp__magicui__getUIComponents",
+      "mcp__magicui__getBackgrounds",
+      "mcp__magicui__getTextAnimations",
+      "mcp__magicui__getButtons",
+      "mcp__magicui__getAnimations",
+      "Bash(pwsh.exe -Command \"echo ''y'' | npx shadcn@latest init --yes\")",
+      "Bash(pwsh.exe -Command \"npm view kintsugi-ui --json 2>&1\")",
+      "Bash(pwsh.exe -Command \"npx -y kintsugi-ui@latest --help 2>&1\")",
+      "Bash(pwsh.exe -Command:*)",
+      "Bash(pwsh.exe -Command \"[System.Text.Encoding]::UTF8.GetString\\([System.Convert]::FromBase64String\\(\\(Get-Content -Raw\\)\\)\\)\")",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ]
+  }
+}
