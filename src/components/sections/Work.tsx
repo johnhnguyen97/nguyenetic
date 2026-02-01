@@ -6,6 +6,63 @@ import { ArrowUpRight, ExternalLink, Layers, Zap, TrendingUp, Palette, Check } f
 
 const springEase = [0.22, 1, 0.36, 1] as const
 
+// Custom logo components for each project
+const GoJunLogo = () => (
+  <svg viewBox="0 0 100 100" className="w-full h-full">
+    <defs>
+      <linearGradient id="gojunGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#8b5cf6" />
+        <stop offset="100%" stopColor="#a855f7" />
+      </linearGradient>
+    </defs>
+    <circle cx="50" cy="50" r="45" fill="url(#gojunGrad)" />
+    <text x="50" y="42" textAnchor="middle" fill="white" fontSize="24" fontWeight="bold" fontFamily="sans-serif">GO</text>
+    <text x="50" y="68" textAnchor="middle" fill="white" fontSize="18" fontFamily="sans-serif">準</text>
+  </svg>
+)
+
+const FastFixLogo = () => (
+  <svg viewBox="0 0 100 100" className="w-full h-full">
+    <defs>
+      <linearGradient id="fastfixGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#3b82f6" />
+        <stop offset="100%" stopColor="#06b6d4" />
+      </linearGradient>
+    </defs>
+    <rect x="10" y="25" width="80" height="50" rx="8" fill="url(#fastfixGrad)" />
+    <path d="M25 50 L40 50 L35 40 L50 55 L35 55 L40 65 Z" fill="white" />
+    <text x="60" y="55" textAnchor="middle" fill="white" fontSize="14" fontWeight="bold" fontFamily="sans-serif">FIX</text>
+  </svg>
+)
+
+const EVWrapLogo = () => (
+  <svg viewBox="0 0 100 100" className="w-full h-full">
+    <defs>
+      <linearGradient id="evwrapGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#10b981" />
+        <stop offset="100%" stopColor="#14b8a6" />
+      </linearGradient>
+    </defs>
+    <path d="M20 70 Q50 20 80 70" fill="none" stroke="url(#evwrapGrad)" strokeWidth="12" strokeLinecap="round" />
+    <circle cx="30" cy="70" r="12" fill="url(#evwrapGrad)" />
+    <circle cx="70" cy="70" r="12" fill="url(#evwrapGrad)" />
+    <text x="50" y="55" textAnchor="middle" fill="white" fontSize="16" fontWeight="bold" fontFamily="sans-serif">EV</text>
+  </svg>
+)
+
+const IchibanLogo = () => (
+  <svg viewBox="0 0 100 100" className="w-full h-full">
+    <defs>
+      <linearGradient id="ichibanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#f43f5e" />
+        <stop offset="100%" stopColor="#f97316" />
+      </linearGradient>
+    </defs>
+    <circle cx="50" cy="50" r="45" fill="url(#ichibanGrad)" />
+    <text x="50" y="62" textAnchor="middle" fill="white" fontSize="36" fontWeight="bold" fontFamily="serif">一</text>
+  </svg>
+)
+
 const projects = [
   {
     title: "GoJUN",
@@ -17,6 +74,7 @@ const projects = [
     gradient: "from-violet-500 to-purple-600",
     accentClass: "text-violet-400 border-violet-500/30 bg-violet-500/10",
     icon: Layers,
+    Logo: GoJunLogo,
     highlights: ["Custom AI integration", "Real-time data sync", "User authentication", "Analytics dashboard"],
     impact: "Full SaaS with AI",
   },
@@ -30,6 +88,7 @@ const projects = [
     gradient: "from-blue-500 to-cyan-500",
     accentClass: "text-cyan-400 border-cyan-500/30 bg-cyan-500/10",
     icon: Zap,
+    Logo: FastFixLogo,
     highlights: ["SEO optimization", "Google Ads management", "Online booking system", "Content management"],
     impact: "Top 3 Local Search",
   },
@@ -43,6 +102,7 @@ const projects = [
     gradient: "from-emerald-500 to-teal-500",
     accentClass: "text-emerald-400 border-emerald-500/30 bg-emerald-500/10",
     icon: Palette,
+    Logo: EVWrapLogo,
     highlights: ["Quote calculator", "Lead capture forms", "Portfolio showcase", "Mobile-first design"],
     impact: "High Conversions",
   },
@@ -56,6 +116,7 @@ const projects = [
     gradient: "from-rose-500 to-orange-500",
     accentClass: "text-rose-400 border-rose-500/30 bg-rose-500/10",
     icon: TrendingUp,
+    Logo: IchibanLogo,
     highlights: ["Dynamic menu CMS", "Reservation system", "Mobile optimized", "Brand storytelling"],
     impact: "Online Orders Live",
   },
@@ -124,6 +185,7 @@ export function Work() {
         <div className="grid grid-cols-12 gap-4 md:gap-6">
           {projects.map((project, i) => {
             const Icon = project.icon
+            const Logo = project.Logo
             const isLarge = i === 0
             const isHovered = hoveredProject === i
 
@@ -178,17 +240,17 @@ export function Work() {
                         className="absolute inset-0 opacity-30 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.1)_25%,rgba(255,255,255,0.1)_50%,transparent_50%,transparent_75%,rgba(255,255,255,0.1)_75%)] bg-[length:60px_60px]"
                       />
 
-                      {/* Center icon */}
+                      {/* Center logo */}
                       <div className="relative flex items-center justify-center h-full">
                         <motion.div
                           animate={{
-                            rotate: isHovered ? [0, -5, 5, 0] : 0,
+                            rotate: isHovered ? [0, -3, 3, 0] : 0,
                             scale: isHovered ? 1.1 : 1,
                           }}
                           transition={{ duration: 0.5 }}
-                          className={`${isLarge ? "w-24 h-24" : "w-16 h-16"} rounded-2xl bg-white/20 backdrop-blur-xl flex items-center justify-center border border-white/30 shadow-2xl`}
+                          className={`${isLarge ? "w-28 h-28" : "w-20 h-20"} rounded-2xl bg-white/10 backdrop-blur-xl flex items-center justify-center border border-white/20 shadow-2xl p-3`}
                         >
-                          <Icon className={`${isLarge ? "w-12 h-12" : "w-8 h-8"} text-white`} />
+                          <Logo />
                         </motion.div>
 
                         {/* Floating particles on hover */}

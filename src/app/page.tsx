@@ -2,6 +2,7 @@ import { Header } from "@/components/layout/Header"
 import { Hero } from "@/components/sections/Hero"
 import { Work } from "@/components/sections/Work"
 import { Services } from "@/components/sections/Services"
+import { ChatbotDemo } from "@/components/ui/chatbot-demo"
 
 export default function Home() {
   return (
@@ -113,6 +114,9 @@ export default function Home() {
           </div>
         </section>
       </main>
+
+      {/* AI Chatbot Demo */}
+      <ChatbotDemo />
 
       {/* Footer */}
       <footer className="py-8 px-6 border-t border-border">
