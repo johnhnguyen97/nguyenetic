@@ -343,31 +343,88 @@ export function Services() {
           </div>
         </div>
 
-        {/* Custom Apps Callout */}
+        {/* Enterprise Experience - Connected Stack */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: springEase }}
-          className="mb-16 p-6 rounded-2xl bg-gradient-to-r from-accent-sakura/10 via-accent-cyber/10 to-accent-gold/10 border border-border"
+          className="relative"
         >
-          <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent-sakura to-accent-cyber flex items-center justify-center shrink-0">
-              <Smartphone className="w-8 h-8 text-white" />
+          {/* Connecting visual element */}
+          <div className="absolute left-1/2 -top-16 w-px h-16 bg-gradient-to-b from-transparent via-accent-gold/50 to-accent-gold" />
+
+          <div className="relative p-8 rounded-3xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-transparent">
+            {/* Header */}
+            <div className="flex items-center justify-center gap-4 mb-8">
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent to-accent-gold/30" />
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-accent-gold/10 border border-accent-gold/20">
+                <span className="w-2 h-2 rounded-full bg-accent-gold animate-pulse" />
+                <span className="text-sm font-medium text-accent-gold">Enterprise Experience</span>
+              </div>
+              <div className="h-px flex-1 bg-gradient-to-l from-transparent to-accent-gold/30" />
             </div>
-            <div className="flex-1">
-              <h3 className="text-xl font-bold mb-2">Need a Custom App?</h3>
-              <p className="text-muted-foreground">
-                I build custom desktop and mobile applications tailored to your specific workflow.
-                From internal tools to customer-facing apps — if you can imagine it, I can build it.
-              </p>
+
+            {/* Enterprise Stack - Horizontal flow */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+              {[
+                { icon: Cloud, label: "SaaS", desc: "Multi-tenant apps" },
+                { icon: Database, label: "Data", desc: "Scalable architecture" },
+                { icon: Cpu, label: "APIs", desc: "REST & GraphQL" },
+                { icon: Sparkles, label: "AI/ML", desc: "Smart automation" },
+                { icon: Smartphone, label: "Apps", desc: "Cross-platform" },
+                { icon: BarChart3, label: "Analytics", desc: "Data insights" },
+              ].map((item, i) => {
+                const Icon = item.icon
+                return (
+                  <motion.div
+                    key={item.label}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1, duration: 0.5 }}
+                    className="group relative"
+                  >
+                    <div className="p-4 rounded-xl bg-card/50 border border-border hover:border-accent-gold/30 transition-all duration-300 text-center">
+                      <div className="w-10 h-10 mx-auto mb-2 rounded-lg bg-accent-gold/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Icon className="w-5 h-5 text-accent-gold" />
+                      </div>
+                      <div className="font-semibold text-sm">{item.label}</div>
+                      <div className="text-[10px] text-muted-foreground">{item.desc}</div>
+                    </div>
+                    {/* Connector line to next */}
+                    {i < 5 && (
+                      <div className="hidden lg:block absolute top-1/2 -right-1.5 w-3 h-px bg-accent-gold/30" />
+                    )}
+                  </motion.div>
+                )
+              })}
             </div>
-            <a
-              href="#contact"
-              className="shrink-0 px-6 py-3 rounded-full bg-foreground text-background font-medium hover:scale-105 transition-transform"
+
+            {/* Custom Apps CTA inline */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.5 }}
+              className="mt-8 pt-6 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-4"
             >
-              Discuss Your App
-            </a>
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent-sakura to-accent-cyber flex items-center justify-center">
+                  <Smartphone className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <div className="font-semibold">Need a Custom App?</div>
+                  <div className="text-sm text-muted-foreground">Desktop, mobile, or web — I build it all.</div>
+                </div>
+              </div>
+              <a
+                href="#contact"
+                className="px-6 py-2.5 rounded-full bg-foreground text-background text-sm font-medium hover:scale-105 transition-transform"
+              >
+                Let&apos;s Talk
+              </a>
+            </motion.div>
           </div>
         </motion.div>
 
@@ -377,7 +434,7 @@ export function Services() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.3, ease: springEase }}
-          className="text-center"
+          className="mt-16 text-center"
         >
           <a
             href="#contact"

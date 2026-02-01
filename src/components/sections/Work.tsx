@@ -1,7 +1,8 @@
 "use client"
 
+import { useState } from "react"
 import { motion } from "framer-motion"
-import { ArrowUpRight, ExternalLink, Layers, Zap, TrendingUp, Palette } from "lucide-react"
+import { ArrowUpRight, ExternalLink, Layers, Zap, TrendingUp, Palette, Check } from "lucide-react"
 
 const springEase = [0.22, 1, 0.36, 1] as const
 
@@ -14,9 +15,10 @@ const projects = [
     tags: ["React", "AI", "Supabase", "EdTech"],
     url: "https://gojun.vercel.app/",
     gradient: "from-violet-500 to-purple-600",
+    accentClass: "text-violet-400 border-violet-500/30 bg-violet-500/10",
     icon: Layers,
     highlights: ["Custom AI integration", "Real-time data sync", "User authentication", "Analytics dashboard"],
-    metrics: { label: "Active Users", value: "Growing" },
+    impact: "Full SaaS with AI",
   },
   {
     title: "Fast Fix Whitemarsh",
@@ -26,9 +28,10 @@ const projects = [
     tags: ["Next.js", "Sanity", "SEO", "Google Ads"],
     url: "https://www.fastfixwhitemarsh.com/",
     gradient: "from-blue-500 to-cyan-500",
+    accentClass: "text-cyan-400 border-cyan-500/30 bg-cyan-500/10",
     icon: Zap,
     highlights: ["SEO optimization", "Google Ads management", "Online booking system", "Content management"],
-    metrics: { label: "Local Visibility", value: "Top 3" },
+    impact: "Top 3 Local Search",
   },
   {
     title: "EV Wrap",
@@ -38,9 +41,10 @@ const projects = [
     tags: ["Next.js", "Automotive", "Lead Gen"],
     url: "https://evwrap-git-development-nguyenetics-projects.vercel.app/",
     gradient: "from-emerald-500 to-teal-500",
+    accentClass: "text-emerald-400 border-emerald-500/30 bg-emerald-500/10",
     icon: Palette,
     highlights: ["Quote calculator", "Lead capture forms", "Portfolio showcase", "Mobile-first design"],
-    metrics: { label: "Conversion Rate", value: "High" },
+    impact: "High Conversions",
   },
   {
     title: "Ichiban",
@@ -50,49 +54,35 @@ const projects = [
     tags: ["Next.js", "Sanity CMS", "Hospitality"],
     url: "https://ichiban-website-taupe.vercel.app/",
     gradient: "from-rose-500 to-orange-500",
+    accentClass: "text-rose-400 border-rose-500/30 bg-rose-500/10",
     icon: TrendingUp,
     highlights: ["Dynamic menu CMS", "Reservation system", "Mobile optimized", "Brand storytelling"],
-    metrics: { label: "Online Orders", value: "Enabled" },
+    impact: "Online Orders Live",
   },
 ]
-
-const enterpriseExperience = [
-  { name: "SaaS Platforms", description: "Multi-tenant cloud applications" },
-  { name: "API Development", description: "RESTful & GraphQL services" },
-  { name: "Database Design", description: "Scalable data architecture" },
-  { name: "Cloud Deployment", description: "AWS, Vercel, edge hosting" },
-  { name: "IoT Dashboards", description: "Real-time sensor monitoring" },
-  { name: "AI/ML Systems", description: "Intelligent automation" },
-]
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.7,
-      ease: springEase,
-    },
-  },
-}
 
 export function Work() {
+  const [hoveredProject, setHoveredProject] = useState<number | null>(null)
+
   return (
     <section id="work" className="relative py-32 px-6 overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute top-1/2 left-0 w-1/2 h-1/2 bg-accent-cyber/5 rounded-full blur-[200px] -translate-y-1/2" />
-      <div className="absolute bottom-0 right-0 w-1/3 h-1/3 bg-accent-sakura/5 rounded-full blur-[150px]" />
+      {/* Animated background blobs */}
+      <motion.div
+        animate={{
+          x: [0, 100, 0],
+          y: [0, -50, 0],
+        }}
+        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-accent-cyber/5 rounded-full blur-[200px]"
+      />
+      <motion.div
+        animate={{
+          x: [0, -80, 0],
+          y: [0, 80, 0],
+        }}
+        transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute bottom-1/4 right-0 w-[400px] h-[400px] bg-accent-sakura/5 rounded-full blur-[180px]"
+      />
 
       <div className="relative max-w-7xl mx-auto">
         {/* Section Header */}
@@ -101,255 +91,239 @@ export function Work() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8, ease: springEase }}
-          className="mb-20"
+          className="mb-20 text-center"
         >
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-px bg-gradient-to-r from-accent-cyber to-transparent" />
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <motion.div
+              initial={{ width: 0 }}
+              whileInView={{ width: 48 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="h-px bg-gradient-to-r from-transparent to-accent-cyber"
+            />
             <span className="text-xs tracking-[0.3em] text-accent-cyber font-mono uppercase">
               作品
             </span>
+            <motion.div
+              initial={{ width: 0 }}
+              whileInView={{ width: 48 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="h-px bg-gradient-to-l from-transparent to-accent-cyber"
+            />
           </div>
-          <div className="grid lg:grid-cols-2 gap-8 items-end">
-            <div>
-              <h2 className="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-tight mb-4">
-                Selected
-                <br />
-                <span className="text-gradient-cyber">Projects</span>
-              </h2>
-            </div>
-            <p className="text-muted-foreground text-lg leading-relaxed">
-              From SaaS platforms to local businesses — delivering complete digital
-              solutions with development, SEO, and marketing expertise.
-            </p>
-          </div>
+          <h2 className="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-tight mb-4">
+            Real Projects, <span className="text-gradient-cyber">Real Results</span>
+          </h2>
+          <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl mx-auto">
+            Not just websites — complete digital solutions that drive business growth.
+          </p>
         </motion.div>
 
-        {/* Featured Project - First one larger */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: springEase }}
-          className="mb-8"
-        >
-          <a
-            href={projects[0].url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group relative block"
-          >
-            <div className="relative rounded-3xl border border-border bg-card/50 backdrop-blur-sm overflow-hidden hover:border-violet-500/30 transition-all duration-500">
-              <div className="grid lg:grid-cols-2">
-                {/* Visual Side */}
-                <div className={`relative h-64 lg:h-auto lg:min-h-[420px] bg-gradient-to-br ${projects[0].gradient} p-8 flex items-center justify-center overflow-hidden`}>
-                  {/* Animated background pattern */}
-                  <div className="absolute inset-0 opacity-30">
-                    <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.1)_25%,rgba(255,255,255,0.1)_50%,transparent_50%,transparent_75%,rgba(255,255,255,0.1)_75%)] bg-[length:60px_60px]" />
-                  </div>
-
-                  {/* Icon container */}
-                  <motion.div
-                    animate={{ rotate: [0, 5, -5, 0] }}
-                    transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                    className="relative"
-                  >
-                    <div className="w-32 h-32 rounded-3xl bg-white/20 backdrop-blur-xl flex items-center justify-center border border-white/30 shadow-2xl">
-                      <Layers className="w-16 h-16 text-white" />
-                    </div>
-                    {/* Floating decorations */}
-                    <div className="absolute -top-4 -right-4 w-8 h-8 rounded-lg bg-white/30 backdrop-blur-sm" />
-                    <div className="absolute -bottom-6 -left-6 w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm" />
-                  </motion.div>
-
-                  {/* Metric badge */}
-                  <div className="absolute top-6 right-6 px-4 py-2 rounded-xl bg-white/20 backdrop-blur-sm border border-white/30">
-                    <div className="text-xs text-white/80">{projects[0].metrics.label}</div>
-                    <div className="text-lg font-bold text-white">{projects[0].metrics.value}</div>
-                  </div>
-                </div>
-
-                {/* Content Side */}
-                <div className="p-8 lg:p-12 flex flex-col justify-center">
-                  <div className="flex items-center justify-between mb-4">
-                    <span className={`text-sm font-medium px-4 py-1.5 rounded-full bg-gradient-to-r ${projects[0].gradient} text-white`}>
-                      {projects[0].category}
-                    </span>
-                    <ExternalLink className="w-5 h-5 text-muted-foreground group-hover:text-violet-400 transition-colors" />
-                  </div>
-
-                  <h3 className="text-3xl font-bold mb-1 group-hover:text-violet-400 transition-colors">
-                    {projects[0].title}
-                  </h3>
-                  <p className="text-sm text-accent-cyber mb-4">{projects[0].subtitle}</p>
-
-                  <p className="text-muted-foreground leading-relaxed mb-6">
-                    {projects[0].description}
-                  </p>
-
-                  {/* What I Built */}
-                  <div className="mb-6">
-                    <p className="text-xs uppercase tracking-wider text-muted-foreground mb-3">What I Built</p>
-                    <div className="grid grid-cols-2 gap-2">
-                      {projects[0].highlights.map((highlight) => (
-                        <div
-                          key={highlight}
-                          className="flex items-center gap-2 text-sm text-foreground/80"
-                        >
-                          <span className="w-1.5 h-1.5 rounded-full bg-violet-500" />
-                          {highlight}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {projects[0].tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="text-xs px-3 py-1.5 rounded-full bg-muted/50 text-muted-foreground border border-border"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="flex items-center gap-2 text-sm font-medium text-violet-400">
-                    <span>View Live Project</span>
-                    <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </a>
-        </motion.div>
-
-        {/* Other Projects Grid */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          className="grid md:grid-cols-3 gap-6"
-        >
-          {projects.slice(1).map((project) => {
+        {/* Staggered Bento Grid */}
+        <div className="grid grid-cols-12 gap-4 md:gap-6">
+          {projects.map((project, i) => {
             const Icon = project.icon
+            const isLarge = i === 0
+            const isHovered = hoveredProject === i
+
             return (
               <motion.a
                 key={project.title}
                 href={project.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                variants={itemVariants}
-                className="group relative block"
+                initial={{ opacity: 0, y: 60, rotateX: 10 }}
+                whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ delay: i * 0.15, duration: 0.8, ease: springEase }}
+                onMouseEnter={() => setHoveredProject(i)}
+                onMouseLeave={() => setHoveredProject(null)}
+                className={`
+                  group relative block
+                  ${isLarge ? "col-span-12 lg:col-span-7" : "col-span-12 md:col-span-6 lg:col-span-5"}
+                  ${i === 2 ? "lg:col-start-1" : ""}
+                `}
+                style={{ perspective: "1000px" }}
               >
-                <div className="relative h-full rounded-2xl border border-border bg-card/50 backdrop-blur-sm overflow-hidden hover:border-accent-cyber/30 transition-all duration-500">
-                  {/* Top visual */}
-                  <div className={`relative h-44 bg-gradient-to-br ${project.gradient} p-6 overflow-hidden`}>
-                    <div className="absolute inset-0 opacity-20">
-                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.3),transparent_70%)]" />
-                    </div>
-
-                    <div className="relative flex items-center justify-center h-full">
-                      <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-xl flex items-center justify-center border border-white/30 group-hover:scale-110 transition-transform duration-500">
-                        <Icon className="w-8 h-8 text-white" />
-                      </div>
-                    </div>
-
-                    {/* Category badge */}
-                    <span className="absolute top-4 left-4 text-xs font-medium px-3 py-1 rounded-full bg-white/20 text-white backdrop-blur-sm">
-                      {project.category}
-                    </span>
-
-                    {/* Metric badge */}
-                    <div className="absolute top-4 right-4 px-3 py-1.5 rounded-lg bg-white/20 backdrop-blur-sm">
-                      <div className="text-[10px] text-white/80">{project.metrics.label}</div>
-                      <div className="text-sm font-bold text-white">{project.metrics.value}</div>
-                    </div>
-                  </div>
+                <motion.div
+                  animate={{
+                    rotateY: isHovered ? 2 : 0,
+                    rotateX: isHovered ? -2 : 0,
+                    scale: isHovered ? 1.02 : 1,
+                  }}
+                  transition={{ duration: 0.3 }}
+                  className={`
+                    relative h-full rounded-2xl border overflow-hidden
+                    bg-card/50 backdrop-blur-sm
+                    transition-all duration-500
+                    ${isHovered ? `border-transparent shadow-2xl shadow-${project.gradient.split("-")[1]}-500/20` : "border-border"}
+                  `}
+                >
+                  {/* Gradient overlay on hover */}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: isHovered ? 1 : 0 }}
+                    className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-5 transition-opacity`}
+                  />
 
                   {/* Content */}
-                  <div className="p-5">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-lg font-semibold group-hover:text-accent-cyber transition-colors">
-                        {project.title}
-                      </h3>
-                      <ArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-accent-cyber group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-                    </div>
+                  <div className={`relative ${isLarge ? "grid lg:grid-cols-2" : ""}`}>
+                    {/* Visual area */}
+                    <div className={`relative ${isLarge ? "h-64 lg:h-auto lg:min-h-[350px]" : "h-48"} bg-gradient-to-br ${project.gradient} overflow-hidden`}>
+                      {/* Animated grid pattern */}
+                      <motion.div
+                        animate={{ backgroundPosition: isHovered ? "60px 60px" : "0px 0px" }}
+                        transition={{ duration: 0.8 }}
+                        className="absolute inset-0 opacity-30 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.1)_25%,rgba(255,255,255,0.1)_50%,transparent_50%,transparent_75%,rgba(255,255,255,0.1)_75%)] bg-[length:60px_60px]"
+                      />
 
-                    <p className="text-xs text-accent-sakura mb-3">{project.subtitle}</p>
-
-                    <p className="text-sm text-muted-foreground mb-4 leading-relaxed line-clamp-2">
-                      {project.description}
-                    </p>
-
-                    {/* Highlights */}
-                    <div className="space-y-1 mb-4">
-                      {project.highlights.slice(0, 2).map((highlight) => (
-                        <div
-                          key={highlight}
-                          className="flex items-center gap-2 text-xs text-foreground/70"
+                      {/* Center icon */}
+                      <div className="relative flex items-center justify-center h-full">
+                        <motion.div
+                          animate={{
+                            rotate: isHovered ? [0, -5, 5, 0] : 0,
+                            scale: isHovered ? 1.1 : 1,
+                          }}
+                          transition={{ duration: 0.5 }}
+                          className={`${isLarge ? "w-24 h-24" : "w-16 h-16"} rounded-2xl bg-white/20 backdrop-blur-xl flex items-center justify-center border border-white/30 shadow-2xl`}
                         >
-                          <span className={`w-1 h-1 rounded-full ${project.gradient.includes("blue") ? "bg-blue-500" : project.gradient.includes("emerald") ? "bg-emerald-500" : "bg-rose-500"}`} />
-                          {highlight}
+                          <Icon className={`${isLarge ? "w-12 h-12" : "w-8 h-8"} text-white`} />
+                        </motion.div>
+
+                        {/* Floating particles on hover */}
+                        {isHovered && (
+                          <>
+                            {[...Array(5)].map((_, j) => (
+                              <motion.div
+                                key={j}
+                                initial={{ opacity: 0, scale: 0 }}
+                                animate={{
+                                  opacity: [0, 1, 0],
+                                  scale: [0, 1, 0.5],
+                                  x: (j - 2) * 40,
+                                  y: Math.sin(j) * 30,
+                                }}
+                                transition={{ duration: 1.5, delay: j * 0.1, repeat: Infinity }}
+                                className="absolute w-2 h-2 rounded-full bg-white/50"
+                              />
+                            ))}
+                          </>
+                        )}
+                      </div>
+
+                      {/* Category pill */}
+                      <motion.span
+                        initial={{ x: -20, opacity: 0 }}
+                        whileInView={{ x: 0, opacity: 1 }}
+                        transition={{ delay: 0.3 + i * 0.1 }}
+                        className="absolute top-4 left-4 text-xs font-medium px-3 py-1.5 rounded-full bg-white/20 text-white backdrop-blur-sm border border-white/20"
+                      >
+                        {project.category}
+                      </motion.span>
+
+                      {/* Impact badge */}
+                      <motion.div
+                        initial={{ x: 20, opacity: 0 }}
+                        whileInView={{ x: 0, opacity: 1 }}
+                        transition={{ delay: 0.4 + i * 0.1 }}
+                        className="absolute top-4 right-4 px-3 py-1.5 rounded-lg bg-white/20 backdrop-blur-sm border border-white/20"
+                      >
+                        <div className="flex items-center gap-1.5">
+                          <Check className="w-3 h-3 text-white" />
+                          <span className="text-xs font-medium text-white">{project.impact}</span>
                         </div>
-                      ))}
+                      </motion.div>
                     </div>
 
-                    <div className="flex flex-wrap gap-1.5">
-                      {project.tags.slice(0, 3).map((tag) => (
-                        <span
-                          key={tag}
-                          className="text-[10px] px-2 py-0.5 rounded-full bg-muted/50 text-muted-foreground"
+                    {/* Text content */}
+                    <div className={`p-5 ${isLarge ? "lg:p-8 flex flex-col justify-center" : ""}`}>
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <h3 className={`${isLarge ? "text-2xl" : "text-lg"} font-bold group-hover:text-gradient-cyber transition-colors`}>
+                            {project.title}
+                          </h3>
+                          <p className={`text-sm ${project.accentClass.split(" ")[0]} mt-1`}>{project.subtitle}</p>
+                        </div>
+                        <motion.div
+                          animate={{ x: isHovered ? 4 : 0, y: isHovered ? -4 : 0 }}
+                          className="text-muted-foreground"
                         >
-                          {tag}
-                        </span>
-                      ))}
+                          <ArrowUpRight className="w-5 h-5" />
+                        </motion.div>
+                      </div>
+
+                      <p className={`text-muted-foreground ${isLarge ? "text-base mb-6" : "text-sm mb-4 line-clamp-2"} leading-relaxed`}>
+                        {project.description}
+                      </p>
+
+                      {/* Highlights with animation */}
+                      <div className={`space-y-1.5 ${isLarge ? "mb-6" : "mb-4"}`}>
+                        {project.highlights.slice(0, isLarge ? 4 : 2).map((highlight, j) => (
+                          <motion.div
+                            key={highlight}
+                            initial={{ opacity: 0, x: -10 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.5 + j * 0.1 }}
+                            className="flex items-center gap-2 text-sm text-foreground/70"
+                          >
+                            <span className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${project.gradient}`} />
+                            {highlight}
+                          </motion.div>
+                        ))}
+                      </div>
+
+                      {/* Tech tags */}
+                      <div className="flex flex-wrap gap-1.5">
+                        {project.tags.slice(0, isLarge ? 4 : 3).map((tag, j) => (
+                          <motion.span
+                            key={tag}
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 0.6 + j * 0.05 }}
+                            className={`text-[10px] px-2.5 py-1 rounded-full border ${project.accentClass}`}
+                          >
+                            {tag}
+                          </motion.span>
+                        ))}
+                      </div>
+
+                      {/* View project link for large card */}
+                      {isLarge && (
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          whileInView={{ opacity: 1 }}
+                          transition={{ delay: 0.8 }}
+                          className="mt-6 flex items-center gap-2 text-sm font-medium text-violet-400"
+                        >
+                          <span>View Live Project</span>
+                          <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                        </motion.div>
+                      )}
                     </div>
                   </div>
-                </div>
+                </motion.div>
               </motion.a>
             )
           })}
-        </motion.div>
+        </div>
 
-        {/* Enterprise Experience Section */}
+        {/* Bottom CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.2, ease: springEase }}
-          className="mt-32"
+          transition={{ duration: 0.8, delay: 0.5, ease: springEase }}
+          className="mt-16 text-center"
         >
-          <div className="text-center mb-12">
-            <p className="text-xs tracking-[0.3em] text-accent-gold font-mono uppercase mb-4">
-              Beyond the Portfolio
-            </p>
-            <h3 className="text-2xl font-bold mb-4">Enterprise Experience</h3>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Years of experience building mission-critical systems for enterprise clients
-              across diverse industries.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {enterpriseExperience.map((item, i) => (
-              <motion.div
-                key={item.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.5, ease: springEase }}
-                className="group p-5 rounded-xl border border-border bg-card/30 hover:border-accent-gold/30 hover:bg-card/50 transition-all duration-300"
-              >
-                <h4 className="font-semibold mb-1 group-hover:text-accent-gold transition-colors">
-                  {item.name}
-                </h4>
-                <p className="text-sm text-muted-foreground">
-                  {item.description}
-                </p>
-              </motion.div>
-            ))}
-          </div>
+          <p className="text-muted-foreground mb-4">Want to see your project here?</p>
+          <a
+            href="#contact"
+            className="inline-flex items-center gap-2 text-accent-cyber hover:underline underline-offset-4"
+          >
+            <span>Let&apos;s build something amazing</span>
+            <ArrowUpRight className="w-4 h-4" />
+          </a>
         </motion.div>
       </div>
     </section>
