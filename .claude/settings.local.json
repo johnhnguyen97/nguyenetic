@@ -19,7 +19,8 @@
       "Bash(pwsh.exe -Command:*)",
       "Bash(pwsh.exe -Command \"[System.Text.Encoding]::UTF8.GetString\\([System.Convert]::FromBase64String\\(\\(Get-Content -Raw\\)\\)\\)\")",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(npm run build:*)"
     ]
   }
 }
