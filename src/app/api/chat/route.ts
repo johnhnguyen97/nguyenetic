@@ -55,28 +55,36 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Dynamically import Groq to avoid build-time initialization
-    const { Groq } = await import("groq-sdk")
-    const groq = new Groq({
-      apiKey: process.env.GROQ_API_KEY,
-    })
-
     const systemPrompt = isJapanese ? MOXIE_SYSTEM_PROMPT_JA : MOXIE_SYSTEM_PROMPT_EN
 
-    const completion = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
-      messages: [
-        { role: "system", content: systemPrompt },
-        ...messages.map((m: { role: string; content: string }) => ({
-          role: m.role as "user" | "assistant",
-          content: m.content,
-        })),
-      ],
-      temperature: 0.7,
-      max_tokens: 500,
+    // Use fetch directly instead of SDK for better compatibility
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        messages: [
+          { role: "system", content: systemPrompt },
+          ...messages.map((m: { role: string; content: string }) => ({
+            role: m.role,
+            content: m.content,
+          })),
+        ],
+        temperature: 0.7,
+        max_tokens: 500,
+      }),
     })
 
-    const responseMessage = completion.choices[0]?.message?.content || "I'm having trouble responding right now."
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.error?.message || `API error: ${response.status}`)
+    }
+
+    const data = await response.json()
+    const responseMessage = data.choices?.[0]?.message?.content || "I'm having trouble responding right now."
 
     return NextResponse.json({ message: responseMessage })
   } catch (error) {
