@@ -20,7 +20,9 @@
       "Bash(pwsh.exe -Command \"[System.Text.Encoding]::UTF8.GetString\\([System.Convert]::FromBase64String\\(\\(Get-Content -Raw\\)\\)\\)\")",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(GITHUB_TOKEN= git remote -v)",
+      "Bash(GITHUB_TOKEN= gh repo create:*)"
     ]
   }
 }

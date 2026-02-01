@@ -21,35 +21,47 @@ export default function Home() {
                   私について
                 </p>
                 <h2 className="text-[clamp(1.75rem,4vw,3rem)] font-bold mb-6">
-                  Building at the intersection of technology and design
+                  Enterprise-Grade Solutions, Startup Speed
                 </h2>
                 <div className="space-y-4 text-muted-foreground leading-relaxed">
                   <p>
-                    I help businesses establish and grow their digital presence through
-                    thoughtful design and modern technology. From custom web applications
-                    to comprehensive marketing strategies, I deliver solutions that drive results.
+                    With experience spanning SaaS platforms, manufacturing execution systems (MES),
+                    and ERP integrations, I bring enterprise-level expertise to projects of all sizes.
                   </p>
                   <p>
-                    With expertise spanning full-stack development, SEO optimization,
-                    and digital marketing, I provide end-to-end services that take your
-                    business from concept to success.
+                    From fleet telematics dashboards to AI-powered applications, I deliver
+                    full-stack solutions backed by strategic SEO, Google Ads, and comprehensive
+                    digital marketing to drive measurable results.
                   </p>
                 </div>
+
+                {/* Tech Stack */}
+                <div className="mt-8 pt-8 border-t border-border">
+                  <p className="text-xs text-muted-foreground mb-4 uppercase tracking-wider">Tech Stack</p>
+                  <div className="flex flex-wrap gap-2">
+                    {["Next.js", "React", "TypeScript", "Node.js", "Supabase", "Sanity", "Tailwind", "Vercel"].map((tech) => (
+                      <span key={tech} className="text-xs px-3 py-1.5 rounded-full bg-muted/50 text-muted-foreground border border-border">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               </div>
+
               <div className="grid grid-cols-2 gap-4">
-                <div className="p-6 rounded-2xl border border-border bg-background">
+                <div className="p-6 rounded-2xl border border-border bg-background hover:border-accent-cyber/50 transition-colors">
                   <div className="text-3xl font-bold text-accent-cyber mb-2">50+</div>
                   <div className="text-sm text-muted-foreground">Projects Delivered</div>
                 </div>
-                <div className="p-6 rounded-2xl border border-border bg-background">
+                <div className="p-6 rounded-2xl border border-border bg-background hover:border-accent-sakura/50 transition-colors">
                   <div className="text-3xl font-bold text-accent-sakura mb-2">100%</div>
                   <div className="text-sm text-muted-foreground">Client Satisfaction</div>
                 </div>
-                <div className="p-6 rounded-2xl border border-border bg-background">
+                <div className="p-6 rounded-2xl border border-border bg-background hover:border-accent-gold/50 transition-colors">
                   <div className="text-3xl font-bold text-accent-gold mb-2">5+</div>
                   <div className="text-sm text-muted-foreground">Years Experience</div>
                 </div>
-                <div className="p-6 rounded-2xl border border-border bg-background">
+                <div className="p-6 rounded-2xl border border-border bg-background hover:border-white/30 transition-colors">
                   <div className="text-3xl font-bold text-foreground mb-2">24/7</div>
                   <div className="text-sm text-muted-foreground">Support Available</div>
                 </div>
