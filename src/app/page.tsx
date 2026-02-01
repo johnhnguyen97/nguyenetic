@@ -9,8 +9,8 @@ export default function Home() {
       <Header />
       <main>
         <Hero />
-        <Work />
         <Services />
+        <Work />
 
         {/* About Section */}
         <section id="about" className="py-32 px-6 bg-card/50">
