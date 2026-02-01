@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Menu, X } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { Logo } from "@/components/ui/logo"
 
 const navItems = [
   { label: "Work", href: "#work" },
@@ -38,9 +39,7 @@ export function Header() {
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
           {/* Logo */}
           <a href="/" className="group flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent-cyber to-accent-sakura flex items-center justify-center">
-              <span className="text-sm font-bold text-white">N</span>
-            </div>
+            <Logo size="sm" />
             <span className="font-semibold tracking-tight group-hover:text-accent-cyber transition-colors">
               nguyenetic
             </span>

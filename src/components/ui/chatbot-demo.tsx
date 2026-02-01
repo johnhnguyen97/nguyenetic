@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { MessageCircle, X, Send, Bot, User, Sparkles } from "lucide-react"
+import { MessageCircle, X, Send, Bot, User, Sparkles, Languages } from "lucide-react"
 
 const springEase = [0.22, 1, 0.36, 1] as const
 
@@ -10,25 +10,24 @@ interface Message {
   id: number
   text: string
   isBot: boolean
-  typing?: boolean
+  role: "user" | "assistant"
 }
-
-const demoResponses = [
-  "Hey! I'm an AI assistant demo. I can help answer questions about Nguyenetic's services.",
-  "I can build custom chatbots like this for your business — trained on your data and brand voice.",
-  "Features include: 24/7 availability, instant responses, lead capture, and seamless handoff to humans.",
-  "Want to add an AI chatbot to your website? Let's talk! 🚀",
-]
 
 export function ChatbotDemo() {
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([
-    { id: 1, text: "Hi! 👋 I'm an AI assistant demo. Ask me anything about web development, SEO, or custom apps!", isBot: true },
+    {
+      id: 1,
+      text: "Hi! 👋 I'm Moxie, your AI assistant. Ask me anything about web development, SEO, or custom apps!",
+      isBot: true,
+      role: "assistant"
+    },
   ])
   const [input, setInput] = useState("")
   const [isTyping, setIsTyping] = useState(false)
+  const [isJapanese, setIsJapanese] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const responseIndex = useRef(0)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -38,26 +37,91 @@ export function ChatbotDemo() {
     scrollToBottom()
   }, [messages])
 
-  const handleSend = () => {
+  // Update greeting when language changes
+  useEffect(() => {
+    if (messages.length === 1) {
+      setMessages([
+        {
+          id: 1,
+          text: isJapanese
+            ? "こんにちは！👋 モクシーです。ウェブ開発、SEO、カスタムアプリについて何でも聞いてください！"
+            : "Hi! 👋 I'm Moxie, your AI assistant. Ask me anything about web development, SEO, or custom apps!",
+          isBot: true,
+          role: "assistant"
+        }
+      ])
+    }
+  }, [isJapanese])
+
+  const handleSend = async () => {
     if (!input.trim() || isTyping) return
 
     const userMessage: Message = {
       id: Date.now(),
       text: input,
       isBot: false,
+      role: "user"
     }
+
     setMessages((prev) => [...prev, userMessage])
     setInput("")
     setIsTyping(true)
+    setError(null)
 
-    // Simulate bot typing
-    setTimeout(() => {
-      const botResponse = demoResponses[responseIndex.current % demoResponses.length]
-      responseIndex.current++
+    try {
+      // Prepare messages for API (exclude the greeting, include all conversation)
+      const apiMessages = [...messages.slice(1), userMessage].map(m => ({
+        role: m.role,
+        content: m.text
+      }))
 
-      setMessages((prev) => [...prev, { id: Date.now() + 1, text: botResponse, isBot: true }])
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: apiMessages,
+          isJapanese
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to get response")
+      }
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now() + 1,
+          text: data.message,
+          isBot: true,
+          role: "assistant"
+        }
+      ])
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Something went wrong"
+      setError(errorMessage)
+
+      // Add error message as bot response
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now() + 1,
+          text: isJapanese
+            ? "申し訳ありません、エラーが発生しました。もう一度お試しください。"
+            : "Sorry, I encountered an error. Please try again!",
+          isBot: true,
+          role: "assistant"
+        }
+      ])
+    } finally {
       setIsTyping(false)
-    }, 1500)
+    }
+  }
+
+  const toggleLanguage = () => {
+    setIsJapanese(!isJapanese)
   }
 
   return (
@@ -95,12 +159,26 @@ export function ChatbotDemo() {
                   <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-card" />
                 </div>
                 <div className="flex-1">
-                  <div className="font-semibold text-sm">AI Assistant</div>
+                  <div className="font-semibold text-sm">Moxie</div>
                   <div className="text-xs text-accent-cyber flex items-center gap-1">
                     <Sparkles className="w-3 h-3" />
-                    <span>Demo Mode</span>
+                    <span>{isJapanese ? "AIアシスタント" : "AI Assistant"}</span>
                   </div>
                 </div>
+
+                {/* Language Toggle */}
+                <button
+                  onClick={toggleLanguage}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
+                    isJapanese
+                      ? "bg-accent-sakura/20 text-accent-sakura"
+                      : "hover:bg-muted/50 text-muted-foreground"
+                  }`}
+                  title={isJapanese ? "Switch to English" : "日本語に切り替え"}
+                >
+                  <Languages className="w-4 h-4" />
+                </button>
+
                 <button
                   onClick={() => setIsOpen(false)}
                   className="w-8 h-8 rounded-full hover:bg-muted/50 flex items-center justify-center transition-colors"
@@ -108,6 +186,17 @@ export function ChatbotDemo() {
                   <X className="w-4 h-4 text-muted-foreground" />
                 </button>
               </div>
+
+              {/* Japanese mode indicator */}
+              {isJapanese && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="absolute top-1 right-16 px-2 py-0.5 bg-accent-sakura/20 rounded-full"
+                >
+                  <span className="text-[10px] text-accent-sakura font-medium">日本語</span>
+                </motion.div>
+              )}
             </div>
 
             {/* Messages */}
@@ -174,7 +263,7 @@ export function ChatbotDemo() {
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Type a message..."
+                  placeholder={isJapanese ? "メッセージを入力..." : "Type a message..."}
                   className="flex-1 px-4 py-2.5 rounded-full bg-background border border-border text-sm focus:outline-none focus:border-accent-cyber/50 transition-colors"
                 />
                 <button
@@ -186,7 +275,10 @@ export function ChatbotDemo() {
                 </button>
               </form>
               <p className="text-[10px] text-muted-foreground text-center mt-2">
-                This is a demo. Real chatbots are trained on your data.
+                {isJapanese
+                  ? "Moxieはあなたのデータでトレーニングされます"
+                  : "Moxie is powered by AI — trained for your business"
+                }
               </p>
             </div>
           </motion.div>
