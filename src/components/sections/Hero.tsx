@@ -3,6 +3,7 @@
 import { motion } from "framer-motion"
 import { ZenCircuit } from "@/components/ui/zen-circuit"
 import { Particles } from "@/components/ui/particles"
+import { useLanguage } from "@/lib/language-context"
 
 const springEase = [0.22, 1, 0.36, 1] as const
 
@@ -19,16 +20,20 @@ const textVariants = {
   }),
 }
 
-const fadeInUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.8, ease: springEase },
-  },
-}
-
 export function Hero() {
+  const { t, language } = useLanguage()
+
+  const orbitingPlanets = [
+    { label: "Next.js", labelJa: "Next.js", angle: 0, distance: 48, size: "lg", color: "cyber", delay: 0 },
+    { label: "React", labelJa: "React", angle: 50, distance: 52, size: "md", color: "sakura", delay: 0.3 },
+    { label: "Web Apps", labelJa: "Webアプリ", angle: 95, distance: 46, size: "lg", color: "gold", delay: 0.6 },
+    { label: "SEO", labelJa: "SEO対策", angle: 140, distance: 50, size: "sm", color: "cyber", delay: 0.9 },
+    { label: "Marketing", labelJa: "マーケティング", angle: 180, distance: 54, size: "md", color: "sakura", delay: 1.2 },
+    { label: "Design", labelJa: "デザイン", angle: 220, distance: 48, size: "lg", color: "gold", delay: 1.5 },
+    { label: "Backend", labelJa: "バックエンド", angle: 265, distance: 52, size: "sm", color: "cyber", delay: 1.8 },
+    { label: "AI/ML", labelJa: "AI/ML", angle: 310, distance: 46, size: "md", color: "sakura", delay: 2.1 },
+  ]
+
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Particles background */}
@@ -62,7 +67,7 @@ export function Hero() {
             >
               <div className="w-12 h-px bg-gradient-to-r from-accent-cyber to-transparent" />
               <span className="text-xs tracking-[0.3em] text-accent-cyber font-mono uppercase">
-                技術と美学
+                {t("Tech & Aesthetics", "技術と美学")}
               </span>
             </motion.div>
 
@@ -74,8 +79,8 @@ export function Hero() {
               variants={textVariants}
               className="text-[clamp(2.5rem,6vw,4.5rem)] font-bold tracking-tight leading-[1.1] mb-6"
             >
-              <span className="block">Build. Launch.</span>
-              <span className="block text-gradient-cyber">Dominate.</span>
+              <span className="block">{t("Build. Launch.", "構築。公開。")}</span>
+              <span className="block text-gradient-cyber">{t("Dominate.", "支配。")}</span>
             </motion.h1>
 
             {/* Description */}
@@ -86,8 +91,10 @@ export function Hero() {
               variants={textVariants}
               className="text-lg text-muted-foreground leading-relaxed mb-8 max-w-lg"
             >
-              Enterprise-grade web development, strategic SEO, and AI-powered solutions.
-              Building elegant digital experiences that drive measurable results.
+              {t(
+                "Enterprise-grade web development, strategic SEO, and AI-powered solutions. Building elegant digital experiences that drive measurable results.",
+                "エンタープライズグレードのウェブ開発、戦略的SEO、AI搭載ソリューション。測定可能な成果を生み出す洗練されたデジタル体験を構築します。"
+              )}
             </motion.p>
 
             {/* Stats row */}
@@ -100,17 +107,17 @@ export function Hero() {
             >
               <div>
                 <div className="text-3xl font-bold text-accent-cyber">50+</div>
-                <div className="text-sm text-muted-foreground">Projects</div>
+                <div className="text-sm text-muted-foreground">{t("Projects", "プロジェクト")}</div>
               </div>
               <div className="w-px bg-border" />
               <div>
                 <div className="text-3xl font-bold text-accent-sakura">5+</div>
-                <div className="text-sm text-muted-foreground">Years Exp.</div>
+                <div className="text-sm text-muted-foreground">{t("Years Exp.", "年の経験")}</div>
               </div>
               <div className="w-px bg-border" />
               <div>
                 <div className="text-3xl font-bold text-accent-gold">100%</div>
-                <div className="text-sm text-muted-foreground">Satisfaction</div>
+                <div className="text-sm text-muted-foreground">{t("Satisfaction", "満足度")}</div>
               </div>
             </motion.div>
 
@@ -126,7 +133,7 @@ export function Hero() {
                 href="#work"
                 className="group relative inline-flex items-center gap-2 px-8 py-4 bg-foreground text-background rounded-full font-medium transition-all hover:scale-105 overflow-hidden"
               >
-                <span className="relative z-10">View Projects</span>
+                <span className="relative z-10">{t("View Projects", "実績を見る")}</span>
                 <svg
                   className="relative z-10 w-4 h-4 transition-transform group-hover:translate-x-1"
                   fill="none"
@@ -141,7 +148,7 @@ export function Hero() {
                 href="#contact"
                 className="inline-flex items-center gap-2 px-8 py-4 border border-border rounded-full font-medium text-muted-foreground hover:text-foreground hover:border-accent-cyber/50 transition-all"
               >
-                Get in Touch
+                {t("Get in Touch", "お問い合わせ")}
               </a>
             </motion.div>
 
@@ -153,10 +160,13 @@ export function Hero() {
               className="mt-12 pt-8 border-t border-border/30"
             >
               <p className="text-xs text-muted-foreground uppercase tracking-wider mb-3">
-                Full-Stack Solutions
+                {t("Full-Stack Solutions", "フルスタックソリューション")}
               </p>
               <p className="text-sm text-muted-foreground">
-                From concept to deployment — web apps, marketing, and everything in between.
+                {t(
+                  "From concept to deployment — web apps, marketing, and everything in between.",
+                  "コンセプトから展開まで — Webアプリ、マーケティング、すべてをカバー。"
+                )}
               </p>
             </motion.div>
           </div>
@@ -176,25 +186,10 @@ export function Hero() {
               <ZenCircuit className="relative z-10 w-full h-full" />
 
               {/* Orbiting tech planets */}
-              {[
-                { label: "Next.js", angle: 0, distance: 48, size: "lg", color: "cyber", delay: 0 },
-                { label: "React", angle: 50, distance: 52, size: "md", color: "sakura", delay: 0.3 },
-                { label: "Web Apps", angle: 95, distance: 46, size: "lg", color: "gold", delay: 0.6 },
-                { label: "SEO", angle: 140, distance: 50, size: "sm", color: "cyber", delay: 0.9 },
-                { label: "Marketing", angle: 180, distance: 54, size: "md", color: "sakura", delay: 1.2 },
-                { label: "Design", angle: 220, distance: 48, size: "lg", color: "gold", delay: 1.5 },
-                { label: "Backend", angle: 265, distance: 52, size: "sm", color: "cyber", delay: 1.8 },
-                { label: "AI/ML", angle: 310, distance: 46, size: "md", color: "sakura", delay: 2.1 },
-              ].map((planet, i) => {
+              {orbitingPlanets.map((planet, i) => {
                 const radians = (planet.angle * Math.PI) / 180
                 const x = 50 + planet.distance * Math.cos(radians)
                 const y = 50 + planet.distance * Math.sin(radians)
-
-                const sizeClasses = {
-                  sm: "w-14 h-14 text-[10px]",
-                  md: "w-18 h-18 text-xs",
-                  lg: "w-22 h-22 text-xs",
-                }
 
                 const colorClasses = {
                   cyber: "from-accent-cyber/40 to-accent-cyber/10 border-accent-cyber/30 shadow-accent-cyber/20",
@@ -233,7 +228,7 @@ export function Hero() {
                       `}
                     >
                       <span className={`font-medium text-foreground/90 ${planet.size === "sm" ? "text-[9px]" : "text-[11px]"}`}>
-                        {planet.label}
+                        {language === "ja" ? planet.labelJa : planet.label}
                       </span>
                       {/* Inner glow */}
                       <div className="absolute inset-2 rounded-full bg-white/5" />
@@ -272,7 +267,7 @@ export function Hero() {
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           className="flex flex-col items-center gap-2"
         >
-          <span className="text-xs text-muted-foreground tracking-wider">Scroll</span>
+          <span className="text-xs text-muted-foreground tracking-wider">{t("Scroll", "スクロール")}</span>
           <div className="w-6 h-10 border border-border/50 rounded-full flex items-start justify-center p-2">
             <motion.div
               animate={{ y: [0, 12, 0], opacity: [1, 0.3, 1] }}

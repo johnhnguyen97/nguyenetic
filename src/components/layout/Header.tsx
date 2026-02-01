@@ -2,20 +2,22 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Menu, X } from "lucide-react"
+import { Menu, X, Languages } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Logo } from "@/components/ui/logo"
-
-const navItems = [
-  { label: "Work", href: "#work" },
-  { label: "About", href: "#about" },
-  { label: "Services", href: "#services" },
-  { label: "Contact", href: "#contact" },
-]
+import { useLanguage } from "@/lib/language-context"
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const { language, setLanguage, t } = useLanguage()
+
+  const navItems = [
+    { label: t("Work", "実績"), href: "#work" },
+    { label: t("About", "私について"), href: "#about" },
+    { label: t("Services", "サービス"), href: "#services" },
+    { label: t("Contact", "お問い合わせ"), href: "#contact" },
+  ]
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,6 +26,10 @@ export function Header() {
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
+
+  const toggleLanguage = () => {
+    setLanguage(language === "en" ? "ja" : "en")
+  }
 
   return (
     <>
@@ -59,28 +65,54 @@ export function Header() {
             ))}
           </nav>
 
-          {/* CTA Button (Desktop) */}
-          <div className="hidden md:block">
+          {/* Language Toggle + CTA Button (Desktop) */}
+          <div className="hidden md:flex items-center gap-3">
+            <button
+              onClick={toggleLanguage}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm transition-all",
+                language === "ja"
+                  ? "bg-accent-sakura/20 text-accent-sakura"
+                  : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
+              )}
+              title={language === "ja" ? "Switch to English" : "日本語に切り替え"}
+            >
+              <Languages className="w-4 h-4" />
+              <span className="text-xs font-medium">{language === "ja" ? "日本語" : "EN"}</span>
+            </button>
             <a
               href="#contact"
               className="text-sm px-5 py-2.5 rounded-full border border-border hover:border-accent-cyber hover:text-accent-cyber transition-all"
             >
-              Let&apos;s Talk
+              {t("Let's Talk", "相談する")}
             </a>
           </div>
 
           {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden w-10 h-10 flex items-center justify-center"
-            aria-label="Toggle menu"
-          >
-            {isMobileMenuOpen ? (
-              <X className="w-5 h-5" />
-            ) : (
-              <Menu className="w-5 h-5" />
-            )}
-          </button>
+          <div className="md:hidden flex items-center gap-2">
+            <button
+              onClick={toggleLanguage}
+              className={cn(
+                "w-9 h-9 rounded-full flex items-center justify-center transition-all",
+                language === "ja"
+                  ? "bg-accent-sakura/20 text-accent-sakura"
+                  : "hover:bg-muted/50 text-muted-foreground"
+              )}
+            >
+              <Languages className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="w-10 h-10 flex items-center justify-center"
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
+            </button>
+          </div>
         </div>
       </motion.header>
 
@@ -129,7 +161,7 @@ export function Header() {
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="inline-block px-6 py-3 bg-foreground text-background rounded-full font-medium"
                   >
-                    Let&apos;s Talk
+                    {t("Let's Talk", "相談する")}
                   </a>
                 </motion.div>
               </div>

@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
 import { ArrowUpRight, ExternalLink, Layers, Zap, TrendingUp, Palette, Check } from "lucide-react"
+import { useLanguage } from "@/lib/language-context"
 
 const springEase = [0.22, 1, 0.36, 1] as const
 
@@ -63,67 +64,81 @@ const IchibanLogo = () => (
   </svg>
 )
 
-const projects = [
+const getProjects = (t: (en: string, ja: string) => string) => [
   {
     title: "GoJUN",
-    subtitle: "AI-Powered Japanese Learning",
-    description: "Built a complete SaaS platform from scratch — real-time flashcard system with AI-generated content, spaced repetition algorithms, and user analytics.",
-    category: "SaaS Platform",
+    subtitle: t("AI-Powered Japanese Learning", "AI搭載の日本語学習"),
+    description: t(
+      "Built a complete SaaS platform from scratch — real-time flashcard system with AI-generated content, spaced repetition algorithms, and user analytics.",
+      "完全なSaaSプラットフォームをゼロから構築 — AI生成コンテンツ、間隔反復アルゴリズム、ユーザー分析を備えたリアルタイムフラッシュカードシステム。"
+    ),
+    category: t("SaaS Platform", "SaaSプラットフォーム"),
     tags: ["React", "AI", "Supabase", "EdTech"],
     url: "https://gojun.vercel.app/",
     gradient: "from-violet-500 to-purple-600",
     accentClass: "text-violet-400 border-violet-500/30 bg-violet-500/10",
     icon: Layers,
     Logo: GoJunLogo,
-    highlights: ["Custom AI integration", "Real-time data sync", "User authentication", "Analytics dashboard"],
-    impact: "Full SaaS with AI",
+    highlights: [t("Custom AI integration", "カスタムAI統合"), t("Real-time data sync", "リアルタイムデータ同期"), t("User authentication", "ユーザー認証"), t("Analytics dashboard", "分析ダッシュボード")],
+    impact: t("Full SaaS with AI", "AI搭載SaaS"),
   },
   {
     title: "Fast Fix Whitemarsh",
-    subtitle: "Full Digital Transformation",
-    description: "Developed website, implemented SEO strategy, and managed Google Ads campaigns — driving local customers and online bookings.",
-    category: "Business + Marketing",
+    subtitle: t("Full Digital Transformation", "デジタルトランスフォーメーション"),
+    description: t(
+      "Developed website, implemented SEO strategy, and managed Google Ads campaigns — driving local customers and online bookings.",
+      "ウェブサイト開発、SEO戦略の実装、Google広告キャンペーンの管理 — 地元の顧客とオンライン予約を促進。"
+    ),
+    category: t("Business + Marketing", "ビジネス + マーケティング"),
     tags: ["Next.js", "Sanity", "SEO", "Google Ads"],
     url: "https://www.fastfixwhitemarsh.com/",
     gradient: "from-blue-500 to-cyan-500",
     accentClass: "text-cyan-400 border-cyan-500/30 bg-cyan-500/10",
     icon: Zap,
     Logo: FastFixLogo,
-    highlights: ["SEO optimization", "Google Ads management", "Online booking system", "Content management"],
-    impact: "Top 3 Local Search",
+    highlights: [t("SEO optimization", "SEO最適化"), t("Google Ads management", "Google広告管理"), t("Online booking system", "オンライン予約システム"), t("Content management", "コンテンツ管理")],
+    impact: t("Top 3 Local Search", "ローカル検索トップ3"),
   },
   {
     title: "EV Wrap",
-    subtitle: "Lead Generation Machine",
-    description: "Built a high-converting website with instant quote calculator, portfolio gallery, and automated lead capture system.",
-    category: "Business Website",
+    subtitle: t("Lead Generation Machine", "リードジェネレーションマシン"),
+    description: t(
+      "Built a high-converting website with instant quote calculator, portfolio gallery, and automated lead capture system.",
+      "即時見積もり計算機、ポートフォリオギャラリー、自動リードキャプチャシステムを備えた高コンバージョンウェブサイトを構築。"
+    ),
+    category: t("Business Website", "ビジネスウェブサイト"),
     tags: ["Next.js", "Automotive", "Lead Gen"],
     url: "https://evwrap-git-development-nguyenetics-projects.vercel.app/",
     gradient: "from-emerald-500 to-teal-500",
     accentClass: "text-emerald-400 border-emerald-500/30 bg-emerald-500/10",
     icon: Palette,
     Logo: EVWrapLogo,
-    highlights: ["Quote calculator", "Lead capture forms", "Portfolio showcase", "Mobile-first design"],
-    impact: "High Conversions",
+    highlights: [t("Quote calculator", "見積もり計算機"), t("Lead capture forms", "リードキャプチャフォーム"), t("Portfolio showcase", "ポートフォリオ展示"), t("Mobile-first design", "モバイルファーストデザイン")],
+    impact: t("High Conversions", "高コンバージョン"),
   },
   {
     title: "Ichiban",
-    subtitle: "Restaurant Digital Experience",
-    description: "Created an elegant online presence with dynamic menu management, reservation system, and seamless CMS for easy updates.",
-    category: "Restaurant",
+    subtitle: t("Restaurant Digital Experience", "レストランデジタル体験"),
+    description: t(
+      "Created an elegant online presence with dynamic menu management, reservation system, and seamless CMS for easy updates.",
+      "動的メニュー管理、予約システム、簡単更新のためのシームレスなCMSを備えたエレガントなオンラインプレゼンスを作成。"
+    ),
+    category: t("Restaurant", "レストラン"),
     tags: ["Next.js", "Sanity CMS", "Hospitality"],
     url: "https://ichiban-website-taupe.vercel.app/",
     gradient: "from-rose-500 to-orange-500",
     accentClass: "text-rose-400 border-rose-500/30 bg-rose-500/10",
     icon: TrendingUp,
     Logo: IchibanLogo,
-    highlights: ["Dynamic menu CMS", "Reservation system", "Mobile optimized", "Brand storytelling"],
-    impact: "Online Orders Live",
+    highlights: [t("Dynamic menu CMS", "動的メニューCMS"), t("Reservation system", "予約システム"), t("Mobile optimized", "モバイル最適化"), t("Brand storytelling", "ブランドストーリーテリング")],
+    impact: t("Online Orders Live", "オンライン注文稼働中"),
   },
 ]
 
 export function Work() {
+  const { t } = useLanguage()
   const [hoveredProject, setHoveredProject] = useState<number | null>(null)
+  const projects = getProjects(t)
 
   return (
     <section id="work" className="relative py-32 px-6 overflow-hidden">
@@ -174,10 +189,10 @@ export function Work() {
             />
           </div>
           <h2 className="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-tight mb-4">
-            Real Projects, <span className="text-gradient-cyber">Real Results</span>
+            {t("Real Projects,", "実際のプロジェクト、")} <span className="text-gradient-cyber">{t("Real Results", "実際の成果")}</span>
           </h2>
           <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl mx-auto">
-            Not just websites — complete digital solutions that drive business growth.
+            {t("Not just websites — complete digital solutions that drive business growth.", "ただのウェブサイトではなく — ビジネス成長を促進する完全なデジタルソリューション。")}
           </p>
         </motion.div>
 
@@ -358,7 +373,7 @@ export function Work() {
                           transition={{ delay: 0.8 }}
                           className="mt-6 flex items-center gap-2 text-sm font-medium text-violet-400"
                         >
-                          <span>View Live Project</span>
+                          <span>{t("View Live Project", "ライブプロジェクトを見る")}</span>
                           <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                         </motion.div>
                       )}
@@ -378,12 +393,12 @@ export function Work() {
           transition={{ duration: 0.8, delay: 0.5, ease: springEase }}
           className="mt-16 text-center"
         >
-          <p className="text-muted-foreground mb-4">Want to see your project here?</p>
+          <p className="text-muted-foreground mb-4">{t("Want to see your project here?", "あなたのプロジェクトをここに載せたいですか？")}</p>
           <a
             href="#contact"
             className="inline-flex items-center gap-2 text-accent-cyber hover:underline underline-offset-4"
           >
-            <span>Let&apos;s build something amazing</span>
+            <span>{t("Let's build something amazing", "一緒に素晴らしいものを作りましょう")}</span>
             <ArrowUpRight className="w-4 h-4" />
           </a>
         </motion.div>

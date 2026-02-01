@@ -14,64 +14,65 @@ import {
   Database,
   Cpu,
 } from "lucide-react"
+import { useLanguage } from "@/lib/language-context"
 
 const springEase = [0.22, 1, 0.36, 1] as const
 
 // Combined services with detailed info - arranged in constellation
-const services = [
+const getServices = (t: (en: string, ja: string) => string) => [
   {
     icon: Code2,
-    title: "Web Dev",
-    fullTitle: "Web Development",
+    title: t("Web Dev", "Web開発"),
+    fullTitle: t("Web Development", "ウェブ開発"),
     color: "cyber",
     x: 50, y: 15,
-    details: ["Next.js / React", "TypeScript", "Full-Stack Apps", "API Integration"],
-    enterprise: { icon: Cloud, label: "SaaS Ready" },
+    details: ["Next.js / React", "TypeScript", t("Full-Stack Apps", "フルスタックアプリ"), t("API Integration", "API統合")],
+    enterprise: { icon: Cloud, label: t("SaaS Ready", "SaaS対応") },
   },
   {
     icon: Smartphone,
-    title: "Custom Apps",
-    fullTitle: "App Development",
+    title: t("Custom Apps", "カスタムアプリ"),
+    fullTitle: t("App Development", "アプリ開発"),
     color: "sakura",
     x: 82, y: 32,
-    details: ["Desktop Apps", "Mobile Apps", "Cross-Platform", "Electron / React Native"],
-    enterprise: { icon: Database, label: "Scalable" },
+    details: [t("Desktop Apps", "デスクトップアプリ"), t("Mobile Apps", "モバイルアプリ"), t("Cross-Platform", "クロスプラットフォーム"), "Electron / React Native"],
+    enterprise: { icon: Database, label: t("Scalable", "スケーラブル") },
   },
   {
     icon: Palette,
-    title: "Design",
-    fullTitle: "UI/UX Design",
+    title: t("Design", "デザイン"),
+    fullTitle: t("UI/UX Design", "UI/UXデザイン"),
     color: "gold",
     x: 82, y: 68,
-    details: ["Brand Identity", "User Research", "Prototyping", "Design Systems"],
-    enterprise: { icon: Sparkles, label: "AI-Enhanced" },
+    details: [t("Brand Identity", "ブランドアイデンティティ"), t("User Research", "ユーザーリサーチ"), t("Prototyping", "プロトタイピング"), t("Design Systems", "デザインシステム")],
+    enterprise: { icon: Sparkles, label: t("AI-Enhanced", "AI強化") },
   },
   {
     icon: Search,
     title: "SEO",
-    fullTitle: "SEO Optimization",
+    fullTitle: t("SEO Optimization", "SEO最適化"),
     color: "cyber",
     x: 50, y: 85,
-    details: ["Technical SEO", "Local SEO", "Content Strategy", "Analytics"],
-    enterprise: { icon: Cpu, label: "Data-Driven" },
+    details: [t("Technical SEO", "テクニカルSEO"), t("Local SEO", "ローカルSEO"), t("Content Strategy", "コンテンツ戦略"), t("Analytics", "アナリティクス")],
+    enterprise: { icon: Cpu, label: t("Data-Driven", "データ駆動") },
   },
   {
     icon: Megaphone,
-    title: "Ads",
-    fullTitle: "Google Ads",
+    title: t("Ads", "広告"),
+    fullTitle: t("Google Ads", "Google広告"),
     color: "sakura",
     x: 18, y: 68,
-    details: ["PPC Campaigns", "Conversion Tracking", "A/B Testing", "ROI Optimization"],
-    enterprise: { icon: BarChart3, label: "Performance" },
+    details: [t("PPC Campaigns", "PPCキャンペーン"), t("Conversion Tracking", "コンバージョン追跡"), t("A/B Testing", "A/Bテスト"), t("ROI Optimization", "ROI最適化")],
+    enterprise: { icon: BarChart3, label: t("Performance", "パフォーマンス") },
   },
   {
     icon: BarChart3,
-    title: "Marketing",
-    fullTitle: "Digital Marketing",
+    title: t("Marketing", "マーケティング"),
+    fullTitle: t("Digital Marketing", "デジタルマーケティング"),
     color: "gold",
     x: 18, y: 32,
-    details: ["Social Media", "Email Marketing", "Content Creation", "Brand Strategy"],
-    enterprise: { icon: Cloud, label: "Full-Funnel" },
+    details: [t("Social Media", "ソーシャルメディア"), t("Email Marketing", "メールマーケティング"), t("Content Creation", "コンテンツ作成"), t("Brand Strategy", "ブランド戦略")],
+    enterprise: { icon: Cloud, label: t("Full-Funnel", "フルファネル") },
   },
 ]
 
@@ -82,7 +83,9 @@ const connections = [
 ]
 
 export function Services() {
+  const { t } = useLanguage()
   const [activeService, setActiveService] = useState<number | null>(null)
+  const services = getServices(t)
 
   const colorClasses = {
     cyber: "border-accent-cyber/50 shadow-accent-cyber/30",
@@ -128,10 +131,10 @@ export function Services() {
             <div className="w-12 h-px bg-gradient-to-r from-accent-sakura to-transparent" />
           </div>
           <h2 className="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-tight mb-4">
-            Full-Stack <span className="text-gradient-cyber">Ecosystem</span>
+            {t("Full-Stack", "フルスタック")} <span className="text-gradient-cyber">{t("Ecosystem", "エコシステム")}</span>
           </h2>
           <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl mx-auto">
-            Everything you need to build, launch, and grow — hover to explore each service.
+            {t("Everything you need to build, launch, and grow — hover to explore each service.", "構築、公開、成長に必要なすべて — 各サービスにホバーして詳細をご覧ください。")}
           </p>
         </motion.div>
 
@@ -325,7 +328,7 @@ export function Services() {
 
                   <div className="mt-6 pt-4 border-t border-border/50">
                     <p className="text-xs text-muted-foreground">
-                      Custom solutions tailored to your business needs
+                      {t("Custom solutions tailored to your business needs", "ビジネスニーズに合わせたカスタムソリューション")}
                     </p>
                   </div>
                 </motion.div>
@@ -335,8 +338,8 @@ export function Services() {
                   animate={{ opacity: 1 }}
                   className="w-full p-6 rounded-2xl border border-dashed border-border/50 text-center"
                 >
-                  <p className="text-muted-foreground mb-2">Hover over a service to explore</p>
-                  <p className="text-xs text-muted-foreground/60">Each service includes enterprise-grade capabilities</p>
+                  <p className="text-muted-foreground mb-2">{t("Hover over a service to explore", "サービスにホバーして詳細を見る")}</p>
+                  <p className="text-xs text-muted-foreground/60">{t("Each service includes enterprise-grade capabilities", "各サービスにはエンタープライズグレードの機能が含まれています")}</p>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -360,7 +363,7 @@ export function Services() {
               <div className="h-px flex-1 bg-gradient-to-r from-transparent to-accent-gold/30" />
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-accent-gold/10 border border-accent-gold/20">
                 <span className="w-2 h-2 rounded-full bg-accent-gold animate-pulse" />
-                <span className="text-sm font-medium text-accent-gold">Enterprise Experience</span>
+                <span className="text-sm font-medium text-accent-gold">{t("Enterprise Experience", "エンタープライズ経験")}</span>
               </div>
               <div className="h-px flex-1 bg-gradient-to-l from-transparent to-accent-gold/30" />
             </div>
@@ -368,12 +371,12 @@ export function Services() {
             {/* Enterprise Stack - Horizontal flow */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
               {[
-                { icon: Cloud, label: "SaaS", desc: "Multi-tenant apps" },
-                { icon: Database, label: "Data", desc: "Scalable architecture" },
+                { icon: Cloud, label: "SaaS", desc: t("Multi-tenant apps", "マルチテナントアプリ") },
+                { icon: Database, label: t("Data", "データ"), desc: t("Scalable architecture", "スケーラブルアーキテクチャ") },
                 { icon: Cpu, label: "APIs", desc: "REST & GraphQL" },
-                { icon: Sparkles, label: "AI/ML", desc: "Smart automation" },
-                { icon: Smartphone, label: "Apps", desc: "Cross-platform" },
-                { icon: BarChart3, label: "Analytics", desc: "Data insights" },
+                { icon: Sparkles, label: "AI/ML", desc: t("Smart automation", "スマートオートメーション") },
+                { icon: Smartphone, label: t("Apps", "アプリ"), desc: t("Cross-platform", "クロスプラットフォーム") },
+                { icon: BarChart3, label: t("Analytics", "分析"), desc: t("Data insights", "データインサイト") },
               ].map((item, i) => {
                 const Icon = item.icon
                 return (
@@ -414,15 +417,15 @@ export function Services() {
                   <Smartphone className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <div className="font-semibold">Need a Custom App?</div>
-                  <div className="text-sm text-muted-foreground">Desktop, mobile, or web — I build it all.</div>
+                  <div className="font-semibold">{t("Need a Custom App?", "カスタムアプリが必要ですか？")}</div>
+                  <div className="text-sm text-muted-foreground">{t("Desktop, mobile, or web — I build it all.", "デスクトップ、モバイル、ウェブ — すべて構築します。")}</div>
                 </div>
               </div>
               <a
                 href="#contact"
                 className="px-6 py-2.5 rounded-full bg-foreground text-background text-sm font-medium hover:scale-105 transition-transform"
               >
-                Let&apos;s Talk
+                {t("Let's Talk", "相談する")}
               </a>
             </motion.div>
           </div>
@@ -440,7 +443,7 @@ export function Services() {
             href="#contact"
             className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-accent-cyber via-accent-sakura to-accent-gold text-white rounded-full font-medium hover:opacity-90 transition-all hover:scale-105"
           >
-            <span>Start Your Project</span>
+            <span>{t("Start Your Project", "プロジェクトを始める")}</span>
             <motion.span
               animate={{ x: [0, 4, 0] }}
               transition={{ duration: 1.5, repeat: Infinity }}
