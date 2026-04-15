@@ -1,0 +1,40 @@
+{
+  "planPath": "docs/superpowers/plans/2026-04-15-portfolio-phase-1-foundation.md",
+  "tasks": [
+    {
+      "id": 2,
+      "subject": "Task 0: Add foundation design tokens to globals.css",
+      "status": "pending",
+      "description": "**Goal:** Introduce new ink/paper/warm palette + typography scale in globals.css without removing existing Japanese-theme tokens.\n\n**Files:**\n- Modify: src/app/globals.css\n\n**Acceptance Criteria:**\n- New tokens resolve as Tailwind utilities\n- Old tokens still intact\n- body defaults to ink background\n- build + lint green\n\n```json:metadata\n{\"files\": [\"src/app/globals.css\"], \"verifyCommand\": \"npm run lint && npm run build\", \"acceptanceCriteria\": [\"new tokens resolve\", \"old tokens intact\", \"body defaults ink\", \"build+lint green\"], \"requiresUserVerification\": false}\n```"
+    },
+    {
+      "id": 3,
+      "subject": "Task 1: Load Inter font in layout.tsx",
+      "status": "pending",
+      "blockedBy": [2],
+      "description": "**Goal:** Load Inter via next/font/google alongside Geist.\n\n**Files:**\n- Modify: src/app/layout.tsx\n\n```json:metadata\n{\"files\": [\"src/app/layout.tsx\"], \"verifyCommand\": \"npm run build\", \"acceptanceCriteria\": [\"Inter loader wired\", \"variable on body\", \"themeColor matches ink\", \"build green\"], \"requiresUserVerification\": false}\n```"
+    },
+    {
+      "id": 4,
+      "subject": "Task 2: Reskin Header with warm accent and display font",
+      "status": "pending",
+      "blockedBy": [2, 3],
+      "description": "**Goal:** Update Header.tsx to use warm accent + font-display, preserving all functionality.\n\n**Files:**\n- Modify: src/components/layout/Header.tsx\n\n```json:metadata\n{\"files\": [\"src/components/layout/Header.tsx\"], \"verifyCommand\": \"npm run build && npm run lint\", \"acceptanceCriteria\": [\"header uses warm accent\", \"nav underline warm\", \"CTA border warm\", \"mobile hover warm\", \"JA toggle unchanged\", \"build+lint green\"], \"requiresUserVerification\": false}\n```"
+    },
+    {
+      "id": 5,
+      "subject": "Task 3: Create typed design-tokens module",
+      "status": "pending",
+      "blockedBy": [2],
+      "description": "**Goal:** Export TypeScript const map of tokens for programmatic use.\n\n**Files:**\n- Create: src/lib/design-tokens.ts\n\n```json:metadata\n{\"files\": [\"src/lib/design-tokens.ts\"], \"verifyCommand\": \"npm run build\", \"acceptanceCriteria\": [\"exports tokens\", \"values match CSS\", \"build green\"], \"requiresUserVerification\": false}\n```"
+    },
+    {
+      "id": 6,
+      "subject": "Task 4: Visual smoke test + user verification",
+      "status": "pending",
+      "blockedBy": [2, 3, 4, 5],
+      "description": "**Goal:** Dev server up, user visually inspects, explicit sign-off captured before Phase 2.\n\n**User Verification Required:** Must call AskUserQuestion with the verification prompt before marking complete.\n\n```json:metadata\n{\"files\": [], \"verifyCommand\": \"npm run dev\", \"acceptanceCriteria\": [\"dev server ready\", \"header reskin visible\", \"no existing section broken\", \"user sign-off captured\"], \"requiresUserVerification\": true, \"userVerificationPrompt\": \"Phase 1 foundation is live on http://localhost:3000. Does the new ink+warm+Geist header reskin look right, and is every other existing section still rendering without visible breakage?\"}\n```"
+    }
+  ],
+  "lastUpdated": "2026-04-15T22:30:00Z"
+}
