@@ -46,7 +46,7 @@ export function Header() {
           {/* Logo */}
           <a href="/" className="group flex items-center gap-2">
             <Logo size="sm" />
-            <span className="font-semibold tracking-tight group-hover:text-accent-cyber transition-colors">
+            <span className="font-display font-semibold tracking-tight group-hover:text-warm transition-colors">
               nguyenetic
             </span>
           </a>
@@ -60,7 +60,7 @@ export function Header() {
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors relative group"
               >
                 {item.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-px bg-accent-cyber transition-all group-hover:w-full" />
+                <span className="absolute -bottom-1 left-0 w-0 h-px bg-warm transition-all group-hover:w-full" />
               </a>
             ))}
           </nav>
@@ -82,7 +82,7 @@ export function Header() {
             </button>
             <a
               href="#contact"
-              className="text-sm px-5 py-2.5 rounded-full border border-border hover:border-accent-cyber hover:text-accent-cyber transition-all"
+              className="text-sm px-5 py-2.5 rounded-full border border-neutral-border hover:border-warm hover:text-warm transition-all"
             >
               {t("Let's Talk", "相談する")}
             </a>
@@ -145,7 +145,7 @@ export function Header() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.1 }}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="block text-2xl font-medium hover:text-accent-cyber transition-colors"
+                    className="block text-2xl font-medium font-display hover:text-warm transition-colors"
                   >
                     {item.label}
                   </motion.a>
