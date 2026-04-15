@@ -1,0 +1,174 @@
+# Portfolio Upgrade Design Spec — nguyenetic
+
+**Date:** 2026-04-15
+**Status:** Draft — awaiting review
+**Owner:** John Nguyen
+
+## Goal
+
+Upgrade nguyenetic.com from a standard Next.js portfolio into a showcase-grade site that:
+
+1. Lands paying clients (primary) — tech startup / SaaS founders who need AI features, landing pages, or custom automation
+2. Builds a social audience (secondary) — every section of the site doubles as a content asset for Twitter/X, LinkedIn, IG
+3. Funnels visitors into a clear "book a call" or "see work" action
+
+The site becomes the testbed for AI-driven design workflows (Whisk, Veo, Nano Banana, Spline, shader gradients) so every client project and every social post can point back to it as proof.
+
+## Target Audience
+
+**Primary:** Solo AI-builder founders and small tech startups (1–20 people) who are on Twitter/X, know what Claude / Cursor / Vercel are, and pay $3k–$15k for a landing page, AI integration, or custom internal tool.
+
+**Secondary:** Marketing teams and content creators who want AI automation pipelines built for them.
+
+**Explicitly NOT targeting:** Local SMBs (restaurants, clinics, trades) — the aesthetic would scare them off, and the pricing model doesn't fit.
+
+## Design Direction
+
+**Aesthetic synthesis:** Cinematic AI-video hero + minimal editorial layout + one signature interactive 3D moment. Reference workflow: vedant.design.tech viral post (AI stills → Google Flow → embedded as hero video bg).
+
+**Style references:** apple.com/vision-pro, linear.app, stripe.com, godly.website, dark.design, minimal.gallery, shadergradient.co.
+
+### Design Tokens
+
+- **Typography:** Geist (display — huge sizes, 80–120px hero), Inter (body, 16–18px)
+- **Palette:**
+  - Ink black `#0a0a0a` (primary bg)
+  - Off-white `#f5f5f0` (primary text)
+  - Warm amber `#ff8a3d` (single accent — evolves existing Japanese theme)
+  - Neutral gray `#6b6b6b` (secondary text)
+- **Layout:** Editorial bento grid, generous whitespace, minimal chrome
+- **Motion:** Framer Motion for scroll reveals + micro-interactions (already installed)
+
+## Stack Decisions (by section)
+
+| Section | Tool | Rationale |
+|-|-|-|
+| Hero background | Whisk → Veo MP4 loop, embedded as `<video>` | Fastest load, most cinematic, A/B-testable |
+| "How I Work" signature moment | Spline (lazy-loaded, below fold) | One draggable 3D scene = memorable; earns its 300KB runtime |
+| Section transitions | shadergradient.co r3f components | Tiny GPU cost, atmospheric, no Spline runtime |
+| "My Process" scroll reveal | EZGif frame sequence → canvas scrubber | Apple-style scroll anim, no 3D runtime |
+| Case studies grid | Bento grid of Nano Banana stills | Every tile = shareable social asset |
+| Chatbot (Moxie) | Keep, reframe as "AI I built for this site" | Don't throw away working code — becomes proof |
+
+**Rule:** Spline is used exactly once. Everywhere else, lighter tools deliver equal or better impact without tanking Core Web Vitals.
+
+## Page Structure (above → below fold)
+
+1. **Hero** — AI-video loop ("digital zen garden") + headline + two CTAs
+2. **Social proof strip** — logos / trusted-by row (or "as seen on" if empty)
+3. **Services** — three offerings with editorial tile layout (keep content, upgrade visuals)
+4. **"How I Work" interactive Spline scene** — draggable 3D object (Moxie logo or abstract AI-workflow graph), explains 3-step process
+5. **Work / Case Studies** — bento grid of 4–6 projects, each a tile with AI-generated still
+6. **"My Process" scroll reveal** — Apple-style frame-by-frame scroll anim showing tools transforming into a shipped product
+7. **Moxie chatbot CTA section** — "Try the AI I built for this site" with live demo link
+8. **Contact / booking** — Calendly embed or mailto, plus social links
+
+## Hero Copy (draft — to be polished with copywriting skill later)
+
+- **Headline:** *"I build AI that ships. For founders who move fast."*
+- **Subheadline:** *"Nguyenetic — AI workflows, custom tools, and the occasional 3D experiment. Available for project work."*
+- **Primary CTA:** *"See the work ↓"*
+- **Secondary CTA:** *"Book a call"*
+
+## Component Inventory
+
+### New components (to create)
+
+- `src/components/sections/HeroVideo.tsx` — video bg + headline + CTAs
+- `src/components/sections/HowIWork.tsx` — wraps Spline scene with process copy
+- `src/components/sections/ProcessScroll.tsx` — canvas scrubber for frame-by-frame scroll reveal
+- `src/components/sections/WorkBento.tsx` — bento grid case studies
+- `src/components/sections/ContactBooking.tsx` — booking CTA section
+- `src/components/ui/ShaderBackdrop.tsx` — shadergradient.co r3f wrapper for section transitions
+- `src/components/ui/SplineScene.tsx` — lazy-loaded Spline wrapper with loading state
+
+### Components to update
+
+- `src/components/sections/Hero.tsx` — replaced by HeroVideo (old file deleted)
+- `src/components/sections/Services.tsx` — reskin with new tokens, keep content
+- `src/components/sections/Work.tsx` — replaced by WorkBento (old file deleted)
+- `src/components/layout/Header.tsx` — update typography + colors to new tokens
+- `src/app/globals.css` — new Tailwind v4 `@theme` tokens (colors, fonts, spacing)
+- `src/app/page.tsx` — new section order + imports
+
+### Components to retire
+
+- `src/components/ui/retro-grid.tsx` — conflicts with new aesthetic
+- `src/components/ui/particles.tsx` — replaced by shader gradients
+- `src/components/ui/zen-circuit.tsx` — retired from page, optionally reused inside the Spline scene later
+
+### Components to keep as-is (reframed in copy only)
+
+- `src/components/ui/chatbot-demo.tsx` — Moxie chatbot
+- `src/components/ui/logo.tsx`
+- `src/app/api/*` — Groq API routes
+
+## Assets to Create (external tools)
+
+| Asset | Tool | Quantity | Where |
+|-|-|-|-|
+| Hero video loop (zen garden theme) | Whisk → Google Flow/Veo | 1 MP4 + 1 WebM, 6–10s loop, 1920x1080 | `public/videos/hero-loop.mp4` |
+| Case study stills | Nano Banana MCP | 4–6 PNGs, 1200x800 each | `public/images/work/` |
+| Spline scene (interactive 3D) | spline.design | 1 scene | Embedded via `@splinetool/react-spline` |
+| Process scroll frame sequence | Whisk + EZGif | 60–120 JPGs, 1200x800 | `public/images/process/frame-*.jpg` |
+| OG / social share images | Nano Banana | 1 per page (1200x630) | `public/og/` |
+
+## Dependencies to Add
+
+- `@splinetool/react-spline` — Spline runtime for React
+- `@splinetool/runtime` — Spline runtime engine
+- `@shadergradient/react` — or export shader JSON + use @react-three/fiber directly
+- `@react-three/fiber` + `three` — needed by shadergradient
+- `@react-three/drei` — helpers for r3f (likely needed)
+
+Already installed: `framer-motion`, `lucide-react`, `next`, `react`, `tailwindcss`, `zod`, AI SDK.
+
+## Performance Guardrails
+
+- **Core Web Vitals:** LCP < 2.5s, CLS < 0.1, INP < 200ms
+- **Hero video:** preload="metadata", poster image, `<video autoplay muted playsinline loop>`, max 2MB compressed
+- **Spline scene:** `dynamic()` import with `ssr: false`, Intersection Observer trigger, skeleton fallback
+- **Shader backdrops:** IntersectionObserver — only render when in viewport
+- **Frame sequence:** lazy-load all frames after first paint, use `<canvas>` not `<img>` stack
+- **No layout shift:** every dynamic component reserves its space before mount
+
+## Success Criteria
+
+**Quantitative:**
+- Lighthouse performance score ≥ 85 (mobile), ≥ 95 (desktop)
+- LCP ≤ 2.5s on 4G
+- Page renders fully usable on iPhone 13 and mid-range Android
+
+**Qualitative:**
+- Site passes "show a founder in 10 seconds and they want to book a call" test
+- Every section generates a 15–30s social video clip without extra work
+- Hero video loop is regenerable in under 30 min with a new prompt (new variant = new social asset)
+
+## Out of Scope (for this spec)
+
+- Blog / MDX content system — separate future spec
+- CMS integration (Sanity/Notion) — manual content for now
+- E-commerce / digital products — separate future spec
+- Multi-language beyond existing EN/JA — keep current i18n as-is
+- Analytics setup — separate spec once content is shipped
+
+## Open Questions (resolved during brainstorm)
+
+- ~~Use Spline?~~ → Yes, exactly once, below fold, lazy-loaded
+- ~~3D style direction?~~ → Cinematic AI-video + minimal editorial (vedant workflow)
+- ~~Target audience?~~ → Tech startup / SaaS founders
+- ~~Hero centerpiece?~~ → "Digital zen garden" AI video loop
+- ~~Keep existing components?~~ → Keep Moxie + Japanese theme; retire retro-grid, particles, current Hero/Work
+
+## Implementation Sequencing (for plan writing)
+
+Ordered so early milestones are shippable on their own:
+
+1. **Phase 1 — Foundation:** Design tokens, typography, color, globals.css, Header update
+2. **Phase 2 — Hero:** Generate assets (Whisk/Veo), build HeroVideo component, replace current Hero
+3. **Phase 3 — Sections reskin:** Reskin Services, rebuild Work as WorkBento with AI stills
+4. **Phase 4 — Signature moments:** Build HowIWork (Spline) + ProcessScroll (frame scrubber)
+5. **Phase 5 — Polish:** Shader backdrops between sections, Contact/booking section, chatbot reframe
+6. **Phase 6 — Performance & launch:** Lighthouse pass, OG images, deploy to Vercel preview → production
+
+Each phase is independently reviewable and deployable.
