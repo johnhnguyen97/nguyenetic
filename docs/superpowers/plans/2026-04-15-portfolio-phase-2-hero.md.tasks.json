@@ -1,0 +1,26 @@
+{
+  "planPath": "docs/superpowers/plans/2026-04-15-portfolio-phase-2-hero.md",
+  "tasks": [
+    {
+      "id": 5,
+      "subject": "Task 0: Generate zen garden hero stills via Nano Banana",
+      "status": "pending",
+      "description": "**Goal:** Generate 4 cinematic digital zen garden stills via mcp__nano-banana__generate_image, save to public/images/hero/, commit.\n\n```json:metadata\n{\"files\": [\"public/images/hero/zen-01.png\", \"public/images/hero/zen-02.png\", \"public/images/hero/zen-03.png\", \"public/images/hero/zen-04.png\"], \"verifyCommand\": \"ls public/images/hero/\", \"acceptanceCriteria\": [\"4 png files exist\", \"landscape orientation\", \"consistent scene progression\", \"ink+warm palette\"], \"requiresUserVerification\": false}\n```"
+    },
+    {
+      "id": 6,
+      "subject": "Task 1: Rewrite Hero.tsx as cinematic crossfading slideshow",
+      "status": "pending",
+      "blockedBy": [5],
+      "description": "**Goal:** Full rewrite of src/components/sections/Hero.tsx with crossfading slideshow, Ken Burns, new headline, CTAs. Export name Hero preserved.\n\n```json:metadata\n{\"files\": [\"src/components/sections/Hero.tsx\"], \"verifyCommand\": \"npm run build && npm run lint\", \"acceptanceCriteria\": [\"export Hero preserved\", \"4 slides crossfade\", \"ken burns zoom\", \"new headline+CTAs\", \"priority first image\", \"phase 1 tokens\", \"dots work\", \"build+lint green\"], \"requiresUserVerification\": false}\n```"
+    },
+    {
+      "id": 7,
+      "subject": "Task 2: Visual smoke test + user verification for Phase 2 Hero",
+      "status": "pending",
+      "blockedBy": [5, 6],
+      "description": "**Goal:** User visually verifies Phase 2 Hero via AskUserQuestion before Phase 3.\n\n**User Verification Required:** Must call AskUserQuestion with verification prompt before marking complete.\n\n```json:metadata\n{\"files\": [], \"verifyCommand\": \"npm run dev\", \"acceptanceCriteria\": [\"dev ready\", \"hero renders\", \"crossfade smooth\", \"ken burns visible\", \"headline readable\", \"CTAs styled\", \"dots work\", \"JA toggle works\", \"no regressions\", \"user sign-off\"], \"requiresUserVerification\": true, \"userVerificationPrompt\": \"Phase 2 Hero is live. Do the AI-generated stills look cinematic, does the crossfade feel smooth, and does the new headline read strong — with no regressions below the fold?\"}\n```"
+    }
+  ],
+  "lastUpdated": "2026-04-15T23:15:00Z"
+}
