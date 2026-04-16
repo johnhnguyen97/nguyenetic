@@ -15,7 +15,7 @@ export function Enso({
   className,
   size = 600,
   strokeWidth = 8,
-  color = "oklch(0.74 0.15 55 / 0.35)",
+  color = "oklch(0.74 0.15 55 / 0.4)",
   duration = 2.8,
   delay = 0.6,
 }: EnsoProps) {
@@ -24,8 +24,10 @@ export function Enso({
   const gap = circumference * 0.15
   const dash = circumference - gap
 
+  const drawSettleTime = duration + delay
+
   return (
-    <svg
+    <motion.svg
       className={className}
       width={size}
       height={size}
@@ -33,6 +35,25 @@ export function Enso({
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
+      animate={{
+        rotate: [0, 360],
+        scale: [1, 1.025, 1],
+      }}
+      transition={{
+        rotate: {
+          duration: 72,
+          ease: "linear",
+          repeat: Infinity,
+          delay: drawSettleTime,
+        },
+        scale: {
+          duration: 5,
+          ease: "easeInOut",
+          repeat: Infinity,
+          delay: drawSettleTime,
+        },
+      }}
+      style={{ transformOrigin: "center" }}
     >
       <motion.circle
         cx={size / 2}
@@ -51,6 +72,6 @@ export function Enso({
         }}
         style={{ transformOrigin: "center", transformBox: "fill-box" }}
       />
-    </svg>
+    </motion.svg>
   )
 }

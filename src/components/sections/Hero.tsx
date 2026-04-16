@@ -6,6 +6,7 @@ import Image from "next/image"
 import { ArrowDown } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { Enso } from "@/components/ui/enso"
+import { SakuraPetals } from "@/components/ui/sakura-petals"
 
 const SLIDES = [
   "/images/hero/zen-01.jpg",
@@ -19,16 +20,48 @@ const CROSSFADE_S = 1.5
 const KEN_BURNS_S = 7.5
 
 const CUBE_FACES = [
-  { en: "Development", ja: "開発" },
-  { en: "Marketing", ja: "マーケティング" },
-  { en: "Social", ja: "SNS" },
-  { en: "SEO", ja: "SEO" },
-  { en: "Design", ja: "デザイン" },
-  { en: "AI Solutions", ja: "AI" },
+  {
+    en: "Development",
+    ja: "開発",
+    descEn: "Next.js, React, TypeScript",
+    descJa: "Next.js・React・TypeScript",
+  },
+  {
+    en: "Marketing",
+    ja: "マーケティング",
+    descEn: "Growth, funnels, conversion",
+    descJa: "グロース・ファネル・コンバージョン",
+  },
+  {
+    en: "Social",
+    ja: "SNS",
+    descEn: "Content, scheduling, engagement",
+    descJa: "コンテンツ・スケジューリング・エンゲージメント",
+  },
+  {
+    en: "SEO",
+    ja: "SEO",
+    descEn: "Technical + content + AI search",
+    descJa: "テクニカル・コンテンツ・AI検索",
+  },
+  {
+    en: "Design",
+    ja: "デザイン",
+    descEn: "UI, UX, brand identity",
+    descJa: "UI・UX・ブランドアイデンティティ",
+  },
+  {
+    en: "AI Solutions",
+    ja: "AI",
+    descEn: "Workflows, custom tools, automation",
+    descJa: "ワークフロー・ツール・自動化",
+  },
 ] as const
 
 function ServiceCube() {
   const { language } = useLanguage()
+  const [hoveredFace, setHoveredFace] = useState<string | null>(null)
+  const isHovered = hoveredFace !== null
 
   const size = 220
   const half = size / 2
@@ -42,10 +75,13 @@ function ServiceCube() {
     `rotateX(-90deg) translateZ(${half}px)`,
   ]
 
+  const activeFace = CUBE_FACES.find((f) => f.en === hoveredFace)
+
   return (
     <div
       className="relative flex items-center justify-center"
       style={{ width: 600, height: 600, perspective: 1400 }}
+      onMouseLeave={() => setHoveredFace(null)}
     >
       {/* Ambient glow — deepest layer */}
       <div
@@ -65,26 +101,56 @@ function ServiceCube() {
           rotateY: [0, 360],
         }}
         transition={{
-          duration: 28,
+          duration: isHovered ? 600 : 28,
           ease: "linear",
           repeat: Infinity,
         }}
       >
-        {CUBE_FACES.map((face, i) => (
-          <div
-            key={face.en}
-            className="absolute inset-0 flex items-center justify-center rounded-2xl border border-warm/40 bg-ink/40 backdrop-blur-md"
-            style={{
-              transform: faceTransforms[i],
-              boxShadow: "inset 0 0 40px oklch(0.74 0.15 55 / 0.15), 0 0 60px oklch(0.74 0.15 55 / 0.1)",
-            }}
-          >
-            <span className="font-display text-xl font-semibold tracking-tight text-warm">
-              {language === "ja" ? face.ja : face.en}
-            </span>
-          </div>
-        ))}
+        {CUBE_FACES.map((face, i) => {
+          const isActive = hoveredFace === face.en
+          return (
+            <div
+              key={face.en}
+              onMouseEnter={() => setHoveredFace(face.en)}
+              className={`absolute inset-0 flex items-center justify-center rounded-2xl border backdrop-blur-md cursor-pointer transition-all duration-300 ${
+                isActive
+                  ? "border-warm bg-ink/60"
+                  : "border-warm/40 bg-ink/40"
+              }`}
+              style={{
+                transform: faceTransforms[i],
+                boxShadow: isActive
+                  ? "inset 0 0 60px oklch(0.74 0.15 55 / 0.35), 0 0 80px oklch(0.74 0.15 55 / 0.3)"
+                  : "inset 0 0 40px oklch(0.74 0.15 55 / 0.15), 0 0 60px oklch(0.74 0.15 55 / 0.1)",
+              }}
+            >
+              <span
+                className={`font-display font-semibold tracking-tight text-warm transition-all duration-300 ${
+                  isActive ? "text-2xl" : "text-xl"
+                }`}
+              >
+                {language === "ja" ? face.ja : face.en}
+              </span>
+            </div>
+          )
+        })}
       </motion.div>
+
+      {/* Hover description callout */}
+      <AnimatePresence mode="wait">
+        {activeFace && (
+          <motion.div
+            key={activeFace.en}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute bottom-16 left-1/2 -translate-x-1/2 whitespace-nowrap px-5 py-2.5 rounded-full bg-ink/85 backdrop-blur-md border border-warm/50 text-warm text-sm font-medium shadow-[0_8px_32px_oklch(0.08_0.005_260_/_0.6)]"
+          >
+            {language === "ja" ? activeFace.descJa : activeFace.descEn}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
@@ -147,6 +213,9 @@ export function Hero() {
           style={{ backgroundColor: "oklch(0.74 0.15 55 / 0.25)" }}
         />
       </div>
+
+      {/* Falling sakura petals */}
+      <SakuraPetals />
 
       {/* Content */}
       <div className="relative z-10 flex min-h-screen w-full items-center">
