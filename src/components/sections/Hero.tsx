@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
 import { ArrowDown } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
+import { Enso } from "@/components/ui/enso"
 
 const SLIDES = [
   "/images/hero/zen-01.jpg",
@@ -43,16 +44,22 @@ function ServiceCube() {
 
   return (
     <div
-      className="relative scale-75 lg:scale-100"
-      style={{
-        width: size,
-        height: size,
-        perspective: 1400,
-      }}
+      className="relative flex items-center justify-center"
+      style={{ width: 600, height: 600, perspective: 1400 }}
     >
+      {/* Ambient glow — deepest layer */}
+      <div
+        className="absolute inset-0 rounded-full blur-3xl opacity-40"
+        style={{ background: "radial-gradient(circle, oklch(0.74 0.15 55 / 0.3) 0%, transparent 70%)" }}
+      />
+
+      {/* Enso zen circle — middle layer */}
+      <Enso className="absolute inset-0 pointer-events-none" />
+
+      {/* Rotating cube — top layer */}
       <motion.div
-        className="absolute inset-0"
-        style={{ transformStyle: "preserve-3d" }}
+        className="relative"
+        style={{ width: size, height: size, transformStyle: "preserve-3d" }}
         animate={{
           rotateX: [0, 360],
           rotateY: [0, 360],
@@ -78,12 +85,6 @@ function ServiceCube() {
           </div>
         ))}
       </motion.div>
-
-      {/* Ambient glow behind the cube */}
-      <div
-        className="absolute inset-0 -z-10 rounded-full blur-3xl opacity-40"
-        style={{ background: "radial-gradient(circle, oklch(0.74 0.15 55 / 0.3) 0%, transparent 70%)" }}
-      />
     </div>
   )
 }
@@ -204,7 +205,7 @@ export function Hero() {
             </div>
 
             {/* Right column: 3D rotating cube */}
-            <div className="order-1 lg:order-2 flex items-center justify-center">
+            <div className="order-1 lg:order-2 flex items-center justify-center scale-50 sm:scale-75 lg:scale-100">
               <ServiceCube />
             </div>
 

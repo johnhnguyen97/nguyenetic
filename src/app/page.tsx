@@ -1,10 +1,13 @@
 "use client"
 
+import { motion } from "framer-motion"
 import { Header } from "@/components/layout/Header"
 import { Hero } from "@/components/sections/Hero"
 import { Work } from "@/components/sections/Work"
 import { Services } from "@/components/sections/Services"
 import { ChatbotDemo } from "@/components/ui/chatbot-demo"
+import { ScrollProgress } from "@/components/ui/scroll-progress"
+import { InkBrushUnderline } from "@/components/ui/ink-brush"
 import { useLanguage } from "@/lib/language-context"
 
 export default function Home() {
@@ -12,6 +15,7 @@ export default function Home() {
 
   return (
     <>
+      <ScrollProgress />
       <Header />
       <main>
         <Hero />
@@ -20,15 +24,22 @@ export default function Home() {
 
         {/* About Section */}
         <section id="about" className="py-32 px-6 bg-card/50">
-          <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="max-w-6xl mx-auto"
+          >
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               <div>
                 <p className="text-sm tracking-[0.3em] text-accent-gold mb-4 font-mono">
                   {t("About Me", "私について")}
                 </p>
-                <h2 className="text-[clamp(1.75rem,4vw,3rem)] font-bold mb-6">
+                <h2 className="text-[clamp(1.75rem,4vw,3rem)] font-bold mb-2">
                   {t("Enterprise-Grade Solutions, Startup Speed", "エンタープライズ品質、スタートアップの速度")}
                 </h2>
+                <InkBrushUnderline className="w-48 h-3 mb-6" />
                 <div className="space-y-4 text-muted-foreground leading-relaxed">
                   <p>
                     {t(
@@ -78,18 +89,25 @@ export default function Home() {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </section>
 
         {/* Contact Section */}
         <section id="contact" className="py-32 px-6">
-          <div className="max-w-4xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="max-w-4xl mx-auto text-center"
+          >
             <p className="text-sm tracking-[0.3em] text-accent-cyber mb-4 font-mono">
               {t("Contact", "お問い合わせ")}
             </p>
-            <h2 className="text-[clamp(1.75rem,4vw,3rem)] font-bold mb-6">
+            <h2 className="text-[clamp(1.75rem,4vw,3rem)] font-bold mb-2">
               {t("Let's Build Something Together", "一緒に何かを作りましょう")}
             </h2>
+            <InkBrushUnderline className="w-48 h-3 mx-auto mb-6" />
             <p className="text-muted-foreground text-lg mb-10 max-w-2xl mx-auto">
               {t(
                 "Ready to elevate your digital presence? Whether you need a new website, want to improve your SEO, or launch a marketing campaign — I'm here to help.",
@@ -123,7 +141,7 @@ export default function Home() {
                 hello@nguyenetic.com
               </a>
             </div>
-          </div>
+          </motion.div>
         </section>
       </main>
 
