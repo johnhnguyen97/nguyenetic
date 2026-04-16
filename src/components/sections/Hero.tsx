@@ -330,12 +330,12 @@ export function Hero() {
           <ZenScene className="absolute inset-0" />
         </motion.div>
 
-        {/* Gradient overlay — lighter since 3D scene is already dark */}
+        {/* Subtle bottom gradient only — shader handles the rest */}
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 pointer-events-none"
           style={{
             backgroundImage:
-              "linear-gradient(180deg, oklch(0.08 0.005 260 / 0.5) 0%, oklch(0.08 0.005 260 / 0.25) 40%, oklch(0.08 0.005 260 / 0.7) 100%)",
+              "linear-gradient(180deg, transparent 0%, transparent 60%, oklch(0.08 0.005 260 / 0.5) 100%)",
           }}
         />
       </div>
