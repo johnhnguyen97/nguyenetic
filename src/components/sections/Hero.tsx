@@ -176,24 +176,12 @@ function ServiceCube() {
 
   return (
     <div
-      className="relative flex items-center justify-center"
-      style={{ width: 500, height: 500, perspective: 1400 }}
+      className="relative"
+      style={{ width: 220, height: 220, perspective: 1400 }}
       onMouseLeave={() => {
         if (!isDragging) setHoveredFace(null)
       }}
     >
-      {/* Ambient glow */}
-      <div
-        className="absolute inset-0 rounded-full blur-3xl opacity-40"
-        style={{
-          background:
-            "radial-gradient(circle, oklch(0.74 0.15 55 / 0.3) 0%, transparent 70%)",
-        }}
-      />
-
-      {/* Enso — sized to container */}
-      <Enso size={500} className="absolute inset-0 pointer-events-none" />
-
       {/* Rotating + draggable cube */}
       <motion.div
         className={`relative touch-none select-none ${
@@ -254,7 +242,7 @@ function ServiceCube() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap px-5 py-2.5 rounded-full bg-ink/85 backdrop-blur-md border border-warm/50 text-warm text-sm font-medium shadow-[0_8px_32px_oklch(0.08_0.005_260_/_0.6)] pointer-events-none"
+            className="absolute bottom-[-48px] left-1/2 -translate-x-1/2 whitespace-nowrap px-5 py-2.5 rounded-full bg-ink/85 backdrop-blur-md border border-warm/50 text-warm text-sm font-medium shadow-[0_8px_32px_oklch(0.08_0.005_260_/_0.6)] pointer-events-none"
           >
             {language === "ja" ? activeFace.descJa : activeFace.descEn}
           </motion.div>
@@ -263,7 +251,7 @@ function ServiceCube() {
 
       {/* Drag hint */}
       {!isDragging && !hoveredFace && (
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-xs text-paper/40 font-mono tracking-wider uppercase pointer-events-none whitespace-nowrap">
+        <div className="absolute bottom-[-28px] left-1/2 -translate-x-1/2 text-xs text-paper/40 font-mono tracking-wider uppercase pointer-events-none whitespace-nowrap">
           drag to rotate · hover to explore
         </div>
       )}
@@ -274,6 +262,7 @@ function ServiceCube() {
 export function Hero() {
   const { t } = useLanguage()
   const [index, setIndex] = useState(0)
+  const [ripples, setRipples] = useState<Array<{ id: number; x: number; y: number }>>([])
   const heroRef = useRef<HTMLElement>(null)
 
   // Slide timer
@@ -306,6 +295,23 @@ export function Hero() {
   const petalsX = useTransform(mouseX, [-1, 1], [-8, 8])
   const petalsY = useTransform(mouseY, [-1, 1], [-5, 5])
 
+  // 3D perspective tilt on background
+  const bgRotateX = useTransform(mouseY, [-1, 1], [2, -2])
+  const bgRotateY = useTransform(mouseX, [-1, 1], [-2, 2])
+
+  // Enso proximity glow — brighter when cursor near center
+  const ensoGlow = useTransform(
+    [mouseX, mouseY] as const,
+    ([mx, my]: number[]) => {
+      const dist = Math.sqrt((mx as number) * (mx as number) + (my as number) * (my as number))
+      return 0.25 + (1 - Math.min(dist, 1)) * 0.55
+    }
+  )
+
+  // Orbs parallax
+  const orbsX = useTransform(mouseX, [-1, 1], [-20, 20])
+  const orbsY = useTransform(mouseY, [-1, 1], [-15, 15])
+
   // Scroll dissolve
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -323,8 +329,15 @@ export function Hero() {
       ref={heroRef}
       id="hero"
       className="relative min-h-screen w-full overflow-hidden bg-ink text-paper"
+      onClick={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect()
+        setRipples((prev) => [
+          ...prev,
+          { id: Date.now(), x: e.clientX - rect.left, y: e.clientY - rect.top },
+        ])
+      }}
     >
-      {/* Crossfading image stack — counter-parallax + scroll zoom */}
+      {/* Crossfading image stack — counter-parallax + scroll zoom + 3D tilt */}
       <div className="absolute inset-0">
         <motion.div
           className="absolute inset-0"
@@ -333,6 +346,9 @@ export function Hero() {
             y: bgY,
             translateY: heroBgY,
             scale: heroBgScale,
+            rotateX: bgRotateX,
+            rotateY: bgRotateY,
+            transformPerspective: 1200,
           }}
         >
           <AnimatePresence mode="sync">
@@ -375,6 +391,73 @@ export function Hero() {
           style={{ backgroundColor: "oklch(0.74 0.15 55 / 0.25)" }}
         />
       </div>
+
+      {/* Click ripples — zen sand effect */}
+      <div className="absolute inset-0 pointer-events-none z-[5]">
+        <AnimatePresence>
+          {ripples.map((ripple) => (
+            <motion.div
+              key={ripple.id}
+              className="absolute rounded-full pointer-events-none"
+              style={{
+                left: ripple.x,
+                top: ripple.y,
+                translateX: "-50%",
+                translateY: "-50%",
+              }}
+              initial={{ width: 0, height: 0, opacity: 0 }}
+              animate={{ width: 600, height: 600, opacity: [0, 0.5, 0] }}
+              transition={{ duration: 2.5, ease: "easeOut", times: [0, 0.15, 1] }}
+              onAnimationComplete={() => {
+                setRipples((prev) => prev.filter((r) => r.id !== ripple.id))
+              }}
+            >
+              <div className="absolute inset-0 rounded-full border border-warm/30" />
+              <div className="absolute inset-[15%] rounded-full border border-warm/20" />
+              <div className="absolute inset-[30%] rounded-full border border-warm/10" />
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+
+      {/* Interactive floating orbs */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none z-[3]"
+        style={{ x: orbsX, y: orbsY }}
+      >
+        {[
+          { x: 15, y: 25, size: 100, dur: 16, blur: 30 },
+          { x: 70, y: 15, size: 70, dur: 20, blur: 20 },
+          { x: 85, y: 65, size: 120, dur: 14, blur: 35 },
+          { x: 8, y: 75, size: 60, dur: 22, blur: 18 },
+          { x: 55, y: 50, size: 90, dur: 18, blur: 25 },
+          { x: 35, y: 85, size: 50, dur: 24, blur: 15 },
+        ].map((orb, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full"
+            style={{
+              left: `${orb.x}%`,
+              top: `${orb.y}%`,
+              width: orb.size,
+              height: orb.size,
+              background: `radial-gradient(circle, oklch(0.74 0.15 55 / 0.12) 0%, transparent 70%)`,
+              filter: `blur(${orb.blur}px)`,
+            }}
+            animate={{
+              y: [0, -25, 12, -18, 0],
+              x: [0, 15, -10, 20, 0],
+              scale: [1, 1.1, 0.95, 1.05, 1],
+            }}
+            transition={{
+              duration: orb.dur,
+              ease: "easeInOut",
+              repeat: Infinity,
+              delay: i * 1.2,
+            }}
+          />
+        ))}
+      </motion.div>
 
       {/* Falling sakura petals — subtle mouse drift */}
       <motion.div
@@ -447,9 +530,9 @@ export function Hero() {
               </motion.div>
             </div>
 
-            {/* Right column: cube with mouse + scroll parallax */}
+            {/* Right column: cube with enso + mouse + scroll parallax */}
             <motion.div
-              className="order-1 lg:order-2 flex items-center justify-center scale-50 sm:scale-75 lg:scale-100"
+              className="order-1 lg:order-2 flex items-center justify-center scale-50 sm:scale-75 lg:scale-100 relative"
               style={{
                 x: cubeX,
                 y: cubeY,
@@ -457,6 +540,22 @@ export function Hero() {
                 rotateZ: cubeScrollRotate,
               }}
             >
+              {/* Ambient glow */}
+              <div
+                className="absolute rounded-full blur-3xl opacity-40 pointer-events-none"
+                style={{
+                  width: 500,
+                  height: 500,
+                  background: "radial-gradient(circle, oklch(0.74 0.15 55 / 0.3) 0%, transparent 70%)",
+                }}
+              />
+
+              {/* Enso — brightens when cursor is near center */}
+              <motion.div style={{ opacity: ensoGlow }} className="absolute pointer-events-none">
+                <Enso size={500} />
+              </motion.div>
+
+              {/* Cube itself */}
               <ServiceCube />
             </motion.div>
 
