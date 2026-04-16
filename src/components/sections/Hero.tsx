@@ -17,6 +17,77 @@ const SLIDE_DURATION_MS = 6000
 const CROSSFADE_S = 1.5
 const KEN_BURNS_S = 7.5
 
+const CUBE_FACES = [
+  { en: "Development", ja: "開発" },
+  { en: "Marketing", ja: "マーケティング" },
+  { en: "Social", ja: "SNS" },
+  { en: "SEO", ja: "SEO" },
+  { en: "Design", ja: "デザイン" },
+  { en: "AI Solutions", ja: "AI" },
+] as const
+
+function ServiceCube() {
+  const { language } = useLanguage()
+
+  const size = 220
+  const half = size / 2
+
+  const faceTransforms = [
+    `rotateY(0deg) translateZ(${half}px)`,
+    `rotateY(180deg) translateZ(${half}px)`,
+    `rotateY(90deg) translateZ(${half}px)`,
+    `rotateY(-90deg) translateZ(${half}px)`,
+    `rotateX(90deg) translateZ(${half}px)`,
+    `rotateX(-90deg) translateZ(${half}px)`,
+  ]
+
+  return (
+    <div
+      className="relative scale-75 lg:scale-100"
+      style={{
+        width: size,
+        height: size,
+        perspective: 1400,
+      }}
+    >
+      <motion.div
+        className="absolute inset-0"
+        style={{ transformStyle: "preserve-3d" }}
+        animate={{
+          rotateX: [0, 360],
+          rotateY: [0, 360],
+        }}
+        transition={{
+          duration: 28,
+          ease: "linear",
+          repeat: Infinity,
+        }}
+      >
+        {CUBE_FACES.map((face, i) => (
+          <div
+            key={face.en}
+            className="absolute inset-0 flex items-center justify-center rounded-2xl border border-warm/40 bg-ink/40 backdrop-blur-md"
+            style={{
+              transform: faceTransforms[i],
+              boxShadow: "inset 0 0 40px oklch(0.74 0.15 55 / 0.15), 0 0 60px oklch(0.74 0.15 55 / 0.1)",
+            }}
+          >
+            <span className="font-display text-xl font-semibold tracking-tight text-warm">
+              {language === "ja" ? face.ja : face.en}
+            </span>
+          </div>
+        ))}
+      </motion.div>
+
+      {/* Ambient glow behind the cube */}
+      <div
+        className="absolute inset-0 -z-10 rounded-full blur-3xl opacity-40"
+        style={{ background: "radial-gradient(circle, oklch(0.74 0.15 55 / 0.3) 0%, transparent 70%)" }}
+      />
+    </div>
+  )
+}
+
 export function Hero() {
   const { t } = useLanguage()
   const [index, setIndex] = useState(0)
@@ -79,54 +150,65 @@ export function Hero() {
       {/* Content */}
       <div className="relative z-10 flex min-h-screen w-full items-center">
         <div className="mx-auto w-full max-w-6xl px-6 py-24">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <h1
-              className="font-display font-semibold tracking-tight text-paper"
-              style={{ fontSize: "var(--text-hero)", lineHeight: 0.95 }}
-            >
-              <span className="block">{t("I build AI that ships.", "動くAIを。")}</span>
-              <span className="block text-warm">
-                {t("For founders who move fast.", "加速する起業家へ。")}
-              </span>
-            </h1>
-          </motion.div>
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-8 max-w-2xl text-lg text-paper/70 leading-relaxed"
-          >
-            {t(
-              "Nguyenetic — AI workflows, custom tools, and the occasional 3D experiment. Available for project work.",
-              "Nguyenetic — AIワークフロー、カスタムツール、時々3D実験。プロジェクト受付中。",
-            )}
-          </motion.p>
+            {/* Left column: text */}
+            <div className="order-2 lg:order-1">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <h1
+                  className="font-display font-semibold tracking-tight text-paper"
+                  style={{ fontSize: "var(--text-hero)", lineHeight: 0.95 }}
+                >
+                  <span className="block">{t("Build.", "構築。")}</span>
+                  <span className="block">{t("Launch.", "公開。")}</span>
+                  <span className="block text-warm">{t("Grow.", "成長。")}</span>
+                </h1>
+              </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-10 flex flex-wrap items-center gap-4"
-          >
-            <a
-              href="#work"
-              className="group inline-flex items-center gap-2 rounded-full bg-warm px-8 py-4 font-medium text-ink transition-all hover:bg-warm-hover"
-            >
-              <span>{t("See the work", "実績を見る")}</span>
-              <ArrowDown className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
-            </a>
-            <a
-              href="#contact"
-              className="inline-flex items-center gap-2 rounded-full border border-warm/40 px-8 py-4 font-medium text-paper transition-all hover:border-warm hover:text-warm"
-            >
-              {t("Book a call", "相談する")}
-            </a>
-          </motion.div>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                className="mt-8 max-w-xl text-lg text-paper/70 leading-relaxed"
+              >
+                {t(
+                  "Full-stack web development, marketing, and social — one team, one invoice, measurable results.",
+                  "フルスタック開発、マーケティング、SNS — 一つのチーム、一つの請求書、測定可能な成果。",
+                )}
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                className="mt-10 flex flex-wrap items-center gap-4"
+              >
+                <a
+                  href="#work"
+                  className="group inline-flex items-center gap-2 rounded-full bg-warm px-8 py-4 font-medium text-ink transition-all hover:bg-warm-hover"
+                >
+                  <span>{t("See the work", "実績を見る")}</span>
+                  <ArrowDown className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
+                </a>
+                <a
+                  href="#contact"
+                  className="inline-flex items-center gap-2 rounded-full border border-warm/40 px-8 py-4 font-medium text-paper transition-all hover:border-warm hover:text-warm"
+                >
+                  {t("Book a call", "相談する")}
+                </a>
+              </motion.div>
+            </div>
+
+            {/* Right column: 3D rotating cube */}
+            <div className="order-1 lg:order-2 flex items-center justify-center">
+              <ServiceCube />
+            </div>
+
+          </div>
         </div>
       </div>
 
