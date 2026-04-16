@@ -19,10 +19,10 @@
 
 | File | Role | Action |
 |-|-|-|
-| `public/images/hero/zen-01.png` | Hero still 1 (establishing shot) | Create via `mcp__nano-banana__generate_image` |
-| `public/images/hero/zen-02.png` | Hero still 2 (closer, crystal rises) | Create via `mcp__nano-banana__generate_image` |
-| `public/images/hero/zen-03.png` | Hero still 3 (peak glow, trails) | Create via `mcp__nano-banana__generate_image` |
-| `public/images/hero/zen-04.png` | Hero still 4 (wide pull-back) | Create via `mcp__nano-banana__generate_image` |
+| `public/images/hero/zen-01.jpg` | Hero still 1 (establishing shot) | Create via `mcp__nano-banana__generate_image` |
+| `public/images/hero/zen-02.jpg` | Hero still 2 (closer, crystal rises) | Create via `mcp__nano-banana__generate_image` |
+| `public/images/hero/zen-03.jpg` | Hero still 3 (peak glow, trails) | Create via `mcp__nano-banana__generate_image` |
+| `public/images/hero/zen-04.jpg` | Hero still 4 (wide pull-back) | Create via `mcp__nano-banana__generate_image` |
 | `src/components/sections/Hero.tsx` | Hero section component | Rewrite in place (keep export name `Hero`) |
 
 **Why rewrite in place instead of creating `HeroVideo.tsx`:** The spec mentioned a new file name but in practice keeping `Hero.tsx` means zero `page.tsx` churn, zero import updates across the codebase, and the component name describes *what* the section is (hero section) rather than *how* it's implemented. Simpler is better.
@@ -34,10 +34,10 @@
 **Goal:** Produce 4 cinematic "digital zen garden" hero background images, saved to `public/images/hero/`, ready to be consumed by `next/image`.
 
 **Files:**
-- Create: `public/images/hero/zen-01.png`
-- Create: `public/images/hero/zen-02.png`
-- Create: `public/images/hero/zen-03.png`
-- Create: `public/images/hero/zen-04.png`
+- Create: `public/images/hero/zen-01.jpg`
+- Create: `public/images/hero/zen-02.jpg`
+- Create: `public/images/hero/zen-03.jpg`
+- Create: `public/images/hero/zen-04.jpg`
 
 **Acceptance Criteria:**
 - [ ] All 4 PNG files exist in `public/images/hero/`
@@ -65,28 +65,28 @@ pwsh.exe -Command "New-Item -ItemType Directory -Force -Path public/images/hero"
 Call `mcp__nano-banana__generate_image` with:
 - `prompt`: `"Cinematic wide establishing shot of a dark Japanese zen garden at dusk. Raked gravel patterns glowing with subtle warm amber light trails. Moss-covered stones arranged deliberately. Soft bokeh, moody atmosphere, volumetric mist rolling low across the ground. Deep ink-black shadows, warm amber highlights. Shot on ARRI Alexa, 35mm lens, shallow depth of field, hyperrealistic, film grain, high contrast. 16:9 landscape aspect ratio."`
 - `aspectRatio`: `"16:9"` (if the tool supports it; otherwise leave default)
-- `outputPath` or similar: `public/images/hero/zen-01.png`
+- `outputPath` or similar: `public/images/hero/zen-01.jpg`
 
-If the tool does not support a direct `outputPath`, read the returned image bytes and write to disk using the Write tool or a small Bash + base64 command. The Nano Banana MCP typically returns a path to a generated file — move/rename it to `public/images/hero/zen-01.png`.
+If the tool does not support a direct `outputPath`, read the returned image bytes and write to disk using the Write tool or a small Bash + base64 command. The Nano Banana MCP typically returns a path to a generated file — move/rename it to `public/images/hero/zen-01.jpg`.
 
 - [ ] **Step 3: Generate still 2 — slow drift forward**
 
 Same tool, new prompt:
 `"Same dark Japanese zen garden composition as the establishing shot, camera now drifted forward. A small glowing warm amber geometric crystal hovers above the central raked gravel pattern. Soft particles of light dust in the air. Moss stones remain in frame but closer. Deep ink shadows, warm amber accent glow, cinematic color grade. 16:9 landscape."`
 
-Save to `public/images/hero/zen-02.png`.
+Save to `public/images/hero/zen-02.jpg`.
 
 - [ ] **Step 4: Generate still 3 — peak glow**
 
 `"Same zen garden, the glowing amber crystal now higher above the gravel, its light radiating outward in long exposure trails that follow the raked patterns. Small architectural shapes barely visible in the misty distance. Deep ink background, warm ember and amber highlights, moody cinematic atmosphere, 16:9 landscape."`
 
-Save to `public/images/hero/zen-03.png`.
+Save to `public/images/hero/zen-03.jpg`.
 
 - [ ] **Step 5: Generate still 4 — wide pull-back**
 
 `"Same zen garden composition, camera now pulled back to a wide shot showing the entire scene. The glowing amber crystal is a soft radiant sphere in the center. Fog rolls across the gravel. Subtle geometric grid lines barely visible in the raked sand. Futuristic yet ancient, deep ink-black with warm amber core, cinematic film still, 16:9 landscape."`
 
-Save to `public/images/hero/zen-04.png`.
+Save to `public/images/hero/zen-04.jpg`.
 
 - [ ] **Step 6: Verify all 4 exist and look right**
 
@@ -104,7 +104,7 @@ pwsh.exe -Command "git add public/images/hero/ && git commit -m 'feat(phase-2): 
 ```
 
 ```json:metadata
-{"files": ["public/images/hero/zen-01.png", "public/images/hero/zen-02.png", "public/images/hero/zen-03.png", "public/images/hero/zen-04.png"], "verifyCommand": "ls public/images/hero/", "acceptanceCriteria": ["4 png files exist", "landscape orientation", "consistent scene progression", "ink+warm palette"], "requiresUserVerification": false}
+{"files": ["public/images/hero/zen-01.jpg", "public/images/hero/zen-02.jpg", "public/images/hero/zen-03.jpg", "public/images/hero/zen-04.jpg"], "verifyCommand": "ls public/images/hero/", "acceptanceCriteria": ["4 png files exist", "landscape orientation", "consistent scene progression", "ink+warm palette"], "requiresUserVerification": false}
 ```
 
 ---
@@ -154,10 +154,10 @@ import { ArrowDown } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 
 const SLIDES = [
-  "/images/hero/zen-01.png",
-  "/images/hero/zen-02.png",
-  "/images/hero/zen-03.png",
-  "/images/hero/zen-04.png",
+  "/images/hero/zen-01.jpg",
+  "/images/hero/zen-02.jpg",
+  "/images/hero/zen-03.jpg",
+  "/images/hero/zen-04.jpg",
 ] as const
 
 const SLIDE_DURATION_MS = 6000

@@ -5,7 +5,7 @@
       "id": 5,
       "subject": "Task 0: Generate zen garden hero stills via Nano Banana",
       "status": "pending",
-      "description": "**Goal:** Generate 4 cinematic digital zen garden stills via mcp__nano-banana__generate_image, save to public/images/hero/, commit.\n\n```json:metadata\n{\"files\": [\"public/images/hero/zen-01.png\", \"public/images/hero/zen-02.png\", \"public/images/hero/zen-03.png\", \"public/images/hero/zen-04.png\"], \"verifyCommand\": \"ls public/images/hero/\", \"acceptanceCriteria\": [\"4 png files exist\", \"landscape orientation\", \"consistent scene progression\", \"ink+warm palette\"], \"requiresUserVerification\": false}\n```"
+      "description": "**Goal:** Generate 4 cinematic digital zen garden stills via mcp__nano-banana__generate_image, save to public/images/hero/, commit.\n\n```json:metadata\n{\"files\": [\"public/images/hero/zen-01.jpg\", \"public/images/hero/zen-02.jpg\", \"public/images/hero/zen-03.jpg\", \"public/images/hero/zen-04.jpg\"], \"verifyCommand\": \"ls public/images/hero/\", \"acceptanceCriteria\": [\"4 png files exist\", \"landscape orientation\", \"consistent scene progression\", \"ink+warm palette\"], \"requiresUserVerification\": false}\n```"
     },
     {
       "id": 6,
