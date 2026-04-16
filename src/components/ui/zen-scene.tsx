@@ -2,6 +2,7 @@
 
 import { useRef } from "react"
 import { Canvas, useFrame } from "@react-three/fiber"
+import { useTexture, Environment } from "@react-three/drei"
 import * as THREE from "three"
 
 function MouseCamera() {
@@ -18,16 +19,31 @@ function MouseCamera() {
 }
 
 function Ground() {
-  const meshRef = useRef<THREE.Mesh>(null)
+  const textures = useTexture({
+    map: "/assets/textures/sand/diff.jpg",
+    normalMap: "/assets/textures/sand/normal.jpg",
+    roughnessMap: "/assets/textures/sand/rough.jpg",
+    aoMap: "/assets/textures/sand/ao.jpg",
+    displacementMap: "/assets/textures/sand/disp.jpg",
+  })
+
+  Object.values(textures).forEach((t) => {
+    if (t instanceof THREE.Texture) {
+      t.wrapS = t.wrapT = THREE.RepeatWrapping
+      t.repeat.set(4, 4)
+    }
+  })
 
   return (
-    <mesh ref={meshRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, 0]} receiveShadow>
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, 0]} receiveShadow>
       <planeGeometry args={[30, 30, 128, 128]} />
       <meshStandardMaterial
-        color="#1a1510"
+        {...textures}
+        displacementScale={0.3}
         roughness={0.92}
         metalness={0.05}
         side={THREE.DoubleSide}
+        color="#2a1f14"
       />
     </mesh>
   )
@@ -145,8 +161,9 @@ export function ZenScene({ className }: { className?: string }) {
       style={{ background: "transparent" }}
     >
       <fog attach="fog" args={["#0a0f1a", 6, 22]} />
+      <Environment files="/assets/hdri/night.hdr" background={false} />
 
-      <ambientLight intensity={0.15} color="#ffeedd" />
+      <ambientLight intensity={0.05} color="#ffeedd" />
       <directionalLight
         position={[5, 10, 5]}
         intensity={0.8}
