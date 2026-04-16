@@ -1,7 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { useEffect, useRef, useState } from "react"
+import { motion, AnimatePresence, useMotionValue, animate } from "framer-motion"
 import Image from "next/image"
 import { ArrowDown } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
@@ -61,7 +61,40 @@ const CUBE_FACES = [
 function ServiceCube() {
   const { language } = useLanguage()
   const [hoveredFace, setHoveredFace] = useState<string | null>(null)
-  const isHovered = hoveredFace !== null
+  const [isDragging, setIsDragging] = useState(false)
+
+  const rotateX = useMotionValue(0)
+  const rotateY = useMotionValue(0)
+
+  const dragStateRef = useRef({
+    startX: 0,
+    startY: 0,
+    startRotX: 0,
+    startRotY: 0,
+  })
+
+  useEffect(() => {
+    if (isDragging || hoveredFace) return
+
+    const currentX = rotateX.get()
+    const currentY = rotateY.get()
+
+    const xControl = animate(rotateX, currentX + 360, {
+      duration: 28,
+      ease: "linear",
+      repeat: Infinity,
+    })
+    const yControl = animate(rotateY, currentY + 360, {
+      duration: 28,
+      ease: "linear",
+      repeat: Infinity,
+    })
+
+    return () => {
+      xControl.stop()
+      yControl.stop()
+    }
+  }, [isDragging, hoveredFace, rotateX, rotateY])
 
   const size = 220
   const half = size / 2
@@ -77,55 +110,95 @@ function ServiceCube() {
 
   const activeFace = CUBE_FACES.find((f) => f.en === hoveredFace)
 
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    setIsDragging(true)
+    setHoveredFace(null)
+    dragStateRef.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      startRotX: rotateX.get(),
+      startRotY: rotateY.get(),
+    }
+    e.currentTarget.setPointerCapture(e.pointerId)
+  }
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDragging) return
+    const dx = e.clientX - dragStateRef.current.startX
+    const dy = e.clientY - dragStateRef.current.startY
+    rotateX.set(dragStateRef.current.startRotX - dy * 0.5)
+    rotateY.set(dragStateRef.current.startRotY + dx * 0.5)
+  }
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    setIsDragging(false)
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId)
+    }
+  }
+
   return (
     <div
       className="relative flex items-center justify-center"
-      style={{ width: 600, height: 600, perspective: 1400 }}
-      onMouseLeave={() => setHoveredFace(null)}
+      style={{ width: 500, height: 500, perspective: 1400 }}
+      onMouseLeave={() => {
+        if (!isDragging) setHoveredFace(null)
+      }}
     >
-      {/* Ambient glow — deepest layer */}
+      {/* Ambient glow */}
       <div
         className="absolute inset-0 rounded-full blur-3xl opacity-40"
-        style={{ background: "radial-gradient(circle, oklch(0.74 0.15 55 / 0.3) 0%, transparent 70%)" }}
+        style={{
+          background:
+            "radial-gradient(circle, oklch(0.74 0.15 55 / 0.3) 0%, transparent 70%)",
+        }}
       />
 
-      {/* Enso zen circle — middle layer */}
-      <Enso className="absolute inset-0 pointer-events-none" />
+      {/* Enso — sized to container */}
+      <Enso size={500} className="absolute inset-0 pointer-events-none" />
 
-      {/* Rotating cube — top layer */}
+      {/* Rotating + draggable cube */}
       <motion.div
-        className="relative"
-        style={{ width: size, height: size, transformStyle: "preserve-3d" }}
-        animate={{
-          rotateX: [0, 360],
-          rotateY: [0, 360],
+        className={`relative touch-none select-none ${
+          isDragging ? "cursor-grabbing" : "cursor-grab"
+        }`}
+        style={{
+          width: size,
+          height: size,
+          transformStyle: "preserve-3d",
+          rotateX,
+          rotateY,
         }}
-        transition={{
-          duration: isHovered ? 600 : 28,
-          ease: "linear",
-          repeat: Infinity,
-        }}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
       >
         {CUBE_FACES.map((face, i) => {
           const isActive = hoveredFace === face.en
           return (
             <div
               key={face.en}
-              onMouseEnter={() => setHoveredFace(face.en)}
-              className={`absolute inset-0 flex items-center justify-center rounded-2xl border backdrop-blur-md cursor-pointer transition-all duration-300 ${
+              onMouseEnter={() => {
+                if (!isDragging) setHoveredFace(face.en)
+              }}
+              className={`absolute inset-0 flex items-center justify-center rounded-2xl border backdrop-blur-md transition-all duration-300 ${
                 isActive
                   ? "border-warm bg-ink/60"
                   : "border-warm/40 bg-ink/40"
               }`}
               style={{
                 transform: faceTransforms[i],
+                backfaceVisibility: "hidden",
+                WebkitBackfaceVisibility: "hidden",
                 boxShadow: isActive
                   ? "inset 0 0 60px oklch(0.74 0.15 55 / 0.35), 0 0 80px oklch(0.74 0.15 55 / 0.3)"
                   : "inset 0 0 40px oklch(0.74 0.15 55 / 0.15), 0 0 60px oklch(0.74 0.15 55 / 0.1)",
               }}
             >
               <span
-                className={`font-display font-semibold tracking-tight text-warm transition-all duration-300 ${
+                className={`font-display font-semibold tracking-tight text-warm transition-all duration-300 pointer-events-none ${
                   isActive ? "text-2xl" : "text-xl"
                 }`}
               >
@@ -138,19 +211,26 @@ function ServiceCube() {
 
       {/* Hover description callout */}
       <AnimatePresence mode="wait">
-        {activeFace && (
+        {activeFace && !isDragging && (
           <motion.div
             key={activeFace.en}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute bottom-16 left-1/2 -translate-x-1/2 whitespace-nowrap px-5 py-2.5 rounded-full bg-ink/85 backdrop-blur-md border border-warm/50 text-warm text-sm font-medium shadow-[0_8px_32px_oklch(0.08_0.005_260_/_0.6)]"
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap px-5 py-2.5 rounded-full bg-ink/85 backdrop-blur-md border border-warm/50 text-warm text-sm font-medium shadow-[0_8px_32px_oklch(0.08_0.005_260_/_0.6)] pointer-events-none"
           >
             {language === "ja" ? activeFace.descJa : activeFace.descEn}
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Drag hint */}
+      {!isDragging && !hoveredFace && (
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-xs text-paper/40 font-mono tracking-wider uppercase pointer-events-none whitespace-nowrap">
+          drag to rotate · hover to explore
+        </div>
+      )}
     </div>
   )
 }
