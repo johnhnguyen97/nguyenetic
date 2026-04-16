@@ -1,7 +1,15 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { motion, AnimatePresence, useMotionValue, animate } from "framer-motion"
+import {
+  motion,
+  AnimatePresence,
+  useMotionValue,
+  useTransform,
+  useScroll,
+  useSpring,
+  animate,
+} from "framer-motion"
 import Image from "next/image"
 import { ArrowDown } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
@@ -57,6 +65,34 @@ const CUBE_FACES = [
     descJa: "ワークフロー・ツール・自動化",
   },
 ] as const
+
+function MagneticWrap({ children }: { children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const x = useMotionValue(0)
+  const y = useMotionValue(0)
+  const springX = useSpring(x, { stiffness: 200, damping: 20 })
+  const springY = useSpring(y, { stiffness: 200, damping: 20 })
+
+  return (
+    <motion.div
+      ref={ref}
+      style={{ x: springX, y: springY }}
+      onMouseMove={(e) => {
+        const rect = ref.current!.getBoundingClientRect()
+        const cx = rect.left + rect.width / 2
+        const cy = rect.top + rect.height / 2
+        x.set((e.clientX - cx) * 0.25)
+        y.set((e.clientY - cy) * 0.25)
+      }}
+      onMouseLeave={() => {
+        x.set(0)
+        y.set(0)
+      }}
+    >
+      {children}
+    </motion.div>
+  )
+}
 
 function ServiceCube() {
   const { language } = useLanguage()
@@ -238,7 +274,9 @@ function ServiceCube() {
 export function Hero() {
   const { t } = useLanguage()
   const [index, setIndex] = useState(0)
+  const heroRef = useRef<HTMLElement>(null)
 
+  // Slide timer
   useEffect(() => {
     const id = window.setInterval(
       () => setIndex((i) => (i + 1) % SLIDES.length),
@@ -247,38 +285,82 @@ export function Hero() {
     return () => window.clearInterval(id)
   }, [])
 
+  // Mouse parallax (normalized -1 to 1)
+  const mouseX = useMotionValue(0)
+  const mouseY = useMotionValue(0)
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      mouseX.set((e.clientX / window.innerWidth - 0.5) * 2)
+      mouseY.set((e.clientY / window.innerHeight - 0.5) * 2)
+    }
+    window.addEventListener("mousemove", handler)
+    return () => window.removeEventListener("mousemove", handler)
+  }, [mouseX, mouseY])
+
+  // Background counter-moves, cube follows
+  const bgX = useTransform(mouseX, [-1, 1], [20, -20])
+  const bgY = useTransform(mouseY, [-1, 1], [15, -15])
+  const cubeX = useTransform(mouseX, [-1, 1], [-30, 30])
+  const cubeY = useTransform(mouseY, [-1, 1], [-20, 20])
+  const petalsX = useTransform(mouseX, [-1, 1], [-8, 8])
+  const petalsY = useTransform(mouseY, [-1, 1], [-5, 5])
+
+  // Scroll dissolve
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  })
+
+  const heroContentOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0])
+  const heroBgY = useTransform(scrollYProgress, [0, 1], ["0%", "-20%"])
+  const heroBgScale = useTransform(scrollYProgress, [0, 1], [1, 1.15])
+  const cubeScrollScale = useTransform(scrollYProgress, [0, 0.7], [1, 0.5])
+  const cubeScrollRotate = useTransform(scrollYProgress, [0, 1], [0, 30])
+
   return (
     <section
+      ref={heroRef}
       id="hero"
       className="relative min-h-screen w-full overflow-hidden bg-ink text-paper"
     >
-      {/* Crossfading image stack */}
+      {/* Crossfading image stack — counter-parallax + scroll zoom */}
       <div className="absolute inset-0">
-        <AnimatePresence mode="sync">
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, scale: 1 }}
-            animate={{ opacity: 1, scale: 1.08 }}
-            exit={{ opacity: 0, scale: 1.08 }}
-            transition={{
-              opacity: { duration: CROSSFADE_S, ease: "easeInOut" },
-              scale: { duration: KEN_BURNS_S, ease: "linear" },
-            }}
-            className="absolute inset-0"
-          >
-            <Image
-              src={SLIDES[index]}
-              alt=""
-              fill
-              priority={index === 0}
-              fetchPriority={index === 0 ? "high" : "auto"}
-              sizes="100vw"
-              className="object-cover"
-            />
-          </motion.div>
-        </AnimatePresence>
+        <motion.div
+          className="absolute inset-0"
+          style={{
+            x: bgX,
+            y: bgY,
+            translateY: heroBgY,
+            scale: heroBgScale,
+          }}
+        >
+          <AnimatePresence mode="sync">
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, scale: 1 }}
+              animate={{ opacity: 1, scale: 1.08 }}
+              exit={{ opacity: 0, scale: 1.08 }}
+              transition={{
+                opacity: { duration: CROSSFADE_S, ease: "easeInOut" },
+                scale: { duration: KEN_BURNS_S, ease: "linear" },
+              }}
+              className="absolute inset-0"
+            >
+              <Image
+                src={SLIDES[index]}
+                alt=""
+                fill
+                priority={index === 0}
+                fetchPriority={index === 0 ? "high" : "auto"}
+                sizes="100vw"
+                className="object-cover"
+              />
+            </motion.div>
+          </AnimatePresence>
+        </motion.div>
 
-        {/* Dark overlay for text readability */}
+        {/* Dark overlay — stays fixed, not parallaxed */}
         <div
           className="absolute inset-0 bg-ink/60"
           style={{
@@ -287,18 +369,26 @@ export function Hero() {
           }}
         />
 
-        {/* Warm amber cast to tie daylight photos to palette */}
+        {/* Warm amber cast */}
         <div
           className="absolute inset-0 mix-blend-multiply"
           style={{ backgroundColor: "oklch(0.74 0.15 55 / 0.25)" }}
         />
       </div>
 
-      {/* Falling sakura petals */}
-      <SakuraPetals />
+      {/* Falling sakura petals — subtle mouse drift */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        style={{ x: petalsX, y: petalsY }}
+      >
+        <SakuraPetals />
+      </motion.div>
 
-      {/* Content */}
-      <div className="relative z-10 flex min-h-screen w-full items-center">
+      {/* Content — fades on scroll */}
+      <motion.div
+        className="relative z-10 flex min-h-screen w-full items-center"
+        style={{ opacity: heroContentOpacity }}
+      >
         <div className="mx-auto w-full max-w-6xl px-6 py-24">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
@@ -337,33 +427,48 @@ export function Hero() {
                 transition={{ duration: 1, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
                 className="mt-10 flex flex-wrap items-center gap-4"
               >
-                <a
-                  href="#work"
-                  className="group inline-flex items-center gap-2 rounded-full bg-warm px-8 py-4 font-medium text-ink transition-all hover:bg-warm-hover"
-                >
-                  <span>{t("See the work", "実績を見る")}</span>
-                  <ArrowDown className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
-                </a>
-                <a
-                  href="#contact"
-                  className="inline-flex items-center gap-2 rounded-full border border-warm/40 px-8 py-4 font-medium text-paper transition-all hover:border-warm hover:text-warm"
-                >
-                  {t("Book a call", "相談する")}
-                </a>
+                <MagneticWrap>
+                  <a
+                    href="#work"
+                    className="group inline-flex items-center gap-2 rounded-full bg-warm px-8 py-4 font-medium text-ink transition-all hover:bg-warm-hover"
+                  >
+                    <span>{t("See the work", "実績を見る")}</span>
+                    <ArrowDown className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
+                  </a>
+                </MagneticWrap>
+                <MagneticWrap>
+                  <a
+                    href="#contact"
+                    className="inline-flex items-center gap-2 rounded-full border border-warm/40 px-8 py-4 font-medium text-paper transition-all hover:border-warm hover:text-warm"
+                  >
+                    {t("Book a call", "相談する")}
+                  </a>
+                </MagneticWrap>
               </motion.div>
             </div>
 
-            {/* Right column: 3D rotating cube */}
-            <div className="order-1 lg:order-2 flex items-center justify-center scale-50 sm:scale-75 lg:scale-100">
+            {/* Right column: cube with mouse + scroll parallax */}
+            <motion.div
+              className="order-1 lg:order-2 flex items-center justify-center scale-50 sm:scale-75 lg:scale-100"
+              style={{
+                x: cubeX,
+                y: cubeY,
+                scale: cubeScrollScale,
+                rotateZ: cubeScrollRotate,
+              }}
+            >
               <ServiceCube />
-            </div>
+            </motion.div>
 
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Slide indicator dots */}
-      <div className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 gap-2">
+      {/* Slide indicator dots — fade on scroll */}
+      <motion.div
+        className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 gap-2"
+        style={{ opacity: heroContentOpacity }}
+      >
         {SLIDES.map((_, i) => (
           <button
             key={i}
@@ -375,7 +480,7 @@ export function Hero() {
             }`}
           />
         ))}
-      </div>
+      </motion.div>
     </section>
   )
 }

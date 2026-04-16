@@ -7,6 +7,7 @@ import { Work } from "@/components/sections/Work"
 import { Services } from "@/components/sections/Services"
 import { ChatbotDemo } from "@/components/ui/chatbot-demo"
 import { ScrollProgress } from "@/components/ui/scroll-progress"
+import { CursorGlow } from "@/components/ui/cursor-glow"
 import { InkBrushUnderline } from "@/components/ui/ink-brush"
 import { useLanguage } from "@/lib/language-context"
 
@@ -16,6 +17,7 @@ export default function Home() {
   return (
     <>
       <ScrollProgress />
+      <CursorGlow />
       <Header />
       <main>
         <Hero />
