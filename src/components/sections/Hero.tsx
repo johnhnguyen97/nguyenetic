@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import dynamic from "next/dynamic"
 import {
   motion,
   AnimatePresence,
@@ -10,22 +11,18 @@ import {
   useSpring,
   animate,
 } from "framer-motion"
-import Image from "next/image"
 import { ArrowDown } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { Enso } from "@/components/ui/enso"
 import { SakuraPetals } from "@/components/ui/sakura-petals"
 
-const SLIDES = [
-  "/images/hero/zen-01.jpg",
-  "/images/hero/zen-02.jpg",
-  "/images/hero/zen-03.jpg",
-  "/images/hero/zen-04.jpg",
-] as const
-
-const SLIDE_DURATION_MS = 6000
-const CROSSFADE_S = 1.5
-const KEN_BURNS_S = 7.5
+const ZenScene = dynamic(
+  () => import("@/components/ui/zen-scene").then((m) => ({ default: m.ZenScene })),
+  {
+    ssr: false,
+    loading: () => <div className="absolute inset-0 bg-ink" />,
+  }
+)
 
 const CUBE_FACES = [
   {
@@ -182,7 +179,6 @@ function ServiceCube() {
         if (!isDragging) setHoveredFace(null)
       }}
     >
-      {/* Rotating + draggable cube */}
       <motion.div
         className={`relative touch-none select-none ${
           isDragging ? "cursor-grabbing" : "cursor-grab"
@@ -233,7 +229,6 @@ function ServiceCube() {
         })}
       </motion.div>
 
-      {/* Hover description callout */}
       <AnimatePresence mode="wait">
         {activeFace && !isDragging && (
           <motion.div
@@ -249,7 +244,6 @@ function ServiceCube() {
         )}
       </AnimatePresence>
 
-      {/* Drag hint */}
       {!isDragging && !hoveredFace && (
         <div className="absolute bottom-[-28px] left-1/2 -translate-x-1/2 text-xs text-paper/40 font-mono tracking-wider uppercase pointer-events-none whitespace-nowrap">
           drag to rotate · hover to explore
@@ -261,18 +255,8 @@ function ServiceCube() {
 
 export function Hero() {
   const { t } = useLanguage()
-  const [index, setIndex] = useState(0)
   const [ripples, setRipples] = useState<Array<{ id: number; x: number; y: number }>>([])
   const heroRef = useRef<HTMLElement>(null)
-
-  // Slide timer
-  useEffect(() => {
-    const id = window.setInterval(
-      () => setIndex((i) => (i + 1) % SLIDES.length),
-      SLIDE_DURATION_MS,
-    )
-    return () => window.clearInterval(id)
-  }, [])
 
   // Mouse parallax (normalized -1 to 1)
   const mouseX = useMotionValue(0)
@@ -287,15 +271,13 @@ export function Hero() {
     return () => window.removeEventListener("mousemove", handler)
   }, [mouseX, mouseY])
 
-  // Background counter-moves, cube follows
-  const bgX = useTransform(mouseX, [-1, 1], [20, -20])
-  const bgY = useTransform(mouseY, [-1, 1], [15, -15])
+  // Cube + petal + orb parallax
   const cubeX = useTransform(mouseX, [-1, 1], [-30, 30])
   const cubeY = useTransform(mouseY, [-1, 1], [-20, 20])
   const petalsX = useTransform(mouseX, [-1, 1], [-8, 8])
   const petalsY = useTransform(mouseY, [-1, 1], [-5, 5])
 
-  // 3D perspective tilt on background
+  // 3D perspective tilt on the Canvas wrapper (layered on top of internal camera movement)
   const bgRotateX = useTransform(mouseY, [-1, 1], [2, -2])
   const bgRotateY = useTransform(mouseX, [-1, 1], [-2, 2])
 
@@ -319,8 +301,6 @@ export function Hero() {
   })
 
   const heroContentOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0])
-  const heroBgY = useTransform(scrollYProgress, [0, 1], ["0%", "-20%"])
-  const heroBgScale = useTransform(scrollYProgress, [0, 1], [1, 1.15])
   const cubeScrollScale = useTransform(scrollYProgress, [0, 0.7], [1, 0.5])
   const cubeScrollRotate = useTransform(scrollYProgress, [0, 1], [0, 30])
 
@@ -337,58 +317,26 @@ export function Hero() {
         ])
       }}
     >
-      {/* Crossfading image stack — counter-parallax + scroll zoom + 3D tilt */}
+      {/* 3D Zen Garden background */}
       <div className="absolute inset-0">
         <motion.div
           className="absolute inset-0"
           style={{
-            x: bgX,
-            y: bgY,
-            translateY: heroBgY,
-            scale: heroBgScale,
             rotateX: bgRotateX,
             rotateY: bgRotateY,
             transformPerspective: 1200,
           }}
         >
-          <AnimatePresence mode="sync">
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 1 }}
-              animate={{ opacity: 1, scale: 1.08 }}
-              exit={{ opacity: 0, scale: 1.08 }}
-              transition={{
-                opacity: { duration: CROSSFADE_S, ease: "easeInOut" },
-                scale: { duration: KEN_BURNS_S, ease: "linear" },
-              }}
-              className="absolute inset-0"
-            >
-              <Image
-                src={SLIDES[index]}
-                alt=""
-                fill
-                priority={index === 0}
-                fetchPriority={index === 0 ? "high" : "auto"}
-                sizes="100vw"
-                className="object-cover"
-              />
-            </motion.div>
-          </AnimatePresence>
+          <ZenScene className="absolute inset-0" />
         </motion.div>
 
-        {/* Dark overlay — stays fixed, not parallaxed */}
+        {/* Gradient overlay — lighter since 3D scene is already dark */}
         <div
-          className="absolute inset-0 bg-ink/60"
+          className="absolute inset-0"
           style={{
             backgroundImage:
-              "linear-gradient(180deg, oklch(0.08 0.005 260 / 0.85) 0%, oklch(0.08 0.005 260 / 0.65) 40%, oklch(0.08 0.005 260 / 0.92) 100%)",
+              "linear-gradient(180deg, oklch(0.08 0.005 260 / 0.5) 0%, oklch(0.08 0.005 260 / 0.25) 40%, oklch(0.08 0.005 260 / 0.7) 100%)",
           }}
-        />
-
-        {/* Warm amber cast */}
-        <div
-          className="absolute inset-0 mix-blend-multiply"
-          style={{ backgroundColor: "oklch(0.74 0.15 55 / 0.25)" }}
         />
       </div>
 
@@ -561,24 +509,6 @@ export function Hero() {
 
           </div>
         </div>
-      </motion.div>
-
-      {/* Slide indicator dots — fade on scroll */}
-      <motion.div
-        className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 gap-2"
-        style={{ opacity: heroContentOpacity }}
-      >
-        {SLIDES.map((_, i) => (
-          <button
-            key={i}
-            type="button"
-            onClick={() => setIndex(i)}
-            aria-label={`Show hero slide ${i + 1}`}
-            className={`h-1.5 rounded-full transition-all ${
-              i === index ? "w-8 bg-warm" : "w-1.5 bg-paper/30 hover:bg-paper/60"
-            }`}
-          />
-        ))}
       </motion.div>
     </section>
   )
