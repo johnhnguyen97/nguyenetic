@@ -2,7 +2,7 @@
 
 import { useRef } from "react"
 import { Canvas, useFrame } from "@react-three/fiber"
-import { useTexture, Environment } from "@react-three/drei"
+import { useGLTF, Environment } from "@react-three/drei"
 import * as THREE from "three"
 
 function MouseCamera() {
@@ -18,66 +18,21 @@ function MouseCamera() {
   return null
 }
 
-function Ground() {
-  const textures = useTexture({
-    map: "/assets/textures/sand/diff.jpg",
-    normalMap: "/assets/textures/sand/normal.jpg",
-    roughnessMap: "/assets/textures/sand/rough.jpg",
-    aoMap: "/assets/textures/sand/ao.jpg",
-    displacementMap: "/assets/textures/sand/disp.jpg",
-  })
-
-  Object.values(textures).forEach((t) => {
-    if (t instanceof THREE.Texture) {
-      t.wrapS = t.wrapT = THREE.RepeatWrapping
-      t.repeat.set(4, 4)
-    }
-  })
+function GardenModel() {
+  const { scene } = useGLTF("/assets/models/zen-garden.glb")
 
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, 0]} receiveShadow>
-      <planeGeometry args={[30, 30, 128, 128]} />
-      <meshStandardMaterial
-        {...textures}
-        displacementScale={0.3}
-        roughness={0.92}
-        metalness={0.05}
-        side={THREE.DoubleSide}
-        color="#2a1f14"
-      />
-    </mesh>
+    <primitive
+      object={scene}
+      scale={0.5}
+      position={[0, -0.5, 0]}
+      receiveShadow
+      castShadow
+    />
   )
 }
 
-function Rock({
-  position,
-  scale,
-  seed,
-}: {
-  position: [number, number, number]
-  scale: [number, number, number]
-  seed: number
-}) {
-  const geometry = (() => {
-    const g = new THREE.IcosahedronGeometry(1, 2)
-    const pos = g.attributes.position
-    for (let i = 0; i < pos.count; i++) {
-      const x = pos.getX(i)
-      const y = pos.getY(i)
-      const z = pos.getZ(i)
-      const noise = Math.sin(x * 3 + seed) * 0.15 + Math.cos(z * 2 + seed) * 0.1
-      pos.setXYZ(i, x + noise * 0.3, y * 0.6 + noise * 0.1, z + noise * 0.2)
-    }
-    g.computeVertexNormals()
-    return g
-  })()
-
-  return (
-    <mesh position={position} scale={scale} geometry={geometry} castShadow receiveShadow>
-      <meshStandardMaterial color="#1c1815" roughness={0.97} metalness={0.02} />
-    </mesh>
-  )
-}
+useGLTF.preload("/assets/models/zen-garden.glb")
 
 function DustParticles() {
   const count = 60
@@ -86,7 +41,6 @@ function DustParticles() {
   const positions = (() => {
     const arr = new Float32Array(count * 3)
     for (let i = 0; i < count; i++) {
-      // Deterministic positions using index-based math to avoid hydration issues
       arr[i * 3] = (((i * 7 + 3) % 20) - 10)
       arr[i * 3 + 1] = ((i * 3) % 4)
       arr[i * 3 + 2] = (((i * 11 + 5) % 20) - 10)
@@ -126,26 +80,6 @@ function DustParticles() {
   )
 }
 
-function RakedPatterns() {
-  const rings = [2, 3.5, 5, 7, 9]
-
-  return (
-    <>
-      {rings.map((radius, i) => (
-        <mesh key={i} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.48, 0]}>
-          <ringGeometry args={[radius - 0.03, radius + 0.03, 64]} />
-          <meshStandardMaterial
-            color="#2a2015"
-            roughness={0.85}
-            transparent
-            opacity={0.4 - i * 0.05}
-          />
-        </mesh>
-      ))}
-    </>
-  )
-}
-
 export function ZenScene({ className }: { className?: string }) {
   return (
     <Canvas
@@ -180,15 +114,7 @@ export function ZenScene({ className }: { className?: string }) {
       <pointLight position={[0, 3, 0]} intensity={0.4} color="#ff8a3d" distance={12} />
       <pointLight position={[-3, 2, -2]} intensity={0.2} color="#ff6b1a" distance={8} />
 
-      <Ground />
-      <RakedPatterns />
-
-      <Rock position={[-2.5, 0, -1.5]} scale={[1, 0.6, 0.8]} seed={1} />
-      <Rock position={[1.8, 0, -2.5]} scale={[0.6, 0.35, 0.5]} seed={2.7} />
-      <Rock position={[0.2, 0, 0.8]} scale={[1.2, 0.8, 1]} seed={4.2} />
-      <Rock position={[3.5, 0, 1]} scale={[0.45, 0.28, 0.4]} seed={6.1} />
-      <Rock position={[-1.2, 0, 2.5]} scale={[0.7, 0.45, 0.6]} seed={8.3} />
-
+      <GardenModel />
       <DustParticles />
       <MouseCamera />
     </Canvas>
