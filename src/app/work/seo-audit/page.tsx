@@ -378,8 +378,14 @@ function computeAudit(url: string, businessName: string, city: string): AuditRes
     },
   ]
 
-  const perfPassed = perfChecks.filter(c => c.passed).length
-  const perfScore = Math.round((perfPassed / perfChecks.length) * 100)
+  // CWV metrics each contribute 25 pts weighted by bucket; remaining 3 checks binary (≈8.3 pts each)
+  const cwvScore =
+    (parseFloat(lcp) <= 2.5 ? 25 : parseFloat(lcp) <= 4.0 ? 12.5 : 0) +
+    (parseFloat(cls) <= 0.1 ? 25 : parseFloat(cls) <= 0.25 ? 12.5 : 0) +
+    (inp <= 200 ? 25 : inp <= 500 ? 12.5 : 0) +
+    (ttfb <= 800 ? 25 : ttfb <= 1500 ? 12.5 : 0)
+  const binaryPassed = [renderBlocking === 0, imageOptimize === 0, unusedJs < 100].filter(Boolean).length
+  const perfScore = Math.round(cwvScore * 0.75 + (binaryPassed / 3) * 25)
 
   // AI Search Visibility
   const chatgptVisible = seededBool(url, "ai-chatgpt", 0.35)

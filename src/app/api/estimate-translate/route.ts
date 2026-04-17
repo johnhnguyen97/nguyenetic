@@ -88,6 +88,11 @@ ${estimate}`;
       );
     }
 
+    translation.lineItems = translation.lineItems.map(item => ({
+      ...item,
+      price: item.price && item.price.trim() ? item.price : "Included",
+    }));
+
     return NextResponse.json({ ok: true, translation });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";

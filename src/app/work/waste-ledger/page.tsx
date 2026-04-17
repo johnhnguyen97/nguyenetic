@@ -27,8 +27,9 @@ interface Entry {
 // ─── Deterministic seed data ──────────────────────────────────────────────────
 
 function seedEntries(): Entry[] {
-  // Fixed base date: 14 days before a fixed reference (2026-04-01)
-  const base = new Date("2026-04-01")
+  // Anchor to today so the "last 7 days" KPI always has data
+  const base = new Date()
+  base.setHours(0, 0, 0, 0)
   function d(daysAgo: number): string {
     const dt = new Date(base)
     dt.setDate(base.getDate() - daysAgo)
@@ -69,6 +70,7 @@ function seedEntries(): Entry[] {
 
 const STORAGE_KEY = "waste-ledger-entries"
 const SEED_KEY = "waste-ledger-seeded"
+const SEED_DATE_KEY = "waste-ledger-seed-date"
 
 // ─── Mini markdown renderer ────────────────────────────────────────────────────
 
@@ -454,18 +456,30 @@ export default function WasteLedgerPage() {
   const [reportError, setReportError] = useState<string | null>(null)
   const [leadCaptured, setLeadCaptured] = useState(false)
 
-  // Load from localStorage, seed if empty
+  // Load from localStorage, seed if empty or seed is stale (date changed)
   useEffect(() => {
     try {
+      const today = new Date().toISOString().slice(0, 10)
+      const seedDate = localStorage.getItem(SEED_DATE_KEY)
       const raw = localStorage.getItem(STORAGE_KEY)
       const seeded = localStorage.getItem(SEED_KEY)
-      if (raw) {
-        setEntries(JSON.parse(raw) as Entry[])
-      } else if (!seeded) {
+
+      // Reseed daily so rolling window always has data
+      if (seeded && seedDate !== today) {
+        localStorage.removeItem(STORAGE_KEY)
+        localStorage.removeItem(SEED_KEY)
+      }
+
+      const freshRaw = localStorage.getItem(STORAGE_KEY)
+      const freshSeeded = localStorage.getItem(SEED_KEY)
+      if (freshRaw) {
+        setEntries(JSON.parse(freshRaw) as Entry[])
+      } else if (!freshSeeded) {
         const seed = seedEntries()
         setEntries(seed)
         localStorage.setItem(STORAGE_KEY, JSON.stringify(seed))
         localStorage.setItem(SEED_KEY, "1")
+        localStorage.setItem(SEED_DATE_KEY, today)
       }
     } catch {
       setEntries(seedEntries())
@@ -590,7 +604,7 @@ export default function WasteLedgerPage() {
                 <p className="font-display font-bold text-4xl text-[oklch(0.74_0.15_55)]">
                   <AnimatedNumber value={weekCost} />
                 </p>
-                <p className="text-[oklch(0.55_0.005_260)] text-xs mt-1">{thisWeek.length} entries · last 7 days</p>
+                <p className="text-[oklch(0.55_0.005_260)] text-xs mt-1">{thisWeek.length} {thisWeek.length === 1 ? "entry" : "entries"} · last 7 days</p>
               </motion.div>
 
               {/* Top category */}
