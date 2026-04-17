@@ -1,6 +1,6 @@
 "use client"
 
-import { motion, AnimatePresence, useInView, useMotionValue, animate } from "framer-motion"
+import { motion, AnimatePresence, useInView, useMotionValue, animate, useReducedMotion } from "framer-motion"
 import { useEffect, useRef, useState, useCallback } from "react"
 import { Header } from "@/components/layout/Header"
 import { Hero } from "@/components/sections/Hero"
@@ -25,12 +25,17 @@ function AnimatedStat({
   suffix: string
   label: string
 }) {
+  const reduceMotion = useReducedMotion()
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, margin: "-60px" })
   const motionVal = useMotionValue(0)
-  const [display, setDisplay] = useState("0")
+  const [display, setDisplay] = useState(reduceMotion ? target.toString() : "0")
 
   useEffect(() => {
+    if (reduceMotion) {
+      setDisplay(target.toString())
+      return
+    }
     if (!inView) return
     const controls = animate(motionVal, target, {
       duration: 1.2,
@@ -43,7 +48,7 @@ function AnimatedStat({
       controls.stop()
       unsubscribe()
     }
-  }, [inView, motionVal, target])
+  }, [inView, motionVal, target, reduceMotion])
 
   return (
     <div

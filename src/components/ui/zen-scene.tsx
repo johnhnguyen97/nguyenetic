@@ -129,7 +129,7 @@ void main() {
 }
 `
 
-function ZenShader() {
+function ZenShader({ animated }: { animated: boolean }) {
   const meshRef = useRef<THREE.Mesh>(null)
   const { size } = useThree()
 
@@ -145,7 +145,9 @@ function ZenShader() {
   useFrame(({ clock, pointer }) => {
     if (!meshRef.current) return
     const mat = meshRef.current.material as THREE.ShaderMaterial
-    mat.uniforms.uTime.value = clock.getElapsedTime()
+    if (animated) {
+      mat.uniforms.uTime.value = clock.getElapsedTime()
+    }
     mat.uniforms.uMouse.value.set(
       (pointer.x + 1) * 0.5,
       (pointer.y + 1) * 0.5,
@@ -166,7 +168,7 @@ function ZenShader() {
   )
 }
 
-export function ZenScene({ className }: { className?: string }) {
+export function ZenScene({ className, animated = true }: { className?: string; animated?: boolean }) {
   return (
     <Canvas
       className={className}
@@ -178,7 +180,7 @@ export function ZenScene({ className }: { className?: string }) {
       style={{ background: "#080618" }}
       camera={{ position: [0, 0, 1] }}
     >
-      <ZenShader />
+      <ZenShader animated={animated} />
     </Canvas>
   )
 }

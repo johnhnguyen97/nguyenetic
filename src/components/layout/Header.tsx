@@ -69,16 +69,16 @@ export function Header() {
           <div className="hidden md:flex items-center gap-3">
             <button
               onClick={toggleLanguage}
+              aria-label={language === "ja" ? "Switch to English" : "日本語に切り替え"}
               className={cn(
                 "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm transition-all",
                 language === "ja"
                   ? "bg-accent-sakura/20 text-accent-sakura"
                   : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
               )}
-              title={language === "ja" ? "Switch to English" : "日本語に切り替え"}
             >
-              <Languages className="w-4 h-4" />
-              <span className="text-xs font-medium">{language === "ja" ? "日本語" : "EN"}</span>
+              <Languages className="w-4 h-4" aria-hidden="true" />
+              <span className="text-xs font-medium" aria-hidden="true">{language === "ja" ? "日本語" : "EN"}</span>
             </button>
             <a
               href="#contact"
@@ -92,6 +92,7 @@ export function Header() {
           <div className="md:hidden flex items-center gap-2">
             <button
               onClick={toggleLanguage}
+              aria-label={language === "ja" ? "Switch to English" : "日本語に切り替え"}
               className={cn(
                 "w-9 h-9 rounded-full flex items-center justify-center transition-all",
                 language === "ja"
@@ -99,7 +100,7 @@ export function Header() {
                   : "hover:bg-muted/50 text-muted-foreground"
               )}
             >
-              <Languages className="w-4 h-4" />
+              <Languages className="w-4 h-4" aria-hidden="true" />
             </button>
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}

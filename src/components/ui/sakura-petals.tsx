@@ -1,6 +1,6 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, useReducedMotion } from "framer-motion"
 
 const PETAL_COUNT = 28
 
@@ -15,6 +15,10 @@ const petalConfigs = Array.from({ length: PETAL_COUNT }, (_, i) => ({
 }))
 
 export function SakuraPetals() {
+  const reduceMotion = useReducedMotion()
+
+  if (reduceMotion) return null
+
   return (
     <div
       className="absolute inset-0 overflow-hidden pointer-events-none"

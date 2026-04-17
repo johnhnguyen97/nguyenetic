@@ -1,6 +1,6 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, useReducedMotion } from "framer-motion"
 
 interface EnsoProps {
   className?: string
@@ -19,12 +19,39 @@ export function Enso({
   duration = 2.8,
   delay = 0.6,
 }: EnsoProps) {
+  const reduceMotion = useReducedMotion()
   const radius = size / 2 - strokeWidth * 2
   const circumference = 2 * Math.PI * radius
   const gap = circumference * 0.15
   const dash = circumference - gap
 
   const drawSettleTime = duration + delay
+
+  if (reduceMotion) {
+    return (
+      <svg
+        className={className}
+        width={size}
+        height={size}
+        viewBox={`0 0 ${size} ${size}`}
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke={color}
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          strokeDasharray={`${dash} ${circumference}`}
+          strokeDashoffset={0}
+          style={{ transformOrigin: "center", transformBox: "fill-box", transform: "rotate(-135deg)" }}
+        />
+      </svg>
+    )
+  }
 
   return (
     <motion.svg

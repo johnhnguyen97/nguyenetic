@@ -9,6 +9,7 @@ import {
   useTransform,
   useScroll,
   useSpring,
+  useReducedMotion,
   animate,
 } from "framer-motion"
 import { ArrowDown } from "lucide-react"
@@ -64,11 +65,14 @@ const CUBE_FACES = [
 ] as const
 
 function MagneticWrap({ children }: { children: React.ReactNode }) {
+  const reduceMotion = useReducedMotion()
   const ref = useRef<HTMLDivElement>(null)
   const x = useMotionValue(0)
   const y = useMotionValue(0)
   const springX = useSpring(x, { stiffness: 200, damping: 20 })
   const springY = useSpring(y, { stiffness: 200, damping: 20 })
+
+  if (reduceMotion) return <>{children}</>
 
   return (
     <motion.div
@@ -93,6 +97,7 @@ function MagneticWrap({ children }: { children: React.ReactNode }) {
 
 function ServiceCube() {
   const { language } = useLanguage()
+  const reduceMotion = useReducedMotion()
   const [hoveredFace, setHoveredFace] = useState<string | null>(null)
   const [isDragging, setIsDragging] = useState(false)
 
@@ -107,7 +112,7 @@ function ServiceCube() {
   })
 
   useEffect(() => {
-    if (isDragging || hoveredFace) return
+    if (reduceMotion || isDragging || hoveredFace) return
 
     const currentX = rotateX.get()
     const currentY = rotateY.get()
@@ -127,7 +132,7 @@ function ServiceCube() {
       xControl.stop()
       yControl.stop()
     }
-  }, [isDragging, hoveredFace, rotateX, rotateY])
+  }, [reduceMotion, isDragging, hoveredFace, rotateX, rotateY])
 
   const size = 220
   const half = size / 2
@@ -255,6 +260,7 @@ function ServiceCube() {
 
 export function Hero() {
   const { t } = useLanguage()
+  const reduceMotion = useReducedMotion()
   const [ripples, setRipples] = useState<Array<{ id: number; x: number; y: number }>>([])
   const heroRef = useRef<HTMLElement>(null)
 
@@ -263,13 +269,14 @@ export function Hero() {
   const mouseY = useMotionValue(0)
 
   useEffect(() => {
+    if (reduceMotion) return
     const handler = (e: MouseEvent) => {
       mouseX.set((e.clientX / window.innerWidth - 0.5) * 2)
       mouseY.set((e.clientY / window.innerHeight - 0.5) * 2)
     }
     window.addEventListener("mousemove", handler)
     return () => window.removeEventListener("mousemove", handler)
-  }, [mouseX, mouseY])
+  }, [mouseX, mouseY, reduceMotion])
 
   // Cube + petal + orb parallax
   const cubeX = useTransform(mouseX, [-1, 1], [-30, 30])
@@ -321,13 +328,13 @@ export function Hero() {
       <div className="absolute inset-0">
         <motion.div
           className="absolute inset-0"
-          style={{
+          style={reduceMotion ? undefined : {
             rotateX: bgRotateX,
             rotateY: bgRotateY,
             transformPerspective: 1200,
           }}
         >
-          <ZenScene className="absolute inset-0" />
+          <ZenScene className="absolute inset-0" animated={!reduceMotion} />
         </motion.div>
 
         {/* Subtle bottom gradient only — shader handles the rest */}
@@ -343,7 +350,7 @@ export function Hero() {
       {/* Click ripples — zen sand effect */}
       <div className="absolute inset-0 pointer-events-none z-[5]">
         <AnimatePresence>
-          {ripples.map((ripple) => (
+          {!reduceMotion && ripples.map((ripple) => (
             <motion.div
               key={ripple.id}
               className="absolute rounded-full pointer-events-none"
@@ -371,7 +378,7 @@ export function Hero() {
       {/* Interactive floating orbs */}
       <motion.div
         className="absolute inset-0 pointer-events-none z-[3]"
-        style={{ x: orbsX, y: orbsY }}
+        style={reduceMotion ? undefined : { x: orbsX, y: orbsY }}
       >
         {[
           { x: 15, y: 25, size: 100, dur: 16, blur: 30 },
@@ -392,12 +399,12 @@ export function Hero() {
               background: `radial-gradient(circle, oklch(0.74 0.15 55 / 0.12) 0%, transparent 70%)`,
               filter: `blur(${orb.blur}px)`,
             }}
-            animate={{
+            animate={reduceMotion ? undefined : {
               y: [0, -25, 12, -18, 0],
               x: [0, 15, -10, 20, 0],
               scale: [1, 1.1, 0.95, 1.05, 1],
             }}
-            transition={{
+            transition={reduceMotion ? { duration: 0 } : {
               duration: orb.dur,
               ease: "easeInOut",
               repeat: Infinity,
@@ -410,7 +417,7 @@ export function Hero() {
       {/* Falling sakura petals — subtle mouse drift */}
       <motion.div
         className="absolute inset-0 pointer-events-none"
-        style={{ x: petalsX, y: petalsY }}
+        style={reduceMotion ? undefined : { x: petalsX, y: petalsY }}
       >
         <SakuraPetals />
       </motion.div>
@@ -464,7 +471,7 @@ export function Hero() {
                     className="group inline-flex items-center gap-2 rounded-full bg-warm px-8 py-4 font-medium text-ink transition-all hover:bg-warm-hover"
                   >
                     <span>{t("See the work", "実績を見る")}</span>
-                    <ArrowDown className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
+                    <ArrowDown className="h-4 w-4 transition-transform group-hover:translate-y-0.5" aria-hidden="true" />
                   </a>
                 </MagneticWrap>
                 <MagneticWrap>
@@ -481,7 +488,7 @@ export function Hero() {
             {/* Right column: cube with enso + mouse + scroll parallax */}
             <motion.div
               className="order-1 lg:order-2 flex items-center justify-center scale-50 sm:scale-75 lg:scale-100 relative"
-              style={{
+              style={reduceMotion ? undefined : {
                 x: cubeX,
                 y: cubeY,
                 scale: cubeScrollScale,
