@@ -3,9 +3,90 @@
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
 import { ArrowUpRight } from "lucide-react"
+import Link from "next/link"
 import { useLanguage } from "@/lib/language-context"
 
 const springEase = [0.22, 1, 0.36, 1] as const
+
+// ── Live product data ──────────────────────────────────────────────────────────
+
+interface LiveProduct {
+  slug: string
+  title: string
+  tagline: string
+  pain: string
+  stack: string[]
+  status: "Live" | "Live · AI"
+  shippedDate: string
+}
+
+const liveProducts: LiveProduct[] = [
+  {
+    slug: "auto-quote",
+    title: "Estimate Translator",
+    tagline: "Auto shop estimates that read like text messages",
+    pain: "Shops lose deals when estimates read like shop-speak. Plain language closes.",
+    stack: ["Next.js", "Zod", "localStorage"],
+    status: "Live",
+    shippedDate: "Apr 2026",
+  },
+  {
+    slug: "reservation",
+    title: "Deposit Guardian",
+    tagline: "Stop no-shows from draining your week",
+    pain: "15–30% of bookings ghost. A deposit screen + confirmation email stops that cold.",
+    stack: ["Next.js", "Framer Motion"],
+    status: "Live",
+    shippedDate: "Apr 2026",
+  },
+  {
+    slug: "seo-audit",
+    title: "Local SEO Scorecard",
+    tagline: "Why 'near me' searches skip your business",
+    pain: "AI Overviews haven't eaten local yet — but you're still invisible. Here's why.",
+    stack: ["Next.js", "SVG charts"],
+    status: "Live",
+    shippedDate: "Apr 2026",
+  },
+  {
+    slug: "waste-ledger",
+    title: "Waste Ledger",
+    tagline: "Restaurants throw $400/wk in the dumpster",
+    pain: "Nobody tracks food waste. Toast requires a full POS swap. This doesn't.",
+    stack: ["Claude Sonnet", "SVG charts"],
+    status: "Live · AI",
+    shippedDate: "Apr 2026",
+  },
+  {
+    slug: "review-reply",
+    title: "Review Reply Playground",
+    tagline: "Three drafts in ten seconds — no signup",
+    pain: "Owners spend 30 min/day on replies. Paste a review, pick a tone, copy a draft.",
+    stack: ["Claude Haiku", "Zero auth"],
+    status: "Live · AI",
+    shippedDate: "Apr 2026",
+  },
+  {
+    slug: "call-rescue",
+    title: "Call Rescue Simulator",
+    tagline: "Every missed call is $1,200 walking away",
+    pain: "27% of contractor calls go unanswered. 85% of those callers never call back.",
+    stack: ["Framer Motion", "Interactive sim"],
+    status: "Live",
+    shippedDate: "Apr 2026",
+  },
+  {
+    slug: "estimate-translate",
+    title: "Tech-to-Customer Translator",
+    tagline: "Paste shop-speak — get a customer-friendly quote",
+    pain: "The deal dies when the customer reads 'upsell'. Plain language keeps it alive.",
+    stack: ["Claude Sonnet", "Structured output"],
+    status: "Live · AI",
+    shippedDate: "Apr 2026",
+  },
+]
+
+// ── Client work data ───────────────────────────────────────────────────────────
 
 const projects = [
   {
@@ -65,7 +146,8 @@ const projects = [
   },
 ]
 
-// ── GoJUN: AI flashcard SaaS with live chart + streak counter ──────────────
+// ── Animated previews (client-work tiles — unchanged) ─────────────────────────
+
 function GoJunPreview() {
   const reduce = useReducedMotion()
   const chartPoints = [18, 32, 24, 45, 38, 58, 52, 71, 65, 82]
@@ -80,7 +162,6 @@ function GoJunPreview() {
       aria-hidden="true"
       className="absolute inset-0 pointer-events-none select-none bg-ink/90 flex flex-col gap-3 p-5 overflow-hidden"
     >
-      {/* Top bar */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <motion.span
@@ -93,7 +174,6 @@ function GoJunPreview() {
         <span className="text-[10px] font-mono text-warm">🔥 14 day streak</span>
       </div>
 
-      {/* Flashcard */}
       <motion.div
         animate={reduce ? {} : { y: [0, -3, 0] }}
         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
@@ -104,7 +184,6 @@ function GoJunPreview() {
         <p className="text-[10px] text-warm mt-1">to study · benkyou suru</p>
       </motion.div>
 
-      {/* Mini line chart */}
       <div className="flex-1 flex flex-col gap-1">
         <p className="text-[9px] font-mono text-paper/40 uppercase tracking-wider">XP this week</p>
         <svg width="100%" viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" className="flex-1">
@@ -125,7 +204,6 @@ function GoJunPreview() {
   )
 }
 
-// ── Fast Fix Whitemarsh: map pin + booking confirmation ────────────────────
 function FastFixPreview() {
   const reduce = useReducedMotion()
   const [confirmed, setConfirmed] = useState(false)
@@ -147,12 +225,10 @@ function FastFixPreview() {
       aria-hidden="true"
       className="absolute inset-0 pointer-events-none select-none bg-ink/90 flex flex-col items-center justify-center gap-4 overflow-hidden"
     >
-      {/* Map stub */}
       <div className="relative w-full h-24 bg-ink/60 rounded-xl border border-warm/20 overflow-hidden mx-5">
         <div className="absolute inset-0 opacity-20"
           style={{ backgroundImage: "repeating-linear-gradient(0deg,transparent,transparent 18px,#D4A84320 18px,#D4A84320 19px),repeating-linear-gradient(90deg,transparent,transparent 18px,#D4A84320 18px,#D4A84320 19px)" }}
         />
-        {/* Pin */}
         <motion.div
           className="absolute left-1/2 -translate-x-1/2"
           initial={{ y: -20, opacity: 0 }}
@@ -166,7 +242,6 @@ function FastFixPreview() {
         </motion.div>
       </div>
 
-      {/* Booking card */}
       <AnimatePresence mode="wait">
         {confirmed ? (
           <motion.div
@@ -201,7 +276,6 @@ function FastFixPreview() {
   )
 }
 
-// ── EV Wrap: quote calculator with price ticker ────────────────────────────
 function EvWrapPreview() {
   const reduce = useReducedMotion()
   const prices = [1299, 1499, 1799, 2199, 2599]
@@ -222,7 +296,6 @@ function EvWrapPreview() {
     >
       <p className="text-[10px] font-mono text-paper/50 uppercase tracking-widest">Instant Quote</p>
 
-      {/* Vehicle selector */}
       <div className="flex gap-1.5 flex-wrap">
         {options.map((o, i) => (
           <motion.span
@@ -236,7 +309,6 @@ function EvWrapPreview() {
         ))}
       </div>
 
-      {/* Price display */}
       <div className="flex-1 flex items-center justify-center">
         <AnimatePresence mode="wait">
           <motion.p
@@ -252,7 +324,6 @@ function EvWrapPreview() {
         </AnimatePresence>
       </div>
 
-      {/* CTA pulse */}
       <motion.div
         animate={reduce ? {} : { boxShadow: ["0 0 0 0 #D4A84340", "0 0 0 8px #D4A84300"] }}
         transition={{ duration: 1.5, repeat: Infinity }}
@@ -264,7 +335,6 @@ function EvWrapPreview() {
   )
 }
 
-// ── Ichiban Restaurant: menu card + reservation counter ────────────────────
 function IchibanPreview() {
   const reduce = useReducedMotion()
   const dishes = ["Tonkotsu Ramen", "Gyoza · 6pc", "Matcha Tiramisu", "Miso Black Cod"]
@@ -283,7 +353,6 @@ function IchibanPreview() {
       aria-hidden="true"
       className="absolute inset-0 pointer-events-none select-none bg-ink/90 flex flex-col gap-3 p-5 overflow-hidden"
     >
-      {/* Menu card */}
       <div className="rounded-xl border border-warm/20 bg-ink/60 p-3 flex-1 flex flex-col gap-2">
         <p className="text-[9px] font-mono text-warm/60 uppercase tracking-widest">Today&apos;s Special</p>
         <AnimatePresence mode="wait">
@@ -306,7 +375,6 @@ function IchibanPreview() {
         </div>
       </div>
 
-      {/* Reservation bar */}
       <div className="flex items-center justify-between px-3 py-2 rounded-lg border border-warm/20 bg-ink/40">
         <span className="text-[10px] font-mono text-paper/50">Seats tonight</span>
         <AnimatePresence mode="wait">
@@ -326,7 +394,6 @@ function IchibanPreview() {
   )
 }
 
-// ── Zen Dashboard: animated bar chart + AI insight pulse ──────────────────
 function ZenDashboardPreview() {
   const reduce = useReducedMotion()
   const bars = [62, 84, 71, 93, 58, 77, 88]
@@ -337,7 +404,6 @@ function ZenDashboardPreview() {
       aria-hidden="true"
       className="absolute inset-0 pointer-events-none select-none bg-ink/90 flex flex-col gap-3 p-5 overflow-hidden"
     >
-      {/* KPI row */}
       <div className="flex gap-3">
         {[{ label: "Queries", val: "12.4k" }, { label: "Avg ms", val: "42" }, { label: "Uptime", val: "99.9%" }].map(({ label, val }) => (
           <div key={label} className="flex-1 rounded-lg border border-warm/20 bg-ink/50 p-2 text-center">
@@ -347,7 +413,6 @@ function ZenDashboardPreview() {
         ))}
       </div>
 
-      {/* Bar chart */}
       <div className="flex-1 flex items-end gap-1.5">
         {bars.map((h, i) => (
           <div key={i} className="flex-1 flex flex-col items-center gap-1">
@@ -363,7 +428,6 @@ function ZenDashboardPreview() {
         ))}
       </div>
 
-      {/* AI insight */}
       <motion.div
         animate={reduce ? {} : { opacity: [0.6, 1, 0.6] }}
         transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
@@ -376,7 +440,6 @@ function ZenDashboardPreview() {
   )
 }
 
-// ── Nguyenetic Studio: design tokens cycling + motion primitives ───────────
 function NguyeneticStudioPreview() {
   const reduce = useReducedMotion()
   const palettes = [
@@ -405,7 +468,6 @@ function NguyeneticStudioPreview() {
       aria-hidden="true"
       className="absolute inset-0 pointer-events-none select-none bg-ink/90 flex flex-col gap-3 p-5 overflow-hidden"
     >
-      {/* Palette swatches */}
       <div className="flex gap-2 items-center">
         {pal.map((c, i) => (
           <motion.div
@@ -420,7 +482,6 @@ function NguyeneticStudioPreview() {
         <span className="text-[9px] font-mono text-paper/40 ml-1">palette {palIdx + 1}/4</span>
       </div>
 
-      {/* Cycling headline */}
       <div className="flex-1 flex items-center justify-center">
         <AnimatePresence mode="wait">
           <motion.p
@@ -437,7 +498,6 @@ function NguyeneticStudioPreview() {
         </AnimatePresence>
       </div>
 
-      {/* Token pills */}
       <div className="flex gap-1.5 flex-wrap">
         {["--color-warm", "--font-display", "--radius-lg", "--ease-spring"].map((tok) => (
           <span key={tok} className="text-[8px] font-mono px-2 py-0.5 rounded border border-warm/20 text-paper/40">{tok}</span>
@@ -456,6 +516,80 @@ const previewMap: Record<string, React.ComponentType> = {
   kaizen: NguyeneticStudioPreview,
 }
 
+// ── Live product tile ──────────────────────────────────────────────────────────
+
+function LiveProductTile({ product, index }: { product: LiveProduct; index: number }) {
+  const reduce = useReducedMotion()
+  const isAI = product.status === "Live · AI"
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ delay: index * 0.07, duration: 0.6, ease: springEase }}
+    >
+      <Link
+        href={`/work/${product.slug}`}
+        className="group block h-full rounded-xl border border-warm/15 bg-ink/35 backdrop-blur-sm
+          transition-[border-color,box-shadow,background-color] duration-300
+          hover:border-warm/50 hover:bg-ink/50 hover:shadow-[0_8px_28px_oklch(0.74_0.15_55/0.12)]
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-warm/60"
+      >
+        <div className="p-5 flex flex-col gap-3 h-full">
+          {/* Top row: status chip + shipped date */}
+          <div className="flex items-center justify-between">
+            <span
+              className={`inline-flex items-center gap-1.5 text-[9px] font-mono px-2 py-0.5 rounded-full border ${
+                isAI
+                  ? "border-violet-400/30 bg-violet-400/8 text-violet-300"
+                  : "border-emerald-400/30 bg-emerald-400/8 text-emerald-400"
+              }`}
+            >
+              <span className={`w-1.5 h-1.5 rounded-full ${isAI ? "bg-violet-400" : "bg-emerald-400"}`} />
+              {product.status}
+            </span>
+            <span className="text-[9px] font-mono text-paper/30">Shipped: {product.shippedDate}</span>
+          </div>
+
+          {/* Title */}
+          <div className="flex-1">
+            <h3 className="font-display font-semibold text-paper text-base leading-tight mb-1.5 group-hover:text-warm transition-colors duration-200">
+              {product.title}
+            </h3>
+            <p className="text-[11px] text-warm/80 font-mono leading-snug mb-2">
+              {product.tagline}
+            </p>
+            <p className="text-[11px] text-paper/50 leading-relaxed">
+              {product.pain}
+            </p>
+          </div>
+
+          {/* Bottom row: stack chips + CTA */}
+          <div className="flex items-end justify-between gap-2 pt-1">
+            <div className="flex flex-wrap gap-1">
+              {product.stack.map((tag) => (
+                <span key={tag} className="text-[8px] font-mono px-1.5 py-0.5 rounded border border-warm/20 text-paper/40">
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <motion.div
+              animate={reduce ? {} : undefined}
+              className="flex items-center gap-1 text-[10px] font-mono text-warm/50 group-hover:text-warm transition-colors duration-200 shrink-0"
+            >
+              <span className="hidden group-hover:inline">Try it</span>
+              <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </motion.div>
+          </div>
+        </div>
+      </Link>
+    </motion.div>
+  )
+}
+
+// ── Main Work section ──────────────────────────────────────────────────────────
+
 export function Work() {
   const { t } = useLanguage()
   const [hovered, setHovered] = useState<string | null>(null)
@@ -467,7 +601,53 @@ export function Work() {
   return (
     <section id="work" className="relative py-32 px-6 overflow-hidden bg-ink">
       <div className="relative max-w-7xl mx-auto">
-        {/* Section Header */}
+
+        {/* ── Live Products section ─────────────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, ease: springEase }}
+          className="mb-12"
+        >
+          <p className="text-xs tracking-[0.3em] text-warm/60 font-mono uppercase mb-3">
+            製品 · LIVE PRODUCTS 2026
+          </p>
+          <h2 className="text-[clamp(2rem,5vw,3.5rem)] font-display font-bold text-paper leading-none mb-4">
+            Live{" "}
+            <span className="text-warm">products</span>
+          </h2>
+          <p className="text-paper/60 text-base leading-relaxed max-w-xl">
+            Seven SaaS demos. Each solves a screamed-about pain. Each one runs in your browser right now.
+          </p>
+        </motion.div>
+
+        {/* Live products grid */}
+        <div
+          className="grid gap-3 mb-24"
+          style={{ gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 280px), 1fr))" }}
+        >
+          {liveProducts.map((product, i) => (
+            <LiveProductTile key={product.slug} product={product} index={i} />
+          ))}
+        </div>
+
+        {/* ── Section divider ───────────────────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: springEase }}
+          className="mb-20 flex items-center gap-6"
+        >
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-warm/20 to-transparent" />
+          <p className="text-[10px] font-mono text-warm/40 uppercase tracking-[0.25em] shrink-0">
+            Client work
+          </p>
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-warm/20 to-transparent" />
+        </motion.div>
+
+        {/* ── Client Work section ───────────────────────────────────────────── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -527,6 +707,11 @@ export function Work() {
               <div className="absolute bottom-0 left-0 right-0 p-6">
                 <div className="flex items-end justify-between">
                   <div>
+                    <div className="mb-2">
+                      <span className="text-[9px] font-mono px-2 py-0.5 rounded border border-warm/30 text-warm/60">
+                        Case study
+                      </span>
+                    </div>
                     <h3 className="font-display font-semibold text-paper text-2xl mb-2">
                       {featured.title}
                     </h3>
@@ -588,6 +773,11 @@ export function Work() {
                   <div className="absolute bottom-0 left-0 right-0 p-4">
                     <div className="flex items-end justify-between">
                       <div>
+                        <div className="mb-1.5">
+                          <span className="text-[8px] font-mono px-1.5 py-0.5 rounded border border-warm/25 text-warm/50">
+                            Case study
+                          </span>
+                        </div>
                         <h3 className="font-display font-semibold text-paper text-base mb-1.5">
                           {project.title}
                         </h3>
@@ -647,6 +837,11 @@ export function Work() {
               <div className="absolute bottom-0 left-0 right-0 p-5">
                 <div className="flex items-end justify-between">
                   <div>
+                    <div className="mb-1.5">
+                      <span className="text-[9px] font-mono px-2 py-0.5 rounded border border-warm/25 text-warm/50">
+                        Case study
+                      </span>
+                    </div>
                     <h3 className="font-display font-semibold text-paper text-lg mb-1.5">
                       {wide.title}
                     </h3>
