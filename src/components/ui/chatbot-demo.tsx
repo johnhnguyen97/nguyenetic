@@ -225,7 +225,7 @@ export function ChatbotDemo() {
         onClick={() => { setIsOpen(true); setIsMinimized(false) }}
         aria-label="Open Moxie AI chat"
         className={`fixed bottom-6 right-6 z-50 w-14 h-14 flex items-center justify-center transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-warm focus-visible:ring-offset-2 focus-visible:ring-offset-ink ${isOpen ? "hidden" : ""}`}
-        style={{ filter: "drop-shadow(0 0 16px oklch(0.74 0.15 55 / 0.45))" }}
+        style={{ filter: "drop-shadow(0 0 16px oklch(0.74 0.15 55 / 0.10))" }}
       >
         <HexagonMark size={56} />
         <span
@@ -250,7 +250,7 @@ export function ChatbotDemo() {
             style={{
               background: "oklch(0.08 0.005 260 / 0.97)",
               border: "1px solid oklch(0.74 0.15 55 / 0.2)",
-              boxShadow: "0 0 60px oklch(0.74 0.15 55 / 0.08), 0 24px 48px oklch(0.04 0.005 260 / 0.6)",
+              boxShadow: "0 0 32px oklch(0.74 0.15 55 / 0.08), 0 24px 72px oklch(0.05 0.005 260 / 0.10)",
               backdropFilter: "blur(20px)",
             }}
           >
@@ -493,7 +493,7 @@ export function ChatbotDemo() {
                           }}
                           onFocus={(e) => {
                             e.target.style.borderBottomColor = "oklch(0.74 0.15 55 / 0.8)"
-                            e.target.style.boxShadow = "0 1px 0 0 oklch(0.74 0.15 55 / 0.5)"
+                            e.target.style.boxShadow = "0 1px 0 0 oklch(0.74 0.15 55 / 0.12)"
                           }}
                           onBlur={(e) => {
                             e.target.style.borderBottomColor = "oklch(0.74 0.15 55 / 0.25)"

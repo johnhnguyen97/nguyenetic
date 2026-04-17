@@ -112,7 +112,7 @@ function Toast({ show }: { show: boolean }) {
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: show ? 1 : 0, y: show ? 0 : 12 }}
-      className="fixed bottom-6 right-6 z-50 px-4 py-2 rounded-lg bg-warm text-ink text-sm font-medium shadow-lg pointer-events-none"
+      className="fixed bottom-6 right-6 z-50 px-4 py-2 rounded-lg bg-warm text-ink text-sm font-medium pointer-events-none shadow-[0_8px_24px_oklch(0.05_0.005_260/0.10)]"
     >
       Copied ✓
     </motion.div>
@@ -224,7 +224,7 @@ export function PricingCalculator() {
                 />
                 {/* Thumb */}
                 <motion.button
-                  className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-warm border-2 border-ink shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-warm"
+                  className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-warm border-2 border-ink shadow-[0_4px_12px_oklch(0.05_0.005_260/0.08)] focus:outline-none focus-visible:ring-2 focus-visible:ring-warm"
                   animate={{ left: `${(scopeIndex / (SCOPES.length - 1)) * 100}%` }}
                   transition={{ ease: [0.22, 1, 0.36, 1], duration: 0.4 }}
                   tabIndex={0}

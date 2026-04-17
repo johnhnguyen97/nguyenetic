@@ -213,8 +213,8 @@ function ServiceCube() {
                 backfaceVisibility: "hidden",
                 WebkitBackfaceVisibility: "hidden",
                 boxShadow: isActive
-                  ? "inset 0 0 60px oklch(0.74 0.15 55 / 0.35), 0 0 80px oklch(0.74 0.15 55 / 0.3)"
-                  : "inset 0 0 40px oklch(0.74 0.15 55 / 0.15), 0 0 60px oklch(0.74 0.15 55 / 0.1)",
+                  ? "inset 0 0 60px oklch(0.74 0.15 55 / 0.10), 0 0 80px oklch(0.74 0.15 55 / 0.08)"
+                  : "inset 0 0 40px oklch(0.74 0.15 55 / 0.06), 0 0 60px oklch(0.74 0.15 55 / 0.04)",
               }}
             >
               <span
@@ -237,7 +237,7 @@ function ServiceCube() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute bottom-[-48px] left-1/2 -translate-x-1/2 whitespace-nowrap px-5 py-2.5 rounded-full bg-ink/85 backdrop-blur-md border border-warm/50 text-warm text-sm font-medium shadow-[0_8px_32px_oklch(0.08_0.005_260_/_0.6)] pointer-events-none"
+            className="absolute bottom-[-48px] left-1/2 -translate-x-1/2 whitespace-nowrap px-5 py-2.5 rounded-full bg-ink/85 backdrop-blur-md border border-warm/50 text-warm text-sm font-medium shadow-[0_8px_24px_oklch(0.05_0.005_260/0.10)] pointer-events-none"
           >
             {language === "ja" ? activeFace.descJa : activeFace.descEn}
           </motion.div>
