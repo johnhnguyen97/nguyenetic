@@ -76,9 +76,8 @@ export function StepDate({ date, time, party, onChange, onNext }: StepDateProps)
   }
 
   function selectDate(day: number) {
-    const d = new Date(calYear, calMonth, day)
-    if (d < today) return
     const str = `${calYear}-${String(calMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+    if (str < todayStr) return
     onChange(str, time, party)
   }
 
@@ -134,7 +133,7 @@ export function StepDate({ date, time, party, onChange, onNext }: StepDateProps)
           {cells.map((day, i) => {
             if (day === null) return <div key={`empty-${i}`} />
             const dayStr = `${calYear}-${String(calMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
-            const isPast = new Date(calYear, calMonth, day) < today
+            const isPast = dayStr < todayStr
             const isSelected = dayStr === date
             const isToday = dayStr === todayStr
 

@@ -22,8 +22,8 @@ Output EXACTLY 3 replies as a JSON array of objects with this shape:
 
 Rules:
 - Keep each reply under 160 characters
-- Use the ${voice} tone overall
-- Vary the tone across 3 drafts: one warm, one professional, one firm (or empathetic for 5-star)
+- Write ALL 3 drafts in the ${voice} tone — never override it with a different tone
+- Vary each draft by angle: draft 1 is empathetic (leads with acknowledgment), draft 2 is factual (centers on what happened/will happen), draft 3 is action-oriented (focuses on next steps)
 - Reference specific details from the review — never give generic responses
 - Never apologize for something that wasn't the business's fault
 - Never use exclamation points in the firm draft

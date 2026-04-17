@@ -855,6 +855,15 @@ function StepSign({ state, dispatch, onNext, onBack }: {
 
   const today = new Date().toISOString().split("T")[0];
 
+  const canContinue =
+    state.customer.name.trim().length > 0 &&
+    state.customer.email.match(/^[^@]+@[^@]+\.[^@]+$/) !== null &&
+    state.customer.phone.replace(/\D/g, "").length >= 10 &&
+    !!state.customer.dropoffDate &&
+    state.customer.dropoffDate > today &&
+    hasInk &&
+    state.termsAccepted;
+
   function validate(): boolean {
     const e: Record<string, string> = {};
     if (!state.customer.name.trim()) e.name = "Name is required";
@@ -995,7 +1004,7 @@ function StepSign({ state, dispatch, onNext, onBack }: {
 
       <div className="flex gap-3 flex-wrap">
         <SecondaryButton onClick={onBack}>Back</SecondaryButton>
-        <PrimaryButton onClick={handleContinue}>Review My Estimate</PrimaryButton>
+        <PrimaryButton onClick={handleContinue} disabled={!canContinue}>Review My Estimate</PrimaryButton>
       </div>
     </div>
   );
