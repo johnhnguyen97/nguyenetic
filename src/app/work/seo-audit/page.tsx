@@ -510,10 +510,17 @@ function JsonHighlight({ code }: { code: string }) {
   return (
     <pre className="text-xs leading-relaxed overflow-x-auto" aria-label="JSON-LD code example">
       {lines.map((line, i) => {
+        // Tokenize carefully: match key:"value" pairs without mangling colons inside values.
+        // Strategy: highlight JSON keys (quoted strings followed by colon) then highlight
+        // the value portion (string, number, or punctuation) separately.
         const highlighted = line
-          .replace(/(".*?")\s*:/g, '<span class="text-blue-300">$1</span>:')
-          .replace(/:\s*(".*?")/g, ': <span class="text-green-300">$1</span>')
-          .replace(/:\s*(\d+\.?\d*)/g, ': <span class="text-yellow-300">$1</span>')
+          // Keys: quoted string immediately followed by colon (with optional spaces)
+          .replace(/^(\s*)("(?:[^"\\]|\\.)*")(\s*:)/g, '$1<span class="text-blue-300">$2</span>$3')
+          // String values: colon then whitespace then quoted string (value, not key)
+          .replace(/(:\s*)("(?:[^"\\]|\\.)*")/g, '$1<span class="text-green-300">$2</span>')
+          // Number values
+          .replace(/(:\s*)(\d+\.?\d*\b)/g, '$1<span class="text-yellow-300">$2</span>')
+          // Punctuation
           .replace(/[{}[\],]/g, m => `<span class="text-warm/70">${m}</span>`)
         return (
           <div key={i} dangerouslySetInnerHTML={{ __html: highlighted }} />
@@ -745,12 +752,23 @@ function SectionCard({
 
 // ─── Schema snippets ──────────────────────────────────────────────────────────
 
+function parseCity(raw: string): { locality: string; region: string } {
+  const parts = raw.split(",").map(s => s.trim())
+  if (parts.length >= 2) {
+    return { locality: parts[0], region: parts[1].replace(/\s+\d+.*$/, "").trim() }
+  }
+  return { locality: raw.trim(), region: "" }
+}
+
 function SchemaSnippets({ result }: { result: AuditResult }) {
   const missingChecks = result.sections
     .find(s => s.id === "schema")
     ?.checks.filter(c => !c.passed) ?? []
 
   if (missingChecks.length === 0) return null
+
+  const { locality, region } = parseCity(result.city)
+  const addressRegionLine = region ? `\n    "addressRegion": "${region}",` : ""
 
   const snippet = `{
   "@context": "https://schema.org",
@@ -759,9 +777,8 @@ function SchemaSnippets({ result }: { result: AuditResult }) {
   "address": {
     "@type": "PostalAddress",
     "streetAddress": "123 Main St",
-    "addressLocality": "${result.city}",
-    "addressRegion": "CA",
-    "postalCode": "90210"
+    "addressLocality": "${locality}",${addressRegionLine}
+    "postalCode": "00000"
   },
   "telephone": "+1-555-000-0000",
   "openingHoursSpecification": [

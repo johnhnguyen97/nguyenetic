@@ -698,7 +698,7 @@ export default function CallRescuePage() {
               >
                 ${yearlyMissed.toLocaleString()}
                 <span className="text-lg font-normal text-[#f5f5f0]/40 ml-2">
-                  walking out the door every year.
+                  {" "}walking out the door every year.
                 </span>
               </motion.p>
               <motion.p

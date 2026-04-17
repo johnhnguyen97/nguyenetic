@@ -525,7 +525,7 @@ export default function ReviewReplyPage() {
         </h1>
         <p className="text-[oklch(0.75_0.005_260)] text-lg max-w-2xl leading-relaxed">
           Paste a real review. Pick an industry and a voice. Get 3 drafts — professional, warm, or firm — with a one-line rationale on each.{" "}
-          <strong className="text-[oklch(0.97_0.008_80)] font-semibold">No signup, no limit today.</strong>
+          <strong className="text-[oklch(0.97_0.008_80)] font-semibold">No signup required. 5 free generations per day.</strong>
         </p>
       </motion.header>
 
