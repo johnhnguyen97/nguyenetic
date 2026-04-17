@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback, useReducer } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { LeadCapture } from "@/components/ui/lead-capture";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -1108,6 +1109,7 @@ function StepEstimate({ state, dispatch, onReset }: {
 }) {
   const [showStripe, setShowStripe] = useState(false);
   const [toast, setToast] = useState("");
+  const [pdfUnlocked, setPdfUnlocked] = useState(false);
   const shouldReduce = useReducedMotion();
 
   const subtotal = calcSubtotal(state);
@@ -1265,9 +1267,37 @@ function StepEstimate({ state, dispatch, onReset }: {
           <PrimaryButton onClick={() => setShowStripe(true)} disabled={state.depositPaid}>
             {state.depositPaid ? `✓ Deposit Paid ($${deposit.toLocaleString()})` : `Pay 30% deposit — $${deposit.toLocaleString()}`}
           </PrimaryButton>
-          <SecondaryButton onClick={() => window.print()}>Download PDF</SecondaryButton>
+          {pdfUnlocked ? (
+            <SecondaryButton onClick={() => window.print()}>Download PDF</SecondaryButton>
+          ) : null}
           <SecondaryButton onClick={handleTextMe}>Text me the estimate</SecondaryButton>
           <SecondaryButton onClick={handleShare}>Copy share link</SecondaryButton>
+        </div>
+
+        {/* Lead capture gate — PDF unlocks after email */}
+        {!pdfUnlocked && (
+          <LeadCapture
+            appSlug="auto-quote"
+            context="before-pdf-export"
+            buttonLabel="Email me a copy"
+            onCaptured={() => setPdfUnlocked(true)}
+            className="print:hidden"
+          />
+        )}
+
+        {/* Funnel CTA */}
+        <div className="bg-[oklch(0.14_0.005_260)] border border-[oklch(0.28_0.005_260)] rounded-2xl p-5 print:hidden">
+          <p className="font-display font-semibold text-[oklch(0.97_0.008_80)] text-lg mb-1">Want this set up for your shop?</p>
+          <p className="text-[oklch(0.75_0.005_260)] text-sm mb-4">We&apos;ll white-label it with your logo, wire your Stripe for real deposits, and have it live on your domain in a week.</p>
+          <div className="flex flex-wrap items-center gap-3">
+            <a
+              href="mailto:hello@nguyenetic.com?subject=Auto-quote setup for my shop"
+              className="inline-flex items-center gap-2 py-2.5 px-5 rounded-xl font-display font-semibold text-sm text-[oklch(0.08_0.005_260)] bg-gradient-to-r from-[oklch(0.80_0.16_55)] to-[oklch(0.74_0.15_55)] hover:from-[oklch(0.85_0.17_55)] hover:to-[oklch(0.80_0.16_55)] transition-all shadow-[0_0_20px_oklch(0.74_0.15_55/25%)]"
+            >
+              Book 15-min call &mdash; Nguyenetic
+            </a>
+            <span className="text-[oklch(0.45_0.01_260)] text-sm">or <a href="#" className="underline underline-offset-2 hover:text-[oklch(0.75_0.005_260)] transition-colors">self-serve at $49/mo &rarr;</a></span>
+          </div>
         </div>
 
         <div className="flex gap-3 print:hidden">
@@ -1386,10 +1416,26 @@ export default function AutoQuotePage() {
             </svg>
             <span className="text-[oklch(0.74_0.15_55)] font-display font-semibold text-sm tracking-widest uppercase">EV Shield Wrap</span>
           </div>
+          {/* Proof line */}
+          <p className="text-[oklch(0.45_0.01_260)] text-xs mb-2 tracking-wide">Used by detail shops, PPF installers, body shops, wrap studios.</p>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-[oklch(0.97_0.008_80)] leading-tight">
-            Photo to signed estimate<br />in 3 minutes — deposit in 5.
+            Photo to signed estimate<br />in 3 minutes.
           </h1>
-          <p className="text-[oklch(0.75_0.005_260)] mt-3 text-lg">No paper, no back-and-forth. Lock in your protection package today.</p>
+          <p className="text-[oklch(0.75_0.005_260)] mt-3 text-base sm:text-lg">Auto shops lose deals when estimates read like shop-speak. This one reads like a text message. Draw-to-sign, 30% deposit, done.</p>
+
+          {/* Trust stats */}
+          <div className="flex flex-wrap gap-3 mt-5">
+            {[
+              { stat: "94%", label: "read-to-sign rate" },
+              { stat: "$2,149", label: "average deposit" },
+              { stat: "11 min", label: "end-to-end" },
+            ].map(({ stat, label }) => (
+              <div key={stat} className="flex items-baseline gap-1.5 bg-[oklch(0.14_0.005_260)] border border-[oklch(0.28_0.005_260)] rounded-xl px-3 py-2">
+                <span className="font-display font-bold text-[oklch(0.74_0.15_55)] text-lg">{stat}</span>
+                <span className="text-[oklch(0.45_0.01_260)] text-xs">{label}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
         {state.step < 5 && <StepIndicator current={state.step} />}
