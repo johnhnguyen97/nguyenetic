@@ -10,6 +10,7 @@ interface LeadCaptureProps {
   buttonLabel?: string;
   onCaptured: (email: string) => void;
   className?: string;
+  metadata?: Record<string, string | number>;
 }
 
 const ROLE_OPTIONS = ["Owner", "Manager", "Marketing", "Other"] as const;
@@ -24,6 +25,7 @@ export function LeadCapture({
   buttonLabel = "Email me a copy",
   onCaptured,
   className = "",
+  metadata,
 }: LeadCaptureProps) {
   const shouldReduce = useReducedMotion();
   const [email, setEmail] = useState("");
@@ -56,6 +58,7 @@ export function LeadCapture({
           company: company || undefined,
           role: role || undefined,
           source: "web",
+          metadata: metadata || undefined,
         }),
       });
       const data = (await res.json()) as { ok: boolean; error?: string };

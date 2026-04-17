@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
+import { LeadCapture } from "@/components/ui/lead-capture"
 
 // ─── Deterministic hash + seeded random ───────────────────────────────────────
 
@@ -817,6 +818,7 @@ function SeoAuditApp() {
   const [businessName, setBusinessName] = useState("")
   const [city, setCity] = useState("")
   const [urlError, setUrlError] = useState("")
+  const [pdfUnlocked, setPdfUnlocked] = useState(false)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const prefersReduced = useRef(
     typeof window !== "undefined"
@@ -887,22 +889,29 @@ function SeoAuditApp() {
 
         <div className="relative flex-1 flex flex-col items-center justify-center px-4 py-20">
           <div className="w-full max-w-xl text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-warm/10 border border-warm/20 text-warm text-xs font-medium mb-8">
-              <svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true">
-                <circle cx="4" cy="4" r="4" fill="currentColor" opacity="0.8" />
-              </svg>
-              Free · No signup · Instant results
-            </div>
+            <p className="text-paper/40 text-xs font-medium mb-5 uppercase tracking-wider">
+              Built for: restaurants, contractors, salons, dental, retail, fitness, auto.
+            </p>
 
-            <h1 className="font-display font-bold text-paper leading-[0.95] mb-4" style={{ fontSize: "clamp(2.5rem, 7vw, 4rem)" }}>
-              Free local SEO audit.
-              <br />
-              <span className="text-warm">Takes 90 seconds.</span>
+            <h1 className="font-display font-bold text-paper leading-[1.0] mb-4" style={{ fontSize: "clamp(2rem, 6vw, 3.5rem)" }}>
+              Why your business isn&apos;t showing up for &ldquo;near me&rdquo; searches.
             </h1>
 
-            <p className="text-paper/50 text-lg mb-10 leading-relaxed max-w-md mx-auto">
-              Paste your URL. Get a scored report on what&apos;s keeping you from page&nbsp;1 for your area.
+            <p className="text-paper/50 text-base mb-8 leading-relaxed max-w-md mx-auto">
+              Local SEO is the one category AI Overviews haven&apos;t eaten yet — but most local businesses still get beat by a chain in a different city. Paste your URL. Get a scored 6-section audit in 90 seconds.
             </p>
+
+            <div className="flex flex-wrap justify-center gap-2 mb-8">
+              {[
+                "0 signups · results in your browser",
+                "Scans 6 categories · 40+ signals",
+                "Free — no card, no limits",
+              ].map(chip => (
+                <span key={chip} className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-paper/50 text-xs">
+                  {chip}
+                </span>
+              ))}
+            </div>
 
             <div className="bg-ink/60 backdrop-blur-md border border-warm/20 rounded-2xl p-6 shadow-[0_4px_32px_oklch(0.05_0.005_260/0.12)] text-left">
               <div className="space-y-3">
@@ -1333,42 +1342,50 @@ function SeoAuditApp() {
           </div>
         </div>
 
-        {/* CTA card */}
-        <div className="bg-gradient-to-br from-warm/15 via-warm/8 to-transparent border border-warm/30 rounded-2xl p-8 text-center">
-          <h2 className="font-display font-bold text-paper text-2xl mb-2">
-            Ready to fix these issues?
-          </h2>
-          <p className="text-paper/50 mb-6 max-w-md mx-auto text-sm leading-relaxed">
-            We&apos;ve helped dozens of local businesses double their Google presence in 90 days. Book a free 15-minute call to get a custom action plan.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a
-              href="mailto:hello@nguyenetic.com?subject=Local SEO Audit - Book a call"
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-warm text-ink font-semibold text-sm hover:bg-warm-hover active:scale-[0.98] transition-all focus:outline-none focus:ring-2 focus:ring-warm/50 focus:ring-offset-2 focus:ring-offset-ink"
-            >
-              Book a 15-min call →
-            </a>
-            <button
-              onClick={() => shareReport(result)}
-              className="no-print inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white/5 text-paper/70 hover:text-paper font-medium text-sm border border-white/10 hover:border-white/20 transition-all focus:outline-none focus:ring-2 focus:ring-warm/40"
-              aria-label="Copy share link for this report"
-            >
-              Share report
-            </button>
+        {/* PDF lead capture gate */}
+        {!pdfUnlocked ? (
+          <LeadCapture
+            appSlug="seo-audit"
+            context="before-pdf-export"
+            buttonLabel="Email me the PDF"
+            onCaptured={() => {
+              setPdfUnlocked(true)
+              window.print()
+            }}
+            metadata={{ score: result.overallScore, grade: result.grade }}
+            className="print:hidden"
+          />
+        ) : (
+          <div className="flex justify-center print:hidden">
             <button
               onClick={printReport}
-              className="no-print inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white/5 text-paper/70 hover:text-paper font-medium text-sm border border-white/10 hover:border-white/20 transition-all focus:outline-none focus:ring-2 focus:ring-warm/40"
-              aria-label="Print or save as PDF"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-warm text-ink font-semibold text-sm hover:bg-warm-hover active:scale-[0.98] transition-all focus:outline-none focus:ring-2 focus:ring-warm/50"
             >
               Download PDF
             </button>
           </div>
+        )}
 
-          <p className="mt-4 text-xs text-paper/25">
-            Or re-audit after you fix: <button onClick={() => setState({ phase: "landing" })} className="underline hover:text-paper/50 transition-colors">run another audit</button>
+        {/* CTA card */}
+        <div className="bg-[oklch(0.14_0.005_260)] border border-[oklch(0.28_0.005_260)] rounded-2xl p-6 print:hidden">
+          <p className="font-display font-semibold text-paper text-lg mb-1">Want us to fix these for you?</p>
+          <p className="text-paper/60 text-sm mb-4 leading-relaxed">
+            We run ongoing SEO retainers for local businesses in the $500&ndash;2,000/mo range &mdash; on-page fixes, schema, GBP optimization, and monthly scorecard reports like this one. Average client goes from D-tier to A-tier in 90 days.
           </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <a
+              href="mailto:hello@nguyenetic.com?subject=Local%20SEO%20retainer%20inquiry&body=My%20site%3A%20[paste%20URL]"
+              className="inline-flex items-center gap-2 py-2.5 px-5 rounded-xl font-display font-semibold text-sm text-[oklch(0.08_0.005_260)] bg-gradient-to-r from-[oklch(0.80_0.16_55)] to-[oklch(0.74_0.15_55)] hover:from-[oklch(0.85_0.17_55)] hover:to-[oklch(0.80_0.16_55)] transition-all shadow-[0_0_20px_oklch(0.74_0.15_55/25%)]"
+            >
+              Book 15-min call &mdash; Nguyenetic
+            </a>
+            <span className="text-paper/40 text-sm">or <a href="#" className="underline underline-offset-2 hover:text-paper/60 transition-colors">monthly scorecard report for $19/mo &rarr;</a></span>
+          </div>
         </div>
+
+        <p className="text-center text-xs text-paper/25 print:hidden">
+          Or re-audit after you fix: <button onClick={() => setState({ phase: "landing" })} className="underline hover:text-paper/50 transition-colors">run another audit</button>
+        </p>
 
         <p className="text-center text-xs text-paper/20 pb-4">
           Report generated {new Date(result.generatedAt).toLocaleString()} · Results are simulated for demonstration
