@@ -123,8 +123,10 @@ export function Logo({ className = "", animated = true, size = "md" }: LogoProps
         <>
           <motion.circle
             r="1.5"
+            cx={30}
+            cy={28}
             fill="var(--color-accent-cyber)"
-            initial={{ opacity: 0 }}
+            initial={{ opacity: 0, cx: 30, cy: 28 }}
             animate={{
               opacity: [0, 1, 0],
               cx: [30, 50, 70],
@@ -139,8 +141,10 @@ export function Logo({ className = "", animated = true, size = "md" }: LogoProps
           />
           <motion.circle
             r="1.5"
+            cx={70}
+            cy={28}
             fill="var(--color-accent-sakura)"
-            initial={{ opacity: 0 }}
+            initial={{ opacity: 0, cx: 70, cy: 28 }}
             animate={{
               opacity: [0, 1, 0],
               cx: [70, 50, 30],

@@ -211,8 +211,10 @@ export function ZenCircuit({ className }: ZenCircuitProps) {
         {/* Energy particles flowing to center */}
         <motion.circle
           r="4"
+          cx={280}
+          cy={280}
           fill="var(--color-accent-cyber)"
-          initial={{ opacity: 0 }}
+          initial={{ opacity: 0, cx: 280, cy: 280 }}
           animate={{
             opacity: [0, 1, 0],
             cx: [280, 340, 400],
@@ -227,8 +229,10 @@ export function ZenCircuit({ className }: ZenCircuitProps) {
         />
         <motion.circle
           r="4"
+          cx={520}
+          cy={520}
           fill="var(--color-accent-sakura)"
-          initial={{ opacity: 0 }}
+          initial={{ opacity: 0, cx: 520, cy: 520 }}
           animate={{
             opacity: [0, 1, 0],
             cx: [520, 460, 400],

@@ -21,6 +21,7 @@ uniform vec2 uResolution;
 
 varying vec2 vUv;
 
+// Simplex noise
 vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
 vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
 vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }
@@ -48,57 +49,81 @@ float snoise(vec2 v) {
   return 130.0 * dot(m, g);
 }
 
+// Distance to nearest "stone" for concentric arcs
+float stoneField(vec2 p) {
+  // Three implied stone positions creating concentric rake patterns
+  vec2 s1 = vec2(-0.35, -0.10);
+  vec2 s2 = vec2(0.28, 0.15);
+  vec2 s3 = vec2(0.05, -0.30);
+  float d = min(length(p - s1), min(length(p - s2), length(p - s3)));
+  return d;
+}
+
 void main() {
   vec2 uv = vUv;
   float aspect = uResolution.x / uResolution.y;
   vec2 p = (uv - 0.5) * vec2(aspect, 1.0);
 
-  float t = uTime * 0.15;
+  float t = uTime * 0.08;
 
+  // Mouse in world space
   vec2 mouse = (uMouse - 0.5) * vec2(aspect, 1.0);
   float mouseDist = length(p - mouse);
-  float mouseInfluence = smoothstep(0.6, 0.0, mouseDist);
+  float mouseInfluence = smoothstep(0.5, 0.0, mouseDist);
 
-  // Layer 1: Flowing raked sand lines
-  float lineFreq = 25.0;
-  float lineWarp = snoise(vec2(uv.y * 3.0 + t, uv.x * 0.5)) * 1.5;
-  float mouseWarp = mouseInfluence * sin(mouseDist * 20.0 - uTime * 1.5) * 0.8;
-  float lines = sin((uv.x + lineWarp + mouseWarp) * lineFreq) * 0.5 + 0.5;
-  lines = smoothstep(0.3, 0.7, lines);
+  // === Concentric rake patterns around implied stones ===
+  float stoneD = stoneField(p);
+  float rakeFreq = 55.0;
+  float rakeWarp = snoise(p * 2.5 + vec2(t, t * 0.7)) * 0.02;
+  float rakeLines = sin((stoneD + rakeWarp) * rakeFreq) * 0.5 + 0.5;
+  rakeLines = smoothstep(0.4, 0.6, rakeLines);
+  // Fade lines far from stones (outer area is mostly smooth sand)
+  rakeLines *= smoothstep(1.2, 0.2, stoneD);
 
-  // Layer 2: Large flowing noise field
-  float flow1 = snoise(p * 1.5 + vec2(t * 0.5, t * 0.3)) * 0.5 + 0.5;
-  float flow2 = snoise(p * 2.5 + vec2(-t * 0.3, t * 0.4)) * 0.5 + 0.5;
-  float flow = mix(flow1, flow2, 0.5);
+  // === Large slow dune noise -- breaks up the flatness of empty sand ===
+  float dune = snoise(p * 1.2 + vec2(t * 0.3, -t * 0.2)) * 0.5 + 0.5;
 
-  // Layer 3: Concentric zen ripples from center
+  // === Fine sand grain -- high-frequency subtle texture ===
+  float grain1 = snoise(p * 60.0) * 0.5 + 0.5;
+  float grain2 = snoise(p * 140.0 + vec2(7.3, 2.1)) * 0.5 + 0.5;
+  float grain = grain1 * 0.6 + grain2 * 0.4;
+
+  // === Mouse proximity: reveals rake lines more strongly ===
+  float mouseReveal = mouseInfluence;
+
+  // === Colors -- COOL NEUTRAL SAND, not amber ===
+  vec3 ink = vec3(0.031, 0.024, 0.051);              // deep ink blue-black
+  vec3 sandDeep = vec3(0.11, 0.095, 0.078);          // deepest sand shadow
+  vec3 sandMid = vec3(0.185, 0.165, 0.135);          // midtone sand
+  vec3 sandHigh = vec3(0.26, 0.23, 0.19);            // highlight sand
+  vec3 warmGlow = vec3(1.0, 0.58, 0.22);             // warm amber -- mouse glow only
+
+  // Base ink -> sand transition based on dune (creates darker/lighter zones)
+  vec3 color = mix(ink, sandDeep, dune * 0.6);
+  color = mix(color, sandMid, dune * 0.8);
+
+  // Rake line ridges -- lighter sand color where ridges lift
+  color = mix(color, sandHigh, rakeLines * 0.5);
+
+  // Extra reveal near mouse
+  color = mix(color, sandHigh, rakeLines * mouseReveal * 0.4);
+  color = mix(color, mix(sandHigh, warmGlow, 0.4), mouseReveal * 0.3);
+
+  // Fine grain adds texture
+  color += (grain - 0.5) * 0.025;
+
+  // Warm mouse glow spot (gaussian falloff)
+  float glowFalloff = exp(-mouseDist * mouseDist * 6.0);
+  color += warmGlow * glowFalloff * 0.22;
+
+  // Vignette darkens edges toward pure ink
   float centerDist = length(p);
-  float ripple = sin(centerDist * 12.0 - uTime * 0.8) * 0.5 + 0.5;
-  ripple *= smoothstep(1.2, 0.0, centerDist);
+  float vignette = smoothstep(1.5, 0.3, centerDist);
+  color = mix(ink, color, vignette * 0.85 + 0.15);
 
-  // Layer 4: Mouse proximity glow
-  float glow = exp(-mouseDist * mouseDist * 8.0) * 0.6;
-
-  vec3 ink = vec3(0.031, 0.024, 0.051);
-  vec3 inkLight = vec3(0.055, 0.043, 0.082);
-  vec3 warmDark = vec3(0.35, 0.18, 0.05);
-  vec3 warmMid = vec3(0.75, 0.42, 0.12);
-  vec3 warmLight = vec3(1.0, 0.65, 0.28);
-
-  vec3 color = ink;
-  color = mix(color, inkLight, lines * 0.4);
-  color = mix(color, warmDark, lines * flow * 0.15);
-  color = mix(color, inkLight, flow * 0.12);
-  color = mix(color, warmDark, ripple * 0.08);
-  color = mix(color, warmMid, glow * 0.5);
-  color = mix(color, warmLight, glow * mouseInfluence * 0.3);
-  color = mix(color, warmDark, lines * mouseInfluence * 0.25);
-
-  float vignette = 1.0 - smoothstep(0.4, 1.4, centerDist);
-  color *= 0.7 + vignette * 0.3;
-
-  float grain = (fract(sin(dot(uv * uTime * 100.0, vec2(12.9898, 78.233))) * 43758.5453) - 0.5) * 0.03;
-  color += grain;
+  // Subtle film grain overlay
+  float filmGrain = fract(sin(dot(uv * (uTime * 10.0 + 1.0), vec2(12.9898, 78.233))) * 43758.5453);
+  color += (filmGrain - 0.5) * 0.015;
 
   gl_FragColor = vec4(color, 1.0);
 }
