@@ -1,10 +1,173 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { Code, TrendingUp, Share2, Search, Palette, Sparkles } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
+import { useState } from "react"
 
 const springEase = [0.22, 1, 0.36, 1] as const
+
+// Mini SVG demos — each < 30 lines, just teaser visuals
+function DevMiniDemo() {
+  return (
+    <svg width="100%" height="28" viewBox="0 0 180 28" className="opacity-80" aria-hidden>
+      {["const", "async", "return", "export"].map((word, i) => (
+        <motion.text
+          key={word}
+          x={i * 44 + 4}
+          y="18"
+          fontSize="10"
+          fontFamily="monospace"
+          fill="#ff8a3d"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0.4, 1, 0.4] }}
+          transition={{ duration: 1.6, repeat: Infinity, delay: i * 0.25 }}
+        >
+          {word}
+        </motion.text>
+      ))}
+      <motion.rect
+        x="0" y="22" height="2" rx="1"
+        fill="#ff8a3d"
+        initial={{ width: 0 }}
+        animate={{ width: [0, 180, 0] }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+      />
+    </svg>
+  )
+}
+
+function MarketingMiniDemo() {
+  const pts = [0, 14, 7, 4, 18, 2, 12, 8, 22, 1].map((v, i) => `${i * 20},${26 - v * 1.2}`)
+  return (
+    <svg width="100%" height="28" viewBox="0 0 180 28" aria-hidden>
+      <motion.polyline
+        points={pts.join(" ")}
+        fill="none"
+        stroke="#ff8a3d"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 1.5, ease: "easeInOut" }}
+      />
+      {pts.map((p, i) => {
+        const [x, y] = p.split(",")
+        return (
+          <motion.circle
+            key={i}
+            cx={x} cy={y} r="2.5"
+            fill="#ff8a3d"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: i * 0.12, duration: 0.3 }}
+          />
+        )
+      })}
+    </svg>
+  )
+}
+
+function SocialMiniDemo() {
+  return (
+    <svg width="100%" height="28" viewBox="0 0 180 28" aria-hidden>
+      {[30, 90, 150].map((cx, i) => (
+        <g key={cx}>
+          <circle cx={cx} cy="14" r="7" fill="none" stroke="#ff8a3d" strokeWidth="1.5" opacity="0.6" />
+          {i < 2 && (
+            <motion.line
+              x1={cx + 7} y1="14" x2={cx + 53} y2="14"
+              stroke="#ff8a3d" strokeWidth="1" strokeDasharray="4 3"
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: 1 }}
+              transition={{ delay: i * 0.3, duration: 0.6 }}
+            />
+          )}
+          <motion.circle
+            cx={cx} cy="14" r="3"
+            fill="#ff8a3d"
+            initial={{ scale: 0 }}
+            animate={{ scale: [0, 1.4, 1] }}
+            transition={{ delay: i * 0.2, duration: 0.5 }}
+          />
+        </g>
+      ))}
+    </svg>
+  )
+}
+
+function SeoMiniDemo() {
+  const bars = [60, 80, 45, 95, 70]
+  return (
+    <svg width="100%" height="28" viewBox="0 0 180 28" aria-hidden>
+      {bars.map((pct, i) => (
+        <motion.rect
+          key={i}
+          x={i * 36 + 2}
+          y={28 - (pct / 100) * 24}
+          width="22"
+          rx="2"
+          fill="#ff8a3d"
+          opacity={0.3 + i * 0.14}
+          initial={{ height: 0, y: 28 }}
+          animate={{ height: (pct / 100) * 24, y: 28 - (pct / 100) * 24 }}
+          transition={{ delay: i * 0.1, duration: 0.6, ease: springEase }}
+        />
+      ))}
+    </svg>
+  )
+}
+
+function DesignMiniDemo() {
+  const swatches = ["#ff8a3d", "#080618", "#f5f0eb", "#6b5e8a", "#c4a882"]
+  return (
+    <svg width="100%" height="28" viewBox="0 0 180 28" aria-hidden>
+      {swatches.map((c, i) => (
+        <motion.rect
+          key={c}
+          x={i * 36} y="4"
+          width="28" height="20"
+          rx="4"
+          fill={c}
+          initial={{ opacity: 0, scale: 0.6 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: i * 0.08, duration: 0.4, ease: springEase }}
+        />
+      ))}
+    </svg>
+  )
+}
+
+function AiMiniDemo() {
+  return (
+    <svg width="100%" height="28" viewBox="0 0 180 28" aria-hidden>
+      {Array.from({ length: 6 }).map((_, i) => (
+        <motion.circle
+          key={i}
+          cx={i * 30 + 15}
+          cy="14"
+          r="5"
+          fill="none"
+          stroke="#ff8a3d"
+          strokeWidth="1.5"
+          initial={{ scale: 0.5, opacity: 0.2 }}
+          animate={{ scale: [0.5, 1.2, 0.5], opacity: [0.2, 0.9, 0.2] }}
+          transition={{ duration: 2, repeat: Infinity, delay: i * 0.18 }}
+        />
+      ))}
+    </svg>
+  )
+}
+
+const MINI_DEMOS = {
+  Development: DevMiniDemo,
+  Marketing: MarketingMiniDemo,
+  Social: SocialMiniDemo,
+  SEO: SeoMiniDemo,
+  Design: DesignMiniDemo,
+  "AI Solutions": AiMiniDemo,
+} as const
 
 const services = [
   {
@@ -59,6 +222,7 @@ const services = [
 
 export function Services() {
   const { t } = useLanguage()
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null)
 
   return (
     <section id="services" className="relative py-32 px-6 overflow-hidden bg-ink">
@@ -85,6 +249,9 @@ export function Services() {
           {services.map((service, i) => {
             const Icon = service.icon
             const isWide = service.wide
+            const MiniDemo = MINI_DEMOS[service.titleEN as keyof typeof MINI_DEMOS]
+            const isHovered = hoveredIdx === i
+
             return (
               <motion.div
                 key={service.titleEN}
@@ -93,12 +260,34 @@ export function Services() {
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ delay: i * 0.08, duration: 0.7, ease: springEase }}
                 whileHover={{ scale: 1.02, y: -2 }}
-                className={`group relative p-6 rounded-2xl bg-ink/60 backdrop-blur-md border border-warm/40 hover:border-warm transition-all duration-300 cursor-default ${
-                  isWide ? "lg:col-span-2" : ""
-                }`}
+                onHoverStart={() => setHoveredIdx(i)}
+                onHoverEnd={() => setHoveredIdx(null)}
+                className={`group relative p-6 rounded-2xl bg-ink/60 backdrop-blur-md border transition-all duration-300 cursor-default ${
+                  isHovered ? "border-warm/60" : "border-warm/40"
+                } ${isWide ? "lg:col-span-2" : ""}`}
               >
+                {/* Live demo indicator */}
+                <AnimatePresence>
+                  {isHovered && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute top-4 right-4 flex items-center gap-1.5"
+                    >
+                      <motion.span
+                        className="w-1.5 h-1.5 rounded-full bg-warm"
+                        animate={{ scale: [1, 1.5, 1], opacity: [1, 0.5, 1] }}
+                        transition={{ duration: 1.2, repeat: Infinity }}
+                      />
+                      <span className="text-[9px] uppercase tracking-[0.2em] text-warm font-mono">live demo</span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
                 {/* Icon */}
-                <div className="mb-6">
+                <div className="mb-4">
                   <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-warm/10 border border-warm/20 group-hover:bg-warm/20 transition-colors">
                     <Icon className="w-5 h-5 text-warm" />
                   </div>
@@ -109,13 +298,32 @@ export function Services() {
                   <h3 className="font-display font-bold text-paper text-lg mb-2">
                     {t(service.titleEN, service.titleJA)}
                   </h3>
-                  <p className="text-paper/70 text-sm leading-relaxed">
+                  <p className="text-paper/70 text-sm leading-relaxed mb-4">
                     {t(service.descEN, service.descJA)}
                   </p>
                 </div>
 
-                {/* Subtle corner accent */}
-                <div className="absolute top-4 right-4 w-1.5 h-1.5 rounded-full bg-warm/30 group-hover:bg-warm/60 transition-colors" />
+                {/* Mini demo area */}
+                <AnimatePresence>
+                  {isHovered && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.25, ease: springEase }}
+                      className="overflow-hidden"
+                    >
+                      <div className="pt-3 border-t border-warm/10">
+                        <MiniDemo />
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Corner accent — hidden when live demo indicator is showing */}
+                {!isHovered && (
+                  <div className="absolute top-4 right-4 w-1.5 h-1.5 rounded-full bg-warm/30 group-hover:bg-warm/60 transition-colors" />
+                )}
               </motion.div>
             )
           })}
