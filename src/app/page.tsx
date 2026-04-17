@@ -6,6 +6,7 @@ import { Header } from "@/components/layout/Header"
 import { Hero } from "@/components/sections/Hero"
 import { Work } from "@/components/sections/Work"
 import { Services } from "@/components/sections/Services"
+import { Playground } from "@/components/sections/Playground"
 import { ChatbotDemo } from "@/components/ui/chatbot-demo"
 import { ScrollProgress } from "@/components/ui/scroll-progress"
 import { CursorGlow } from "@/components/ui/cursor-glow"
@@ -148,6 +149,7 @@ export default function Home() {
         <Hero />
         <Services />
         <Work />
+        <Playground />
 
         {/* About Section */}
         <section id="about" className="py-32 px-6 bg-card/50">
