@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import { ChefHat, LayoutDashboard, ArrowLeft } from "lucide-react"
+import { motion } from "framer-motion"
 import { StepDate } from "./components/StepDate"
 import { StepGuest } from "./components/StepGuest"
 import { StepCheckout } from "./components/StepCheckout"
@@ -11,6 +12,7 @@ import { StepConfirmation } from "./components/StepConfirmation"
 import { OwnerDashboard } from "./components/OwnerDashboard"
 import { ManageModal } from "./components/ManageModal"
 import type { GuestDetails } from "./components/StepGuest"
+import { LeadCapture } from "@/components/ui/lead-capture"
 
 type Step = 1 | 2 | 3 | 4
 
@@ -51,8 +53,17 @@ function ReservationPageInner() {
   const [confirmationId] = useState(generateConfirmationId)
   const [ownerView, setOwnerView] = useState(false)
   const [showManage, setShowManage] = useState(false)
+  const [leadCaptured, setLeadCaptured] = useState(false)
+
+  // No-show calculator state
+  const [calcBookings, setCalcBookings] = useState(80)
+  const [calcNoShowRate, setCalcNoShowRate] = useState(22)
+  const [calcTicket, setCalcTicket] = useState(85)
 
   const deposit = party * DEPOSIT_PER_PERSON
+
+  const weeklyLoss = Math.round(calcBookings * (calcNoShowRate / 100) * calcTicket * 0.6)
+  const weeklySavings = Math.round(weeklyLoss * 0.8)
 
   // Sync URL params when key state changes
   const syncUrl = useCallback((newDate: string, newTime: string, newParty: number, newStep: Step) => {
@@ -152,6 +163,76 @@ function ReservationPageInner() {
           </button>
         </div>
 
+        {/* Hero + calculator — only in guest view, only before confirmation */}
+        {!ownerView && step < 4 && (
+          <div className="mb-8">
+            <h1 className="font-display text-2xl sm:text-3xl font-bold text-[#f5f5f0] leading-tight mb-2">
+              Stop no-shows from draining your week.
+            </h1>
+            <p className="text-[#f5f5f0]/50 text-sm mb-5">
+              Capture a 25% deposit at booking. Smart SMS confirms. One-tap reschedules instead of ghosts. See how much you&apos;d save below.
+            </p>
+
+            {/* Cost-of-no-shows calculator */}
+            <div className="bg-[#080618]/60 border border-[#ff8a3d]/20 rounded-2xl p-4 space-y-4">
+              <p className="text-[#f5f5f0]/60 text-xs uppercase tracking-wider">No-show cost calculator</p>
+
+              <div className="space-y-3">
+                <div>
+                  <div className="flex justify-between text-xs text-[#f5f5f0]/50 mb-1">
+                    <span>Bookings per week</span>
+                    <span className="text-[#f5f5f0]/80 font-medium">{calcBookings}</span>
+                  </div>
+                  <input type="range" min={10} max={500} step={5} value={calcBookings}
+                    onChange={e => setCalcBookings(Number(e.target.value))}
+                    className="w-full accent-[#ff8a3d] h-1.5 rounded-full"
+                    aria-label="Bookings per week"
+                  />
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-xs text-[#f5f5f0]/50 mb-1">
+                    <span>No-show rate today</span>
+                    <span className="text-[#f5f5f0]/80 font-medium">{calcNoShowRate}%</span>
+                  </div>
+                  <input type="range" min={5} max={40} step={1} value={calcNoShowRate}
+                    onChange={e => setCalcNoShowRate(Number(e.target.value))}
+                    className="w-full accent-[#ff8a3d] h-1.5 rounded-full"
+                    aria-label="No-show rate"
+                  />
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-xs text-[#f5f5f0]/50 mb-1">
+                    <span>Average ticket size</span>
+                    <span className="text-[#f5f5f0]/80 font-medium">${calcTicket}</span>
+                  </div>
+                  <input type="range" min={20} max={500} step={5} value={calcTicket}
+                    onChange={e => setCalcTicket(Number(e.target.value))}
+                    className="w-full accent-[#ff8a3d] h-1.5 rounded-full"
+                    aria-label="Average ticket size"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-2 border-t border-[#ff8a3d]/10">
+                <motion.p
+                  key={weeklyLoss}
+                  initial={{ opacity: 0.5 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.15 }}
+                  className="font-display font-bold text-[#ff8a3d] text-2xl"
+                >
+                  ${weeklyLoss.toLocaleString()} leaving the building every week
+                </motion.p>
+                <p className="text-[#f5f5f0]/40 text-xs mt-1">
+                  With a 25% deposit, 4 out of 5 no-shows rebook. You&apos;d save <span className="text-[#ff8a3d]/80 font-medium">${weeklySavings.toLocaleString()}</span>.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Owner dashboard */}
         {ownerView ? (
           <OwnerDashboard
@@ -233,16 +314,45 @@ function ReservationPageInner() {
               )}
 
               {step === 4 && (
-                <StepConfirmation
-                  date={date}
-                  time={time}
-                  party={party}
-                  deposit={deposit}
-                  guestName={guest.name}
-                  guestEmail={guest.email}
-                  confirmationId={confirmationId}
-                  onManage={() => setShowManage(true)}
-                />
+                <>
+                  <StepConfirmation
+                    date={date}
+                    time={time}
+                    party={party}
+                    deposit={deposit}
+                    guestName={guest.name}
+                    guestEmail={guest.email}
+                    confirmationId={confirmationId}
+                    onManage={() => setShowManage(true)}
+                  />
+
+                  {/* Lead capture gate */}
+                  {!leadCaptured && (
+                    <div className="mt-5">
+                      <LeadCapture
+                        appSlug="reservation"
+                        context="after-booking-demo"
+                        buttonLabel="Email me the deposit policy template"
+                        onCaptured={() => setLeadCaptured(true)}
+                      />
+                    </div>
+                  )}
+
+                  {/* Funnel CTA */}
+                  <div className="mt-5 bg-[#080618]/60 border border-[#ff8a3d]/20 rounded-2xl p-5">
+                    <p className="font-display font-semibold text-[#f5f5f0] text-base mb-1">Get this running on your own booking page.</p>
+                    <p className="text-[#f5f5f0]/50 text-sm mb-4">We plug this into OpenTable / Tock / Square Appointments / your own calendar. Live deposits, live SMS, done in under a week.</p>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <a
+                        href="mailto:hello@nguyenetic.com?subject=Deposit Guardian setup"
+                        className="inline-flex items-center gap-2 py-2.5 px-4 rounded-xl font-display font-semibold text-sm text-[#080618] bg-gradient-to-r from-[#ffb68d] to-[#ff8a3d] hover:from-[#ffc9a8] hover:to-[#ff9f5e] transition-all shadow-[0_0_20px_rgba(255,138,61,0.25)]"
+                      >
+                        Book 15-min call &mdash; Nguyenetic
+                      </a>
+                      <span className="text-[#f5f5f0]/30 text-sm">or <a href="#" className="underline underline-offset-2 hover:text-[#f5f5f0]/60 transition-colors">self-serve at $29/mo &rarr;</a></span>
+                    </div>
+                  </div>
+                </>
               )}
             </div>
           </>
