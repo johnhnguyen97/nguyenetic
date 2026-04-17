@@ -39,6 +39,9 @@ yarn-error.log*
 # brainstorming scratch
 .superpowers/
 
+# lead capture data (contains PII — never commit)
+/data/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
