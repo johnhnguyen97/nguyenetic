@@ -35,7 +35,7 @@ export default function Home() {
           >
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               <div>
-                <p className="text-sm tracking-[0.3em] text-accent-gold mb-4 font-mono">
+                <p className="text-sm tracking-[0.3em] text-warm mb-4 font-mono">
                   {t("About Me", "私について")}
                 </p>
                 <h2 className="text-[clamp(1.75rem,4vw,3rem)] font-bold mb-2">
@@ -73,19 +73,19 @@ export default function Home() {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="p-6 rounded-2xl border border-border bg-background hover:border-accent-cyber/50 transition-colors">
-                  <div className="text-3xl font-bold text-accent-cyber mb-2">50+</div>
+                <div className="p-6 rounded-2xl border border-border bg-background hover:border-warm/50 transition-colors">
+                  <div className="text-3xl font-bold text-warm mb-2">50+</div>
                   <div className="text-sm text-muted-foreground">{t("Projects Delivered", "納品プロジェクト")}</div>
                 </div>
-                <div className="p-6 rounded-2xl border border-border bg-background hover:border-accent-sakura/50 transition-colors">
-                  <div className="text-3xl font-bold text-accent-sakura mb-2">100%</div>
+                <div className="p-6 rounded-2xl border border-border bg-background hover:border-warm/50 transition-colors">
+                  <div className="text-3xl font-bold text-warm mb-2">100%</div>
                   <div className="text-sm text-muted-foreground">{t("Client Satisfaction", "顧客満足度")}</div>
                 </div>
-                <div className="p-6 rounded-2xl border border-border bg-background hover:border-accent-gold/50 transition-colors">
-                  <div className="text-3xl font-bold text-accent-gold mb-2">5+</div>
+                <div className="p-6 rounded-2xl border border-border bg-background hover:border-warm/50 transition-colors">
+                  <div className="text-3xl font-bold text-warm mb-2">5+</div>
                   <div className="text-sm text-muted-foreground">{t("Years Experience", "年の経験")}</div>
                 </div>
-                <div className="p-6 rounded-2xl border border-border bg-background hover:border-white/30 transition-colors">
+                <div className="p-6 rounded-2xl border border-border bg-background hover:border-warm/50 transition-colors">
                   <div className="text-3xl font-bold text-foreground mb-2">24/7</div>
                   <div className="text-sm text-muted-foreground">{t("Support Available", "サポート対応")}</div>
                 </div>
@@ -103,7 +103,7 @@ export default function Home() {
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="max-w-4xl mx-auto text-center"
           >
-            <p className="text-sm tracking-[0.3em] text-accent-cyber mb-4 font-mono">
+            <p className="text-sm tracking-[0.3em] text-warm mb-4 font-mono">
               {t("Contact", "お問い合わせ")}
             </p>
             <h2 className="text-[clamp(1.75rem,4vw,3rem)] font-bold mb-2">
@@ -120,7 +120,7 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a
                 href="mailto:hello@nguyenetic.com"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-foreground text-background rounded-full font-medium hover:scale-105 transition-transform"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-warm text-ink rounded-full font-medium hover:bg-warm-hover transition-colors"
               >
                 {t("Start a Project", "プロジェクトを始める")}
               </a>
@@ -128,7 +128,7 @@ export default function Home() {
                 href="https://calendly.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-8 py-4 border border-border rounded-full font-medium hover:border-accent-cyber hover:text-accent-cyber transition-colors"
+                className="inline-flex items-center gap-2 px-8 py-4 border border-warm/40 rounded-full font-medium hover:border-warm hover:text-warm transition-colors"
               >
                 {t("Schedule a Call", "通話を予約")}
               </a>
@@ -138,7 +138,7 @@ export default function Home() {
               <p className="text-sm text-muted-foreground mb-4">{t("Or reach out directly", "または直接お問い合わせください")}</p>
               <a
                 href="mailto:hello@nguyenetic.com"
-                className="text-xl font-medium hover:text-accent-cyber transition-colors"
+                className="text-xl font-medium hover:text-warm transition-colors"
               >
                 hello@nguyenetic.com
               </a>
