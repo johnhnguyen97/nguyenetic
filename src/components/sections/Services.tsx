@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Code, TrendingUp, Share2, Search, Palette, Sparkles } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { useState } from "react"
+import { GlassTile } from "@/components/ui/glass-tile"
 
 const springEase = [0.22, 1, 0.36, 1] as const
 
@@ -253,8 +254,9 @@ export function Services() {
             const isHovered = hoveredIdx === i
 
             return (
-              <motion.div
+              <GlassTile
                 key={service.titleEN}
+                interactive
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
@@ -262,9 +264,7 @@ export function Services() {
                 whileHover={{ scale: 1.02, y: -2 }}
                 onHoverStart={() => setHoveredIdx(i)}
                 onHoverEnd={() => setHoveredIdx(null)}
-                className={`group relative p-6 rounded-2xl bg-ink/60 backdrop-blur-md border transition-all duration-300 cursor-default ${
-                  isHovered ? "border-warm/60" : "border-warm/40"
-                } ${isWide ? "lg:col-span-2" : ""}`}
+                className={`group relative cursor-default ${isWide ? "lg:col-span-2" : ""}`}
               >
                 {/* Live demo indicator */}
                 <AnimatePresence>
@@ -324,7 +324,7 @@ export function Services() {
                 {!isHovered && (
                   <div className="absolute top-4 right-4 w-1.5 h-1.5 rounded-full bg-warm/30 group-hover:bg-warm/60 transition-colors" />
                 )}
-              </motion.div>
+              </GlassTile>
             )
           })}
         </div>

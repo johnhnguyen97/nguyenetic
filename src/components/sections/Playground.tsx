@@ -9,6 +9,7 @@ import { ContentGenerator } from "@/components/demos/ContentGenerator"
 import { DesignSystemExtractor } from "@/components/demos/DesignSystemExtractor"
 import { InkBrushUnderline } from "@/components/ui/ink-brush"
 import { useLanguage } from "@/lib/language-context"
+import { GLASS_TILE_CLASSES } from "@/components/ui/glass-tile"
 
 type DemoKey = "seo" | "pricing" | "content" | "design"
 
@@ -129,10 +130,10 @@ export function Playground() {
                 aria-controls={`panel-${demo.key}`}
                 id={`tab-${demo.key}`}
                 onClick={() => setActiveKey(demo.key)}
-                className={`group relative flex items-center gap-3 rounded-xl px-5 py-4 text-left transition-all duration-300 backdrop-blur-md focus:outline-none focus-visible:ring-2 focus-visible:ring-warm/70 ${
+                className={`group relative flex items-center gap-3 rounded-xl px-5 py-4 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-warm/70 ${
                   isActive
-                    ? "bg-ink/70 border border-warm/60 shadow-[0_0_60px_oklch(0.74_0.15_55/0.10)]"
-                    : "bg-ink/30 border border-warm/15 hover:border-warm/40"
+                    ? GLASS_TILE_CLASSES.active
+                    : GLASS_TILE_CLASSES.interactive
                 }`}
               >
                 <div
