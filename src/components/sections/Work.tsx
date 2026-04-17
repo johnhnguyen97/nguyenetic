@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
 import { ArrowUpRight } from "lucide-react"
 import Link from "next/link"
@@ -86,434 +86,593 @@ const liveProducts: LiveProduct[] = [
   },
 ]
 
-// ── Client work data ───────────────────────────────────────────────────────────
+// ── Animated micro-previews ────────────────────────────────────────────────────
 
-const projects = [
-  {
-    id: "moxie",
-    title: "GoJUN",
-    descEN: "AI-powered Japanese learning SaaS with real-time flashcards, spaced repetition, and adaptive vocabulary engine.",
-    descJA: "リアルタイムフラッシュカード、間隔反復、適応型語彙エンジンを備えたAI搭載日本語学習SaaS。",
-    stack: ["Next.js", "React", "TypeScript", "Supabase"],
-    featured: true,
-    url: "https://gojun.vercel.app/",
-  },
-  {
-    id: "ryoanji",
-    title: "Fast Fix Whitemarsh",
-    descEN: "Full digital transformation — website, SEO strategy, and Google Ads campaigns driving local bookings.",
-    descJA: "ウェブサイト、SEO戦略、Google広告で地元の予約を促進する完全なデジタルトランスフォーメーション。",
-    stack: ["Next.js", "Sanity", "Tailwind"],
-    featured: false,
-    url: "https://www.fastfixwhitemarsh.com/",
-  },
-  {
-    id: "zenwave",
-    title: "EV Wrap",
-    descEN: "High-converting lead gen site with instant quote calculator and automated capture system.",
-    descJA: "即時見積もり計算機と自動キャプチャシステムを備えた高コンバージョンのリードジェン。",
-    stack: ["Next.js", "Vercel", "Framer Motion"],
-    featured: false,
-    url: "https://evwrap-git-development-nguyenetics-projects.vercel.app/",
-  },
-  {
-    id: "ichiban",
-    title: "Ichiban Restaurant",
-    descEN: "Elegant restaurant experience with dynamic menu CMS, reservation system, and brand storytelling.",
-    descJA: "動的メニューCMS、予約システム、ブランドストーリーテリングを備えたエレガントなレストラン体験。",
-    stack: ["Next.js", "Sanity", "TypeScript"],
-    featured: false,
-    url: "https://ichiban-website-taupe.vercel.app/",
-  },
-  {
-    id: "shibui",
-    title: "Zen Dashboard",
-    descEN: "Internal analytics platform with real-time data visualization and AI-driven performance insights.",
-    descJA: "リアルタイムデータ可視化とAI駆動のパフォーマンスインサイトを備えた内部分析プラットフォーム。",
-    stack: ["React", "TypeScript", "OpenAI", "Supabase"],
-    featured: false,
-    url: "#work",
-  },
-  {
-    id: "kaizen",
-    title: "Nguyenetic Studio",
-    descEN: "Branding, motion, and editorial design system built on Tailwind tokens and Framer Motion primitives.",
-    descJA: "TailwindトークンとFramer Motionプリミティブで構築したブランディング・モーション・エディトリアルデザインシステム。",
-    stack: ["Tailwind", "Framer Motion", "Vercel"],
-    featured: false,
-    wide: true,
-    url: "#work",
-  },
-]
-
-// ── Animated previews (client-work tiles — unchanged) ─────────────────────────
-
-function GoJunPreview() {
+function AutoQuotePreview() {
   const reduce = useReducedMotion()
-  const chartPoints = [18, 32, 24, 45, 38, 58, 52, 71, 65, 82]
-  const w = 160
-  const h = 56
-  const pts = chartPoints
-    .map((v, i) => `${(i / (chartPoints.length - 1)) * w},${h - (v / 100) * h}`)
-    .join(" ")
+  // SVG path for a cursive-ish signature flourish (140×50 viewBox)
+  const pathD = "M 10 40 C 30 10, 50 10, 70 30 C 90 50, 100 20, 130 15"
 
   return (
     <div
       aria-hidden="true"
-      className="absolute inset-0 pointer-events-none select-none bg-ink/90 flex flex-col gap-3 p-5 overflow-hidden"
+      className="w-full h-36 flex flex-col items-center justify-center gap-3 overflow-hidden"
     >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <motion.span
-            animate={reduce ? {} : { opacity: [1, 0.3, 1] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="w-2 h-2 rounded-full bg-green-400"
-          />
-          <span className="text-[10px] font-mono text-paper/60">ACTIVE SESSION</span>
-        </div>
-        <span className="text-[10px] font-mono text-warm">🔥 14 day streak</span>
+      <p className="text-[9px] font-mono text-paper/40 uppercase tracking-widest">Estimate · Signed</p>
+      <svg width="140" height="50" viewBox="0 0 140 50" className="overflow-visible">
+        <motion.path
+          d={pathD}
+          fill="none"
+          stroke="#D4A843"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={
+            reduce
+              ? { pathLength: 1, opacity: 1 }
+              : {
+                  pathLength: [0, 1, 1, 0],
+                  opacity: [0, 1, 1, 0],
+                }
+          }
+          transition={
+            reduce
+              ? { duration: 0 }
+              : { duration: 4, times: [0, 0.55, 0.85, 1], repeat: Infinity, ease: "easeInOut" }
+          }
+        />
+        {/* Arrow shift hint */}
+        <motion.g
+          initial={{ opacity: 0 }}
+          animate={reduce ? { opacity: 1 } : { opacity: [0, 0, 1, 1, 0] }}
+          transition={{ duration: 4, times: [0, 0.5, 0.6, 0.85, 1], repeat: Infinity }}
+        >
+          <text x="28" y="48" fontSize="7" fill="#D4A84380" fontFamily="monospace">estimate</text>
+          <text x="72" y="48" fontSize="8" fill="#D4A843" fontFamily="monospace">→</text>
+          <text x="84" y="48" fontSize="7" fill="#6ee7b7" fontFamily="monospace">signed</text>
+        </motion.g>
+      </svg>
+    </div>
+  )
+}
+
+function ReservationPreview() {
+  const reduce = useReducedMotion()
+  const target = 847
+  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    if (reduce) {
+      const id = setTimeout(() => setCount(target), 0)
+      return () => clearTimeout(id)
+    }
+    let frame: number
+    let start: number | null = null
+    const duration = 2800
+
+    function tick(ts: number) {
+      if (!start) start = ts
+      const elapsed = ts - start
+      const progress = Math.min(elapsed / duration, 1)
+      setCount(Math.round(progress * target))
+      if (progress < 1) {
+        frame = requestAnimationFrame(tick)
+      } else {
+        setTimeout(() => {
+          start = null
+          setCount(0)
+          frame = requestAnimationFrame(tick)
+        }, 1000)
+      }
+    }
+    frame = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(frame)
+  }, [reduce])
+
+  const bars = [
+    { label: "No-show cost", color: "#D4A843" },
+    { label: "Deposit collected", color: "#6ee7b7" },
+    { label: "Net recovery", color: "#a78bfa" },
+  ]
+  const pct = count / target
+
+  return (
+    <div
+      aria-hidden="true"
+      className="w-full h-36 flex flex-col justify-center gap-2.5 px-4 overflow-hidden"
+    >
+      <div className="flex items-baseline justify-between mb-1">
+        <p className="text-[9px] font-mono text-paper/40 uppercase tracking-widest">Recovered / week</p>
+        <motion.span
+          className="text-base font-display font-bold text-warm"
+          key={Math.floor(count / 50)}
+        >
+          ${count.toLocaleString()}
+        </motion.span>
       </div>
+      {bars.map((bar, i) => (
+        <div key={bar.label} className="flex items-center gap-2">
+          <span className="text-[8px] font-mono text-paper/30 w-24 shrink-0 truncate">{bar.label}</span>
+          <div className="flex-1 h-1.5 rounded-full bg-paper/5 overflow-hidden">
+            <motion.div
+              className="h-full rounded-full"
+              style={{ backgroundColor: bar.color }}
+              initial={{ width: "0%" }}
+              animate={{ width: `${Math.round(pct * (100 - i * 18))}%` }}
+              transition={{ duration: 0.08, ease: "linear" }}
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
 
-      <motion.div
-        animate={reduce ? {} : { y: [0, -3, 0] }}
-        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-        className="rounded-lg border border-warm/20 bg-ink/60 px-4 py-3 text-center"
-      >
-        <p className="text-[11px] text-paper/50 font-mono mb-1">vocabulary · N3</p>
-        <p className="text-lg font-display font-bold text-paper">勉強する</p>
-        <p className="text-[10px] text-warm mt-1">to study · benkyou suru</p>
-      </motion.div>
+function SeoAuditPreview() {
+  const reduce = useReducedMotion()
+  const score = 72
+  const r = 28
+  const cx = 38
+  const cy = 38
+  const circumference = 2 * Math.PI * r
 
-      <div className="flex-1 flex flex-col gap-1">
-        <p className="text-[9px] font-mono text-paper/40 uppercase tracking-wider">XP this week</p>
-        <svg width="100%" viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" className="flex-1">
-          <motion.polyline
-            points={pts}
+  return (
+    <div
+      aria-hidden="true"
+      className="w-full h-36 flex items-center justify-center gap-6 overflow-hidden"
+    >
+      <div className="relative w-20 h-20">
+        <svg width="76" height="76" viewBox="0 0 76 76">
+          {/* Background ring */}
+          <circle cx={cx} cy={cy} r={r} fill="none" stroke="#D4A84315" strokeWidth="6" />
+          {/* Animated score ring */}
+          <motion.circle
+            cx={cx}
+            cy={cy}
+            r={r}
             fill="none"
             stroke="#D4A843"
-            strokeWidth="2"
+            strokeWidth="6"
             strokeLinecap="round"
-            strokeLinejoin="round"
-            initial={{ pathLength: 0 }}
-            animate={reduce ? { pathLength: 1 } : { pathLength: [0, 1, 1, 0] }}
-            transition={{ duration: 4, times: [0, 0.5, 0.85, 1], repeat: Infinity, ease: "easeInOut" }}
+            strokeDasharray={circumference}
+            initial={{ strokeDashoffset: circumference }}
+            animate={
+              reduce
+                ? { strokeDashoffset: circumference * (1 - score / 100) }
+                : {
+                    strokeDashoffset: [
+                      circumference,
+                      circumference * (1 - score / 100),
+                      circumference * (1 - score / 100),
+                      circumference,
+                    ],
+                  }
+            }
+            transition={
+              reduce
+                ? { duration: 0 }
+                : { duration: 5, times: [0, 0.5, 0.85, 1], repeat: Infinity, ease: "easeOut" }
+            }
+            transform={`rotate(-90 ${cx} ${cy})`}
           />
+          {/* Radar dot */}
+          {!reduce && (
+            <motion.circle
+              r="3"
+              fill="#D4A843"
+              animate={{
+                cx: [cx + r * Math.cos(-Math.PI / 2), cx + r * Math.cos(Math.PI * 0.9)],
+                cy: [cy + r * Math.sin(-Math.PI / 2), cy + r * Math.sin(Math.PI * 0.9)],
+                opacity: [0.3, 1, 0.3],
+              }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            />
+          )}
         </svg>
+        {/* Score number */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <motion.span
+            className="text-xl font-display font-bold text-warm"
+            initial={{ opacity: 0 }}
+            animate={reduce ? { opacity: 1 } : { opacity: [0, 0, 1, 1, 0] }}
+            transition={{ duration: 5, times: [0, 0.3, 0.4, 0.85, 1], repeat: Infinity }}
+          >
+            {score}
+          </motion.span>
+        </div>
+      </div>
+      <div className="flex flex-col gap-1.5">
+        <p className="text-[9px] font-mono text-paper/40 uppercase tracking-widest">SEO Score</p>
+        {["GBP", "Citations", "Reviews"].map((label, i) => (
+          <div key={label} className="flex items-center gap-1.5">
+            <motion.span
+              className="w-1.5 h-1.5 rounded-full bg-warm"
+              animate={reduce ? {} : { opacity: [0.3, 1, 0.3] }}
+              transition={{ duration: 2, delay: i * 0.4, repeat: Infinity }}
+            />
+            <span className="text-[9px] font-mono text-paper/50">{label}</span>
+          </div>
+        ))}
       </div>
     </div>
   )
 }
 
-function FastFixPreview() {
+function WasteLedgerPreview() {
   const reduce = useReducedMotion()
-  const [confirmed, setConfirmed] = useState(false)
+  const baseData = [12, 28, 19, 35, 22, 41, 30]
+  const [data, setData] = useState(baseData)
+  const [phase, setPhase] = useState(0)
+  const [drawProgress, setDrawProgress] = useState(reduce ? 1 : 0)
+  const frameRef = useRef<number>(0)
 
   useEffect(() => {
     if (reduce) {
-      setTimeout(() => setConfirmed(true), 0)
+      setDrawProgress(1)
       return
     }
-    const t1 = setTimeout(() => setConfirmed(true), 1800)
-    const t2 = setTimeout(() => setConfirmed(false), 4200)
-    const t3 = setTimeout(() => setConfirmed(true), 6000)
-    const t4 = setTimeout(() => setConfirmed(false), 9400)
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4) }
+    const datasets = [
+      baseData,
+      [18, 22, 31, 27, 38, 29, 44],
+      [9, 34, 24, 40, 16, 37, 28],
+    ]
+    let currentPhase = 0
+    let startTime: number | null = null
+    const drawDuration = 2800
+    const holdDuration = 1000
+    let holding = false
+    let holdStart = 0
+
+    function animate(ts: number) {
+      if (!startTime) startTime = ts
+      const elapsed = ts - startTime
+
+      if (!holding) {
+        const progress = Math.min(elapsed / drawDuration, 1)
+        setDrawProgress(progress)
+        if (progress >= 1) {
+          holding = true
+          holdStart = ts
+        }
+      } else {
+        if (ts - holdStart >= holdDuration) {
+          currentPhase = (currentPhase + 1) % datasets.length
+          setPhase(currentPhase)
+          setData(datasets[currentPhase])
+          setDrawProgress(0)
+          startTime = ts
+          holding = false
+        }
+      }
+      frameRef.current = requestAnimationFrame(animate)
+    }
+    frameRef.current = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(frameRef.current)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reduce])
+
+  const w = 130
+  const h = 44
+  const max = Math.max(...data)
+  const pts = data.map((v, i) => ({
+    x: (i / (data.length - 1)) * w,
+    y: h - (v / max) * h,
+  }))
+  const visibleCount = Math.ceil(drawProgress * (pts.length - 1)) + 1
+  const visiblePts = pts.slice(0, visibleCount)
+  const pathD = visiblePts.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(" ")
+  const lastPt = visiblePts[visiblePts.length - 1]
+  const lastVal = data[visibleCount - 1]
+
+  return (
+    <div
+      aria-hidden="true"
+      className="w-full h-36 flex flex-col justify-center gap-2 px-4 overflow-hidden"
+    >
+      <div className="flex items-center justify-between">
+        <p className="text-[9px] font-mono text-paper/40 uppercase tracking-widest">Food waste · lbs/day</p>
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={`${phase}-${visibleCount}`}
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="text-[10px] font-mono text-warm font-bold"
+          >
+            ${(lastVal * 2.4).toFixed(0)}
+          </motion.span>
+        </AnimatePresence>
+      </div>
+      <svg width="100%" viewBox={`0 0 ${w} ${h + 4}`} className="overflow-visible">
+        <path d={pathD} fill="none" stroke="#D4A843" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        {visiblePts.map((p, i) => (
+          <motion.circle
+            key={`${phase}-${i}`}
+            cx={p.x}
+            cy={p.y}
+            r="3"
+            fill="#D4A843"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.2 }}
+          />
+        ))}
+        {lastPt && drawProgress > 0.1 && (
+          <motion.text
+            x={Math.min(lastPt.x, w - 20)}
+            y={Math.max(lastPt.y - 6, 8)}
+            fontSize="7"
+            fill="#D4A843"
+            fontFamily="monospace"
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          >
+            ${(lastVal * 2.4).toFixed(0)}
+          </motion.text>
+        )}
+      </svg>
+      <p className="text-[8px] font-mono text-paper/25">wk {phase + 1} · tracking active</p>
+    </div>
+  )
+}
+
+function ReviewReplyPreview() {
+  const reduce = useReducedMotion()
+  const [active, setActive] = useState(0)
+  const stars = [1, 3, 5]
+  const tones = ["Apologetic", "Professional", "Warm"]
+
+  useEffect(() => {
+    if (reduce) return
+    const id = setInterval(() => setActive((p) => (p + 1) % 3), 1600)
+    return () => clearInterval(id)
   }, [reduce])
 
   return (
     <div
       aria-hidden="true"
-      className="absolute inset-0 pointer-events-none select-none bg-ink/90 flex flex-col items-center justify-center gap-4 overflow-hidden"
+      className="w-full h-36 flex flex-col items-center justify-center gap-2.5 overflow-hidden"
     >
-      <div className="relative w-full h-24 bg-ink/60 rounded-xl border border-warm/20 overflow-hidden mx-5">
-        <div className="absolute inset-0 opacity-20"
-          style={{ backgroundImage: "repeating-linear-gradient(0deg,transparent,transparent 18px,#D4A84320 18px,#D4A84320 19px),repeating-linear-gradient(90deg,transparent,transparent 18px,#D4A84320 18px,#D4A84320 19px)" }}
-        />
-        <motion.div
-          className="absolute left-1/2 -translate-x-1/2"
-          initial={{ y: -20, opacity: 0 }}
-          animate={reduce ? { y: 12, opacity: 1 } : { y: [-20, 12, 12, -20], opacity: [0, 1, 1, 0] }}
-          transition={{ duration: 3, repeat: Infinity, ease: springEase }}
-        >
-          <div className="w-6 h-6 rounded-full bg-warm flex items-center justify-center shadow-lg">
-            <div className="w-2 h-2 rounded-full bg-ink" />
-          </div>
-          <div className="w-0 h-0 border-l-[6px] border-r-[6px] border-t-[8px] border-l-transparent border-r-transparent border-t-warm mx-auto" />
-        </motion.div>
-      </div>
-
-      <AnimatePresence mode="wait">
-        {confirmed ? (
+      <p className="text-[9px] font-mono text-paper/40 uppercase tracking-widest">Draft tones</p>
+      <div className="flex gap-2">
+        {[0, 1, 2].map((i) => (
           <motion.div
-            key="confirmed"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
+            key={i}
+            animate={
+              reduce
+                ? { opacity: i === 2 ? 1 : 0.4, scale: i === 2 ? 1 : 0.95, x: 0 }
+                : {
+                    opacity: i === active ? 1 : 0.35,
+                    scale: i === active ? 1 : 0.92,
+                    x: i === active ? 0 : i < active ? -2 : 2,
+                  }
+            }
             transition={{ duration: 0.4, ease: springEase }}
-            className="flex items-center gap-2 px-4 py-2 rounded-full border border-green-400/40 bg-green-400/10"
+            className="w-20 rounded-lg border px-2 py-2 flex flex-col gap-1"
+            style={{
+              borderColor: i === (reduce ? 2 : active) ? "#D4A843" : "#D4A84325",
+              backgroundColor: i === (reduce ? 2 : active) ? "#D4A84312" : "#08061808",
+            }}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
-            <span className="text-[11px] font-mono text-green-400">Booking confirmed · 2:30 PM</span>
+            <div className="flex gap-0.5">
+              {Array.from({ length: stars[i] }).map((_, s) => (
+                <span key={s} className="text-[8px] text-warm">★</span>
+              ))}
+            </div>
+            <p className="text-[8px] font-mono text-paper/50 truncate">{tones[i]}</p>
+            <div className="space-y-0.5">
+              <div className="h-1 rounded-full bg-paper/10 w-full" />
+              <div className="h-1 rounded-full bg-paper/10 w-3/4" />
+            </div>
           </motion.div>
-        ) : (
-          <motion.div
-            key="pending"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="flex items-center gap-2 px-4 py-2 rounded-full border border-warm/30 bg-warm/10"
-          >
-            <motion.span
-              animate={reduce ? {} : { opacity: [1, 0.3, 1] }}
-              transition={{ duration: 0.8, repeat: Infinity }}
-              className="w-1.5 h-1.5 rounded-full bg-warm"
-            />
-            <span className="text-[11px] font-mono text-warm">Checking availability…</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  )
-}
-
-function EvWrapPreview() {
-  const reduce = useReducedMotion()
-  const prices = [1299, 1499, 1799, 2199, 2599]
-  const [idx, setIdx] = useState(0)
-
-  useEffect(() => {
-    if (reduce) return
-    const id = setInterval(() => setIdx((p) => (p + 1) % prices.length), 1400)
-    return () => clearInterval(id)
-  }, [reduce, prices.length])
-
-  const options = ["Sedan", "SUV", "Truck", "Van", "Sport"]
-
-  return (
-    <div
-      aria-hidden="true"
-      className="absolute inset-0 pointer-events-none select-none bg-ink/90 flex flex-col gap-3 p-5 overflow-hidden"
-    >
-      <p className="text-[10px] font-mono text-paper/50 uppercase tracking-widest">Instant Quote</p>
-
-      <div className="flex gap-1.5 flex-wrap">
-        {options.map((o, i) => (
-          <motion.span
-            key={o}
-            animate={reduce ? {} : i === idx ? { borderColor: "#D4A843", color: "#D4A843" } : { borderColor: "#D4A84340", color: "#ffffff60" }}
-            transition={{ duration: 0.3 }}
-            className="text-[9px] font-mono px-2 py-1 rounded border border-warm/20 text-paper/40"
-          >
-            {o}
-          </motion.span>
         ))}
       </div>
-
-      <div className="flex-1 flex items-center justify-center">
-        <AnimatePresence mode="wait">
-          <motion.p
-            key={idx}
-            initial={{ y: 12, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -12, opacity: 0 }}
-            transition={{ duration: 0.3, ease: springEase }}
-            className="text-3xl font-display font-bold text-warm"
-          >
-            ${prices[idx].toLocaleString()}
-          </motion.p>
-        </AnimatePresence>
-      </div>
-
-      <motion.div
-        animate={reduce ? {} : { boxShadow: ["0 0 0 0 #D4A84340", "0 0 0 8px #D4A84300"] }}
-        transition={{ duration: 1.5, repeat: Infinity }}
-        className="h-8 rounded-lg bg-warm/20 border border-warm/40 flex items-center justify-center"
-      >
-        <span className="text-[10px] font-mono text-warm">Get Full Quote →</span>
-      </motion.div>
     </div>
   )
 }
 
-function IchibanPreview() {
+function CallRescuePreview() {
   const reduce = useReducedMotion()
-  const dishes = ["Tonkotsu Ramen", "Gyoza · 6pc", "Matcha Tiramisu", "Miso Black Cod"]
-  const [dishIdx, setDishIdx] = useState(0)
-  const [seats, setSeats] = useState(4)
+  // phase: 0 = ringing/missed, 1 = SMS fires back
+  const [phase, setPhase] = useState(0)
+  const [dotPos, setDotPos] = useState(0)
 
   useEffect(() => {
-    if (reduce) return
-    const d = setInterval(() => setDishIdx((p) => (p + 1) % dishes.length), 2000)
-    const s = setInterval(() => setSeats((p) => (p === 1 ? 8 : p - 1)), 2500)
-    return () => { clearInterval(d); clearInterval(s) }
-  }, [reduce, dishes.length])
+    if (reduce) {
+      const id = setTimeout(() => { setPhase(1); setDotPos(1) }, 0)
+      return () => clearTimeout(id)
+    }
+    const sequence = async () => {
+      setPhase(0)
+      setDotPos(0)
+      await new Promise((r) => setTimeout(r, 1200))
+      setPhase(1)
+      setDotPos(0)
+      await new Promise((r) => setTimeout(r, 300))
+      setDotPos(1)
+      await new Promise((r) => setTimeout(r, 1500))
+      setPhase(0)
+      setDotPos(0)
+    }
+    sequence()
+    const id = setInterval(sequence, 4000)
+    return () => clearInterval(id)
+  }, [reduce])
 
   return (
     <div
       aria-hidden="true"
-      className="absolute inset-0 pointer-events-none select-none bg-ink/90 flex flex-col gap-3 p-5 overflow-hidden"
+      className="w-full h-36 flex flex-col items-center justify-center gap-3 overflow-hidden"
     >
-      <div className="rounded-xl border border-warm/20 bg-ink/60 p-3 flex-1 flex flex-col gap-2">
-        <p className="text-[9px] font-mono text-warm/60 uppercase tracking-widest">Today&apos;s Special</p>
-        <AnimatePresence mode="wait">
-          <motion.p
-            key={dishIdx}
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -10 }}
-            transition={{ duration: 0.4, ease: springEase }}
-            className="text-sm font-display font-semibold text-paper"
+      <div className="flex items-center gap-6 relative">
+        {/* Customer phone */}
+        <div className="flex flex-col items-center gap-1">
+          <motion.div
+            animate={reduce ? {} : phase === 0 ? { scale: [1, 1.08, 1] } : { scale: 1 }}
+            transition={{ duration: 0.5, repeat: phase === 0 ? Infinity : 0 }}
+            className="w-9 h-14 rounded-lg border-2 border-paper/20 bg-ink/60 flex items-center justify-center"
           >
-            {dishes[dishIdx]}
-          </motion.p>
-        </AnimatePresence>
-        <div className="flex gap-1 mt-auto">
-          {[1,2,3,4,5].map((s) => (
-            <span key={s} className="text-[10px] text-warm">★</span>
-          ))}
-          <span className="text-[9px] font-mono text-paper/40 ml-1">4.9</span>
+            <span className="text-base">📞</span>
+          </motion.div>
+          <span className="text-[8px] font-mono text-paper/30">caller</span>
+        </div>
+
+        {/* Signal line with dot */}
+        <div className="relative w-16 flex items-center">
+          <div className="w-full h-px bg-paper/10" />
+          {/* missed call X */}
+          <AnimatePresence mode="wait">
+            {phase === 0 ? (
+              <motion.span
+                key="x"
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0 }}
+                className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 text-red-400 text-xs font-bold"
+              >
+                ✕
+              </motion.span>
+            ) : (
+              <motion.div
+                key="dot"
+                className="absolute top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-warm"
+                initial={{ left: "100%" }}
+                animate={{ left: dotPos === 1 ? "0%" : "100%" }}
+                transition={{ duration: 0.8, ease: springEase }}
+              />
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Contractor phone */}
+        <div className="flex flex-col items-center gap-1">
+          <motion.div
+            animate={reduce ? {} : phase === 1 ? { scale: [1, 1.06, 1] } : { scale: 1 }}
+            transition={{ duration: 0.4, repeat: phase === 1 ? 3 : 0 }}
+            className="w-9 h-14 rounded-lg border-2 border-warm/40 bg-ink/60 flex items-center justify-center"
+          >
+            <span className="text-base">📱</span>
+          </motion.div>
+          <span className="text-[8px] font-mono text-paper/30">contractor</span>
         </div>
       </div>
 
-      <div className="flex items-center justify-between px-3 py-2 rounded-lg border border-warm/20 bg-ink/40">
-        <span className="text-[10px] font-mono text-paper/50">Seats tonight</span>
-        <AnimatePresence mode="wait">
-          <motion.span
-            key={seats}
-            initial={{ opacity: 0, y: -6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 6 }}
-            transition={{ duration: 0.3 }}
-            className="text-[11px] font-mono text-warm font-bold"
-          >
-            {seats} left
-          </motion.span>
-        </AnimatePresence>
-      </div>
-    </div>
-  )
-}
-
-function ZenDashboardPreview() {
-  const reduce = useReducedMotion()
-  const bars = [62, 84, 71, 93, 58, 77, 88]
-  const days = ["M", "T", "W", "T", "F", "S", "S"]
-
-  return (
-    <div
-      aria-hidden="true"
-      className="absolute inset-0 pointer-events-none select-none bg-ink/90 flex flex-col gap-3 p-5 overflow-hidden"
-    >
-      <div className="flex gap-3">
-        {[{ label: "Queries", val: "12.4k" }, { label: "Avg ms", val: "42" }, { label: "Uptime", val: "99.9%" }].map(({ label, val }) => (
-          <div key={label} className="flex-1 rounded-lg border border-warm/20 bg-ink/50 p-2 text-center">
-            <p className="text-[8px] font-mono text-paper/40 uppercase">{label}</p>
-            <p className="text-xs font-display font-bold text-warm">{val}</p>
-          </div>
-        ))}
-      </div>
-
-      <div className="flex-1 flex items-end gap-1.5">
-        {bars.map((h, i) => (
-          <div key={i} className="flex-1 flex flex-col items-center gap-1">
-            <motion.div
-              className="w-full rounded-t bg-warm/60"
-              initial={{ height: 0 }}
-              animate={reduce ? { height: `${h}%` } : { height: [`0%`, `${h}%`] }}
-              transition={{ duration: 1, delay: i * 0.08, repeat: Infinity, repeatDelay: 3, ease: springEase }}
-              style={{ minHeight: 2 }}
-            />
-            <span className="text-[8px] font-mono text-paper/30">{days[i]}</span>
-          </div>
-        ))}
-      </div>
-
-      <motion.div
-        animate={reduce ? {} : { opacity: [0.6, 1, 0.6] }}
-        transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-        className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-warm/20 bg-warm/5"
+      <motion.p
+        className="text-[9px] font-mono text-center"
+        animate={{ color: phase === 0 ? "#ef444480" : "#D4A843" }}
+        transition={{ duration: 0.4 }}
       >
-        <span className="text-[9px] text-warm">✦</span>
-        <span className="text-[9px] font-mono text-paper/60">AI: Peak traffic Wed 14:00 — scale up</span>
-      </motion.div>
+        {phase === 0 ? "missed call" : "SMS fired ✓"}
+      </motion.p>
     </div>
   )
 }
 
-function NguyeneticStudioPreview() {
+function EstimateTranslatePreview() {
   const reduce = useReducedMotion()
-  const palettes = [
-    ["#D4A843", "#F0D090", "#8B6914"],
-    ["#6B7FD4", "#A0AAFF", "#2E3A8C"],
-    ["#D46B6B", "#F0A0A0", "#8C2E2E"],
-    ["#6BD4A0", "#A0F0C8", "#2E8C5A"],
+  const phrases = [
+    { tech: "R&R serpentine belt", plain: "Replace drive belt" },
+    { tech: "Flush brake fluid DOT4", plain: "Refresh brake fluid" },
+    { tech: "Repack CV axle boots", plain: "Seal wheel axle" },
   ]
-  const [palIdx, setPalIdx] = useState(0)
-  const headlines = ["Brand · Motion", "Type · Color", "Grid · Space", "Icon · Form"]
-  const [headIdx, setHeadIdx] = useState(0)
+  const [idx, setIdx] = useState(0)
+  const [charCount, setCharCount] = useState(reduce ? phrases[0].plain.length : 0)
+  const [typing, setTyping] = useState(!reduce)
 
   useEffect(() => {
-    if (reduce) return
-    const id = setInterval(() => {
-      setPalIdx((p) => (p + 1) % palettes.length)
-      setHeadIdx((p) => (p + 1) % headlines.length)
-    }, 1800)
-    return () => clearInterval(id)
-  }, [reduce, palettes.length, headlines.length])
+    if (reduce) {
+      setCharCount(phrases[0].plain.length)
+      return
+    }
+    let cancelled = false
+    const currentPhrase = phrases[idx].plain
 
-  const pal = palettes[palIdx]
+    setCharCount(0)
+    setTyping(true)
+
+    let i = 0
+    const typeInterval = setInterval(() => {
+      if (cancelled) return
+      i++
+      setCharCount(i)
+      if (i >= currentPhrase.length) {
+        clearInterval(typeInterval)
+        setTimeout(() => {
+          if (cancelled) return
+          setIdx((p) => (p + 1) % phrases.length)
+        }, 1800)
+      }
+    }, 55)
+    return () => {
+      cancelled = true
+      clearInterval(typeInterval)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [idx, reduce])
+
+  const phrase = phrases[idx]
 
   return (
     <div
       aria-hidden="true"
-      className="absolute inset-0 pointer-events-none select-none bg-ink/90 flex flex-col gap-3 p-5 overflow-hidden"
+      className="w-full h-36 flex flex-col items-center justify-center gap-2 px-3 overflow-hidden"
     >
-      <div className="flex gap-2 items-center">
-        {pal.map((c, i) => (
-          <motion.div
-            key={`${palIdx}-${i}`}
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: i * 0.07, duration: 0.35, ease: springEase }}
-            className="w-6 h-6 rounded-full border border-paper/10"
-            style={{ backgroundColor: c }}
-          />
-        ))}
-        <span className="text-[9px] font-mono text-paper/40 ml-1">palette {palIdx + 1}/4</span>
-      </div>
+      <p className="text-[9px] font-mono text-paper/40 uppercase tracking-widest">Tech → Plain</p>
+      <div className="flex items-stretch gap-2 w-full">
+        {/* Tech side */}
+        <div className="flex-1 rounded-lg border border-paper/10 bg-ink/60 p-2 flex flex-col gap-1">
+          <p className="text-[8px] font-mono text-paper/30 uppercase">Shop-speak</p>
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={idx}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="text-[9px] font-mono text-paper/50 leading-snug"
+            >
+              {phrase.tech}
+            </motion.p>
+          </AnimatePresence>
+        </div>
 
-      <div className="flex-1 flex items-center justify-center">
-        <AnimatePresence mode="wait">
-          <motion.p
-            key={headIdx}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.4, ease: springEase }}
-            className="text-xl font-display font-bold text-paper"
-            style={{ color: pal[0] }}
-          >
-            {headlines[headIdx]}
-          </motion.p>
-        </AnimatePresence>
-      </div>
+        {/* Arrow */}
+        <motion.div
+          className="flex items-center self-center"
+          animate={reduce ? {} : { scale: [1, 1.2, 1], color: ["#D4A84380", "#D4A843", "#D4A84380"] }}
+          transition={{ duration: 1.2, repeat: Infinity }}
+        >
+          <ArrowUpRight className="w-3.5 h-3.5 text-warm rotate-90" />
+        </motion.div>
 
-      <div className="flex gap-1.5 flex-wrap">
-        {["--color-warm", "--font-display", "--radius-lg", "--ease-spring"].map((tok) => (
-          <span key={tok} className="text-[8px] font-mono px-2 py-0.5 rounded border border-warm/20 text-paper/40">{tok}</span>
-        ))}
+        {/* Plain side */}
+        <div className="flex-1 rounded-lg border border-warm/20 bg-warm/5 p-2 flex flex-col gap-1">
+          <p className="text-[8px] font-mono text-warm/60 uppercase">Customer</p>
+          <p className="text-[9px] font-mono text-warm leading-snug">
+            {reduce ? phrase.plain : phrase.plain.slice(0, charCount)}
+            {typing && charCount < phrase.plain.length && (
+              <motion.span
+                animate={{ opacity: [1, 0] }}
+                transition={{ duration: 0.5, repeat: Infinity }}
+                className="inline-block w-px h-3 bg-warm ml-px align-middle"
+              />
+            )}
+          </p>
+        </div>
       </div>
     </div>
   )
 }
 
+// Map slug → preview component
 const previewMap: Record<string, React.ComponentType> = {
-  moxie: GoJunPreview,
-  ryoanji: FastFixPreview,
-  zenwave: EvWrapPreview,
-  ichiban: IchibanPreview,
-  shibui: ZenDashboardPreview,
-  kaizen: NguyeneticStudioPreview,
+  "auto-quote": AutoQuotePreview,
+  "reservation": ReservationPreview,
+  "seo-audit": SeoAuditPreview,
+  "waste-ledger": WasteLedgerPreview,
+  "review-reply": ReviewReplyPreview,
+  "call-rescue": CallRescuePreview,
+  "estimate-translate": EstimateTranslatePreview,
 }
 
 // ── Live product tile ──────────────────────────────────────────────────────────
@@ -521,6 +680,7 @@ const previewMap: Record<string, React.ComponentType> = {
 function LiveProductTile({ product, index }: { product: LiveProduct; index: number }) {
   const reduce = useReducedMotion()
   const isAI = product.status === "Live · AI"
+  const Preview = previewMap[product.slug]
 
   return (
     <motion.div
@@ -531,7 +691,7 @@ function LiveProductTile({ product, index }: { product: LiveProduct; index: numb
     >
       <Link
         href={`/work/${product.slug}`}
-        className="group block h-full rounded-xl border border-warm/15 bg-ink/35 backdrop-blur-sm
+        className="group block h-full rounded-2xl border border-warm/15 bg-ink/35 backdrop-blur-sm
           transition-[border-color,box-shadow,background-color] duration-300
           hover:border-warm/50 hover:bg-ink/50 hover:shadow-[0_8px_28px_oklch(0.74_0.15_55/0.12)]
           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-warm/60"
@@ -552,8 +712,15 @@ function LiveProductTile({ product, index }: { product: LiveProduct; index: numb
             <span className="text-[9px] font-mono text-paper/30">Shipped: {product.shippedDate}</span>
           </div>
 
+          {/* Animated micro-preview */}
+          {Preview && (
+            <div className="rounded-xl border border-warm/10 bg-ink/50 overflow-hidden">
+              <Preview />
+            </div>
+          )}
+
           {/* Title */}
-          <div className="flex-1">
+          <div>
             <h3 className="font-display font-semibold text-paper text-base leading-tight mb-1.5 group-hover:text-warm transition-colors duration-200">
               {product.title}
             </h3>
@@ -566,7 +733,7 @@ function LiveProductTile({ product, index }: { product: LiveProduct; index: numb
           </div>
 
           {/* Bottom row: stack chips + CTA */}
-          <div className="flex items-end justify-between gap-2 pt-1">
+          <div className="flex items-end justify-between gap-2 pt-1 mt-auto">
             <div className="flex flex-wrap gap-1">
               {product.stack.map((tag) => (
                 <span key={tag} className="text-[8px] font-mono px-1.5 py-0.5 rounded border border-warm/20 text-paper/40">
@@ -592,17 +759,12 @@ function LiveProductTile({ product, index }: { product: LiveProduct; index: numb
 
 export function Work() {
   const { t } = useLanguage()
-  const [hovered, setHovered] = useState<string | null>(null)
-
-  const featured = projects[0]
-  const standard = projects.slice(1, 5)
-  const wide = projects[5]
 
   return (
     <section id="work" className="relative py-32 px-6 overflow-hidden bg-ink">
       <div className="relative max-w-7xl mx-auto">
 
-        {/* ── Live Products section ─────────────────────────────────────────── */}
+        {/* Section header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -611,258 +773,27 @@ export function Work() {
           className="mb-12"
         >
           <p className="text-xs tracking-[0.3em] text-warm/60 font-mono uppercase mb-3">
-            製品 · LIVE PRODUCTS 2026
+            製品 · WORK 2026
           </p>
           <h2 className="text-[clamp(2rem,5vw,3.5rem)] font-display font-bold text-paper leading-none mb-4">
-            Live{" "}
-            <span className="text-warm">products</span>
+            {t("Work", "作品")}
           </h2>
           <p className="text-paper/60 text-base leading-relaxed max-w-xl">
-            Seven SaaS demos. Each solves a screamed-about pain. Each one runs in your browser right now.
+            {t(
+              "Seven SaaS demos you can try right now. Each one solves a pain I've seen real small-business owners scream about.",
+              "今すぐ試せる7つのSaaSデモ。実際の中小企業オーナーが叫んでいる悩みを解決します。"
+            )}
           </p>
         </motion.div>
 
         {/* Live products grid */}
         <div
-          className="grid gap-3 mb-24"
-          style={{ gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 280px), 1fr))" }}
+          className="grid gap-4"
+          style={{ gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 300px), 1fr))" }}
         >
           {liveProducts.map((product, i) => (
             <LiveProductTile key={product.slug} product={product} index={i} />
           ))}
-        </div>
-
-        {/* ── Section divider ───────────────────────────────────────────────── */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: springEase }}
-          className="mb-20 flex items-center gap-6"
-        >
-          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-warm/20 to-transparent" />
-          <p className="text-[10px] font-mono text-warm/40 uppercase tracking-[0.25em] shrink-0">
-            Client work
-          </p>
-          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-warm/20 to-transparent" />
-        </motion.div>
-
-        {/* ── Client Work section ───────────────────────────────────────────── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8, ease: springEase }}
-          className="mb-16"
-        >
-          <p className="text-xs tracking-[0.3em] text-warm font-mono uppercase mb-4">
-            作品 · PORTFOLIO SELECTION 2026
-          </p>
-          <h2 className="text-[clamp(2.5rem,6vw,4.5rem)] font-display font-bold text-paper leading-none mb-6">
-            {t("Selected ", "セレクテッド ")}
-            <span className="text-warm">{t("Works", "ワークス")}</span>
-          </h2>
-          <p className="text-paper/70 text-lg leading-relaxed max-w-2xl">
-            {t(
-              "Architecting digital ecosystems where performance meets aesthetic purity. A curated collection of hybrid marketing and development engagements.",
-              "パフォーマンスと美的純度が交差するデジタルエコシステムを構築。マーケティングと開発の複合案件のキュレーテッドコレクション。"
-            )}
-          </p>
-        </motion.div>
-
-        {/* Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {/* Featured tile — 2×2 */}
-          <motion.a
-            href={featured.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.8, ease: springEase }}
-            onMouseEnter={() => setHovered(featured.id)}
-            onMouseLeave={() => setHovered(null)}
-            className="group relative block lg:col-span-2 lg:row-span-2 rounded-2xl overflow-hidden border border-warm/20 hover:border-warm transition-all duration-300"
-          >
-            <div className="relative h-72 lg:h-full min-h-[340px]">
-              <GoJunPreview />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent" />
-
-              <AnimatePresence>
-                {hovered === featured.id && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="absolute inset-0 bg-ink/60 flex items-center justify-center"
-                  >
-                    <p className="text-paper/80 text-sm text-center max-w-xs px-6 leading-relaxed">
-                      {t(featured.descEN, featured.descJA)}
-                    </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              <div className="absolute bottom-0 left-0 right-0 p-6">
-                <div className="flex items-end justify-between">
-                  <div>
-                    <div className="mb-2">
-                      <span className="text-[9px] font-mono px-2 py-0.5 rounded border border-warm/30 text-warm/60">
-                        Case study
-                      </span>
-                    </div>
-                    <h3 className="font-display font-semibold text-paper text-2xl mb-2">
-                      {featured.title}
-                    </h3>
-                    <div className="flex flex-wrap gap-1.5">
-                      {featured.stack.map((tag) => (
-                        <span key={tag} className="text-[10px] px-2 py-0.5 rounded-full border border-warm/30 text-warm font-mono">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <motion.div
-                    animate={{ x: hovered === featured.id ? 4 : 0, y: hovered === featured.id ? -4 : 0 }}
-                    className="text-warm"
-                  >
-                    <ArrowUpRight className="w-6 h-6" />
-                  </motion.div>
-                </div>
-              </div>
-            </div>
-          </motion.a>
-
-          {/* Standard tiles — 1×1 */}
-          {standard.map((project, i) => {
-            const Preview = previewMap[project.id]
-            return (
-              <motion.a
-                key={project.id}
-                href={project.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ delay: 0.1 + i * 0.08, duration: 0.7, ease: springEase }}
-                onMouseEnter={() => setHovered(project.id)}
-                onMouseLeave={() => setHovered(null)}
-                className="group relative block rounded-2xl overflow-hidden border border-warm/20 hover:border-warm transition-all duration-300"
-              >
-                <div className="relative h-48">
-                  <Preview />
-                  <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent" />
-
-                  <AnimatePresence>
-                    {hovered === project.id && (
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="absolute inset-0 bg-ink/70 flex items-center justify-center px-5"
-                      >
-                        <p className="text-paper/80 text-xs text-center leading-relaxed">
-                          {t(project.descEN, project.descJA)}
-                        </p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <div className="flex items-end justify-between">
-                      <div>
-                        <div className="mb-1.5">
-                          <span className="text-[8px] font-mono px-1.5 py-0.5 rounded border border-warm/25 text-warm/50">
-                            Case study
-                          </span>
-                        </div>
-                        <h3 className="font-display font-semibold text-paper text-base mb-1.5">
-                          {project.title}
-                        </h3>
-                        <div className="flex flex-wrap gap-1">
-                          {project.stack.slice(0, 3).map((tag) => (
-                            <span key={tag} className="text-[9px] px-1.5 py-0.5 rounded-full border border-warm/30 text-warm font-mono">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                      <motion.div
-                        animate={{ x: hovered === project.id ? 4 : 0, y: hovered === project.id ? -4 : 0 }}
-                        className="text-warm/60 group-hover:text-warm transition-colors"
-                      >
-                        <ArrowUpRight className="w-4 h-4" />
-                      </motion.div>
-                    </div>
-                  </div>
-                </div>
-              </motion.a>
-            )
-          })}
-
-          {/* Wide tile — 2×1 */}
-          <motion.a
-            href={wide.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ delay: 0.4, duration: 0.7, ease: springEase }}
-            onMouseEnter={() => setHovered(wide.id)}
-            onMouseLeave={() => setHovered(null)}
-            className="group relative block lg:col-span-2 rounded-2xl overflow-hidden border border-warm/20 hover:border-warm transition-all duration-300"
-          >
-            <div className="relative h-48">
-              <NguyeneticStudioPreview />
-              <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/50 to-transparent" />
-
-              <AnimatePresence>
-                {hovered === wide.id && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="absolute inset-0 bg-ink/60 flex items-center justify-center px-8"
-                  >
-                    <p className="text-paper/80 text-sm text-center leading-relaxed max-w-lg">
-                      {t(wide.descEN, wide.descJA)}
-                    </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              <div className="absolute bottom-0 left-0 right-0 p-5">
-                <div className="flex items-end justify-between">
-                  <div>
-                    <div className="mb-1.5">
-                      <span className="text-[9px] font-mono px-2 py-0.5 rounded border border-warm/25 text-warm/50">
-                        Case study
-                      </span>
-                    </div>
-                    <h3 className="font-display font-semibold text-paper text-lg mb-1.5">
-                      {wide.title}
-                    </h3>
-                    <div className="flex flex-wrap gap-1.5">
-                      {wide.stack.map((tag) => (
-                        <span key={tag} className="text-[10px] px-2 py-0.5 rounded-full border border-warm/30 text-warm font-mono">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <motion.div
-                    animate={{ x: hovered === wide.id ? 4 : 0, y: hovered === wide.id ? -4 : 0 }}
-                    className="text-warm/60 group-hover:text-warm transition-colors"
-                  >
-                    <ArrowUpRight className="w-5 h-5" />
-                  </motion.div>
-                </div>
-              </div>
-            </div>
-          </motion.a>
         </div>
 
         {/* Bottom CTA */}
@@ -874,13 +805,13 @@ export function Work() {
           className="mt-16 text-center"
         >
           <p className="text-paper/50 text-sm mb-4">
-            {t("Want to see your project here?", "あなたのプロジェクトをここに載せたいですか？")}
+            {t("Want one of these for your business?", "あなたのビジネスにも欲しいですか？")}
           </p>
           <a
             href="#contact"
             className="inline-flex items-center gap-2 text-warm hover:underline underline-offset-4"
           >
-            <span>{t("Let's build something amazing", "一緒に素晴らしいものを作りましょう")}</span>
+            <span>{t("Let's build something that pays for itself", "投資対効果の高いものを一緒に作りましょう")}</span>
             <ArrowUpRight className="w-4 h-4" />
           </a>
         </motion.div>
