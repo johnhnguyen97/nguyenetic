@@ -461,7 +461,6 @@ export default function WasteLedgerPage() {
     try {
       const today = new Date().toISOString().slice(0, 10)
       const seedDate = localStorage.getItem(SEED_DATE_KEY)
-      const raw = localStorage.getItem(STORAGE_KEY)
       const seeded = localStorage.getItem(SEED_KEY)
 
       // Reseed daily so rolling window always has data
