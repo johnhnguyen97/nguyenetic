@@ -12,6 +12,7 @@ const LeadSchema = z.object({
   company: z.string().optional(),
   role: z.string().optional(),
   source: z.string().default("web"),
+  metadata: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
 });
 
 const DATA_FILE = path.join(process.cwd(), "data", "leads.json");
