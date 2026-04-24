@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next"
-import { Geist, Geist_Mono, Inter } from "next/font/google"
+import { Geist, Geist_Mono, Inter, Instrument_Serif, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 import { Providers } from "@/components/providers"
 
@@ -19,6 +19,21 @@ const inter = Inter({
   display: "swap",
 })
 
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument",
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  display: "swap",
+})
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  display: "swap",
+})
+
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -32,26 +47,25 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://nguyenetic.com"),
   title: {
-    default: "Nguyenetic | Web Development, SEO & AI Solutions",
+    default: "Nguyenetic — a studio in orbit around you",
     template: "%s | Nguyenetic",
   },
   description:
-    "Enterprise-grade web development, strategic SEO, and AI-powered solutions. Building elegant digital experiences that drive measurable results. Full-stack expertise with Next.js, React, and modern technologies.",
+    "Managed websites, design, and digital ops for small service businesses. Seven shipped products. Fixed price, fixed deadline, receipts on everything.",
   keywords: [
+    "managed website",
+    "small business website",
     "web development",
-    "web design",
-    "SEO services",
-    "AI solutions",
-    "Next.js developer",
-    "React developer",
-    "full-stack developer",
-    "digital marketing",
-    "custom web applications",
-    "e-commerce development",
+    "SEO",
+    "digital operations",
+    "fixed price web development",
+    "restaurant website",
+    "contractor website",
+    "auto shop website",
+    "local SEO",
+    "Next.js",
+    "React",
     "TypeScript",
-    "Tailwind CSS",
-    "Vercel",
-    "Supabase",
   ],
   authors: [{ name: "John Nguyen", url: "https://nguyenetic.com" }],
   creator: "John Nguyen",
@@ -61,36 +75,29 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  icons: {
-    icon: [
-      { url: "/favicon.svg", type: "image/svg+xml" },
-    ],
-    shortcut: "/favicon.svg",
-    apple: "/favicon.svg",
-  },
   manifest: "/manifest.json",
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://nguyenetic.com",
     siteName: "Nguyenetic",
-    title: "Nguyenetic | Web Development, SEO & AI Solutions",
+    title: "Nguyenetic — a studio in orbit around you",
     description:
-      "Enterprise-grade web development, strategic SEO, and AI-powered solutions. Building elegant digital experiences that drive measurable results.",
+      "Managed websites, design, and digital ops for small service businesses. Seven shipped products. Fixed price, fixed deadline, receipts on everything.",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Nguyenetic - Digital Craftsmanship",
+        alt: "Nguyenetic — a studio in orbit",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Nguyenetic | Web Development, SEO & AI Solutions",
+    title: "Nguyenetic — a studio in orbit around you",
     description:
-      "Enterprise-grade web development, strategic SEO, and AI-powered solutions. Building elegant digital experiences.",
+      "Managed websites, design, and digital ops for small service businesses. Fixed price, fixed deadline, receipts on everything.",
     images: ["/og-image.png"],
     creator: "@nguyenetic",
   },
@@ -128,8 +135,9 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "ProfessionalService",
               name: "Nguyenetic",
+              alternateName: "A studio in orbit",
               description:
-                "Enterprise-grade web development, strategic SEO, and AI-powered solutions.",
+                "Managed websites, design, and digital ops for small service businesses. Seven shipped products. Fixed price, fixed deadline, receipts on everything.",
               url: "https://nguyenetic.com",
               email: "hello@nguyenetic.com",
               founder: {
@@ -138,13 +146,15 @@ export default function RootLayout({
               },
               areaServed: "Worldwide",
               serviceType: [
+                "Managed Websites",
                 "Web Development",
-                "SEO Services",
-                "AI Solutions",
-                "Digital Marketing",
-                "Custom Web Applications",
+                "Local SEO",
+                "Brand Design",
+                "Digital Operations",
+                "AI Workflow Tools",
               ],
               priceRange: "$$",
+              termsOfService: "Fixed scope, fixed price, fixed deadline. Miss the deadline and the month is free.",
               sameAs: [
                 "https://github.com/johnhnguyen97",
               ],
@@ -152,7 +162,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} ${inter.variable}`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable}`}>
         <Providers>{children}</Providers>
       </body>
     </html>

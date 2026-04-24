@@ -52,8 +52,10 @@
   --text-section: clamp(2rem, 5vw, 3.5rem);
 
   /* Fonts — loaded in layout.tsx */
-  --font-display: var(--font-geist-sans);
+  --font-display: var(--font-instrument);
   --font-body: var(--font-inter);
+  --font-instrument: var(--font-instrument);
+  --font-jetbrains: var(--font-jetbrains);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);

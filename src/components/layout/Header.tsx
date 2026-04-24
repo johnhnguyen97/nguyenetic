@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Menu, X, Languages } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { Logo } from "@/components/ui/logo"
+import { OrbitN } from "@/components/ui/orbit-n"
 import { useLanguage } from "@/lib/language-context"
 
 export function Header() {
@@ -14,8 +14,8 @@ export function Header() {
 
   const navItems = [
     { label: t("Work", "実績"), href: "#work" },
-    { label: t("About", "私について"), href: "#about" },
     { label: t("Services", "サービス"), href: "#services" },
+    { label: t("Receipts", "領収書"), href: "#proof" },
     { label: t("Contact", "お問い合わせ"), href: "#contact" },
   ]
 
@@ -44,11 +44,12 @@ export function Header() {
       >
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
           {/* Logo */}
-          <a href="/" className="group flex items-center gap-2">
-            <Logo size="sm" />
-            <span className="font-display font-semibold tracking-tight group-hover:text-warm transition-colors">
-              nguyenetic
-            </span>
+          <a
+            href="/"
+            className="group inline-flex items-center transition-colors hover:text-warm focus:outline-none focus-visible:ring-2 focus-visible:ring-warm rounded"
+            aria-label="Nguyenetic — home"
+          >
+            <OrbitN size={36} />
           </a>
 
           {/* Desktop Navigation */}
