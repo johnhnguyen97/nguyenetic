@@ -1,0 +1,167 @@
+{
+  "metadata": {
+    "title": "Nguyenetic — あなたの軌道を描くスタジオ",
+    "description": "小規模サービス事業者向けのウェブサイト管理・デザイン・デジタル運用。7つの製品を出荷済み。固定価格、確定納期、全てに領収書。"
+  },
+  "blog": {
+    "indexTitle": "エンジニアリングブログ",
+    "indexDescription": "Tashinamuの開発、エージェンシーのクライアントワーク、日本へ向かうベトナム系アメリカ人エンジニアとしての日本語学習について。",
+    "eyebrow": "ノート",
+    "emptyLocaleTitle": "この言語の投稿はまだありません",
+    "emptyLocaleBody": "多言語投稿はまだ増やしている途中です。英語版アーカイブに全記事があります。",
+    "emptyLocaleCta": "英語で読む",
+    "backToIndex": "記事一覧へ戻る",
+    "minutesShort": "分で読了",
+    "toc": "目次",
+    "relatedPosts": "関連記事",
+    "tagEyebrow": "タグ",
+    "tagArchiveTitle": "{tag} の記事",
+    "tagArchiveDescription": "{tag} タグの記事 {count} 件",
+    "postsCount": "{count} 件の記事",
+    "allTags": "すべてのタグ"
+  },
+  "header": {
+    "nav": {
+      "work": "実績",
+      "services": "サービス",
+      "receipts": "領収書",
+      "contact": "お問い合わせ"
+    },
+    "letsTalk": "相談する",
+    "languageSwitch": "言語を切り替え"
+  },
+  "hero": {
+    "statusBadge": "◇ 07衛星稼働中 · 01オペレーター",
+    "titleA": "軌道に",
+    "titleB": "浮かぶ",
+    "titleC": "あなたの",
+    "titleD": "ためのスタジオ",
+    "description": "小規模サービス事業者向けのウェブ・デザイン・デジタル運用。7つの製品、1人のオペレーター。軌道はそれぞれ、誰かがお金を払って解決した問題です。",
+    "seeReceipts": "実績を見る",
+    "whatIDo": "サービス",
+    "pillTurnaround": "14日納品",
+    "pillFixedPrice": "固定価格",
+    "pillReceipts": "全てに領収書",
+    "core": "核",
+    "coords": "北緯 37.77° · 西経 122.42°",
+    "fieldStable": "軌道安定・信号強力",
+    "scrollHint": "スクロール↓で重力圏へ"
+  },
+  "proof": {
+    "section": "セクション002 · 約束",
+    "titleA": "お渡しするのは",
+    "titleB": "領収書。",
+    "titleC": "見積書ではなく。",
+    "description": "全ての案件は、納品物・費用・収益効果を明記した押印済み領収書で締めくくります。不透明な顧問料なし。曖昧な『戦略的連携』なし。仕事と数字だけ。",
+    "pillars": [
+      { "label": "確定スコープ", "sub": "着手前に文書化" },
+      { "label": "固定価格", "sub": "追加請求なし" },
+      { "label": "確定納期", "sub": "遅延時は当月無料" }
+    ]
+  },
+  "services": {
+    "section": "セクション003 · サービス",
+    "titleA": "6つの約束。",
+    "titleB": "一つの握手。",
+    "description": "下の数字は希望ではなく期限。遅延時は当月無料。",
+    "readTerms": "条件を見る",
+    "items": [
+      { "label": "ウェブ開発", "promise": "ワイヤーから本番環境まで", "metric": "14日" },
+      { "label": "SEO", "promise": "地域順位が動くまで", "metric": "30日" },
+      { "label": "広告", "promise": "初回の見込み客まで", "metric": "72時間" },
+      { "label": "ブランド", "promise": "何年経っても愛せるロゴを", "metric": "10年" },
+      { "label": "AIツール", "promise": "カスタムワークフローを", "metric": "1週間" },
+      { "label": "顧問契約", "promise": "待機中のチームを", "metric": "1 Slack" }
+    ]
+  },
+  "work": {
+    "section": "セクション004 · 実績 · 2026",
+    "titleA": "7つの事例",
+    "titleB": "既に元を",
+    "titleC": "取っています。",
+    "liveShipping": "稼働中・出荷中",
+    "featured": "注目 · #04",
+    "description": "飲食店は週$400をゴミ箱に捨てている。Toastは全POS交換を強いる。これは違う。3タップで記録、週次ヒートマップを取得。",
+    "wasteLabel": "廃棄 · 1月→3月",
+    "savedLabel": "節約 · 第1四半期",
+    "tryIt": "試す →",
+    "items": [
+      { "name": "廃棄記録", "stat": "週$400", "tag": "飲食" },
+      { "name": "電話救援", "stat": "$1,200/件", "tag": "業者" },
+      { "name": "レビュー返信", "stat": "日30分", "tag": "オーナー" },
+      { "name": "自動見積", "stat": "3案", "tag": "整備場" },
+      { "name": "予約ガード", "stat": "15-30%", "tag": "飲食" },
+      { "name": "SEO診断", "stat": "72/100", "tag": "地域" },
+      { "name": "見積翻訳", "stat": "+41%", "tag": "整備工場" }
+    ]
+  },
+  "contact": {
+    "section": "セクション005 · 送信",
+    "titleA": "あなたの問題を",
+    "titleB": "軌道へ。",
+    "description": "困っていることを教えてください。解決できるか、費用、納期をお伝えします。できない場合は、適任者を紹介します。",
+    "replyTime": "24時間以内に返信",
+    "freeCall": "無料相談コール",
+    "fixedQuote": "固定価格見積",
+    "est": "設立2024",
+    "fieldStable": "軌道安定・信号強力",
+    "coords": "北緯 37.77° · 西経 122.42°"
+  },
+  "playground": {
+    "section": "遊び場 · インタラクティブツール",
+    "titleA": "私の仕事で遊ぶ。",
+    "titleB": "ライブで。",
+    "description": "実際に動くツールを4つ。モックではなく、ブラウザ上で完全に動作します。スクリーンショットではなく、本物を体験してください。",
+    "ariaLabel": "インタラクティブデモ",
+    "demos": {
+      "seo": { "label": "SEOプレビュー", "desc": "URLを貼り付けて、検索結果とAI要約、パフォーマンススコアを確認。" },
+      "pricing": { "label": "料金シミュレーター", "desc": "範囲、期間、サービス、チーム規模を選択して、共有可能な見積もりを生成。" },
+      "content": { "label": "コンテンツジェネレーター", "desc": "トピックを入力し、ブログ構成、ツイートスレッド、ニュースレター、スクリプトを生成。" },
+      "design": { "label": "デザインシステム抽出", "desc": "URLからパレット、タイポグラフィ、スペーシング、コンポーネントをTailwindトークンとして抽出。" }
+    }
+  },
+  "chatbot": {
+    "online": "オンライン",
+    "placeholder": "メッセージを入力…",
+    "trained": "Moxieはあなたのビジネスのために訓練されています",
+    "greeting": "こんにちは！**モクシー**です。ウェブ開発、SEO、カスタムアプリについて何でも聞いてください！",
+    "errorMessage": "申し訳ありません、エラーが発生しました。もう一度お試しください。",
+    "chips": [
+      "どのサービスを提供していますか？",
+      "実績を見せてください",
+      "料金について教えて"
+    ]
+  },
+  "receipt": {
+    "studio": "軌道を描くスタジオ",
+    "invoice": "請求書 №07 · 2026-03-14",
+    "client": "顧客: 廃棄記録社",
+    "total": "合計",
+    "incl": "込み",
+    "terms": "— 固定価格 · 確定納期 —",
+    "shipped": "14日で納品・期日通り",
+    "paid": "支払済 · 07",
+    "footer": "領収書 · 請求 №07 · 押印済",
+    "signed": "nguyenetic 署名",
+    "items": [
+      { "desc": "要件定義コール", "qty": "1", "price": "$0" },
+      { "desc": "ワイヤー+コピー", "qty": "3", "price": "$800" },
+      { "desc": "デザインシステム", "qty": "1", "price": "$1,200" },
+      { "desc": "実装+連携", "qty": "14日", "price": "$4,400" },
+      { "desc": "SEO+解析", "qty": "1", "price": "$600" },
+      { "desc": "30日サポート", "qty": "30日", "price": "込み" }
+    ]
+  },
+  "products": {
+    "AQ": { "name": "自動見積", "tag": "整備" },
+    "RG": { "name": "予約管理", "tag": "飲食" },
+    "SS": { "name": "SEO診断", "tag": "地域" },
+    "WL": { "name": "廃棄記録", "tag": "厨房" },
+    "RR": { "name": "レビュー返信", "tag": "オーナー" },
+    "CR": { "name": "電話救援", "tag": "電話" },
+    "ET": { "name": "見積翻訳", "tag": "整備場" }
+  },
+  "translation": {
+    "notice": ""
+  }
+}

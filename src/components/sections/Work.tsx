@@ -1,38 +1,38 @@
 "use client"
 
 import { motion } from "framer-motion"
-import Link from "next/link"
-import { useLanguage } from "@/lib/language-context"
+import { useTranslations } from "next-intl"
+import { Link } from "@/i18n/navigation"
 
 type WorkItem = {
   n: string
-  name: string
-  nameJa: string
-  stat: string
-  statJa: string
-  tag: string
-  tagJa: string
-  href: string
+  href: "/work/auto-quote" | "/work/reservation" | "/work/seo-audit" | "/work/waste-ledger" | "/work/review-reply" | "/work/call-rescue" | "/work/estimate-translate"
 }
 
 const WORK_ITEMS: WorkItem[] = [
-  { n: "01", name: "Waste Ledger", nameJa: "廃棄記録", stat: "$400/wk", statJa: "週$400", tag: "restaurants", tagJa: "飲食", href: "/work/waste-ledger" },
-  { n: "02", name: "Call Rescue", nameJa: "電話救援", stat: "$1,200/call", statJa: "$1,200/件", tag: "contractors", tagJa: "業者", href: "/work/call-rescue" },
-  { n: "03", name: "Review Reply", nameJa: "レビュー返信", stat: "30 min/day", statJa: "日30分", tag: "owners", tagJa: "オーナー", href: "/work/review-reply" },
-  { n: "04", name: "Auto-Quote", nameJa: "自動見積", stat: "3 drafts", statJa: "3案", tag: "service bays", tagJa: "整備場", href: "/work/auto-quote" },
-  { n: "05", name: "Reservation Guard", nameJa: "予約ガード", stat: "15-30%", statJa: "15-30%", tag: "restaurants", tagJa: "飲食", href: "/work/reservation" },
-  { n: "06", name: "SEO Scorecard", nameJa: "SEO診断", stat: "72/100", statJa: "72/100", tag: "local", tagJa: "地域", href: "/work/seo-audit" },
-  { n: "07", name: "Estimate Tx", nameJa: "見積翻訳", stat: "+41%", statJa: "+41%", tag: "auto shops", tagJa: "整備工場", href: "/work/estimate-translate" },
+  { n: "01", href: "/work/waste-ledger" },
+  { n: "02", href: "/work/call-rescue" },
+  { n: "03", href: "/work/review-reply" },
+  { n: "04", href: "/work/auto-quote" },
+  { n: "05", href: "/work/reservation" },
+  { n: "06", href: "/work/seo-audit" },
+  { n: "07", href: "/work/estimate-translate" },
 ]
 
 export function Work() {
-  const { t, language } = useLanguage()
-  const featured = WORK_ITEMS[0]
-  const sideItems = [WORK_ITEMS[1], WORK_ITEMS[5]]
-  const rowItems = [WORK_ITEMS[2], WORK_ITEMS[3], WORK_ITEMS[4], WORK_ITEMS[6]]
-  const name = (w: WorkItem) => (language === "ja" ? w.nameJa : w.name)
-  const tag = (w: WorkItem) => (language === "ja" ? w.tagJa : w.tag)
-  const stat = (w: WorkItem) => (language === "ja" ? w.statJa : w.stat)
+  const t = useTranslations("work")
+  const items = t.raw("items") as Array<{ name: string; stat: string; tag: string }>
+  const featured = { ...WORK_ITEMS[0], ...items[0] }
+  const sideItems = [
+    { ...WORK_ITEMS[1], ...items[1] },
+    { ...WORK_ITEMS[5], ...items[5] },
+  ]
+  const rowItems = [
+    { ...WORK_ITEMS[2], ...items[2] },
+    { ...WORK_ITEMS[3], ...items[3] },
+    { ...WORK_ITEMS[4], ...items[4] },
+    { ...WORK_ITEMS[6], ...items[6] },
+  ]
 
   return (
     <section id="work" className="w-full bg-paper px-6 py-24 text-[#0A0A0A] md:px-10 md:py-32">
@@ -46,21 +46,21 @@ export function Work() {
         >
           <div>
             <div className="mb-6 font-mono text-[11px] uppercase tracking-[0.3em] text-black/50">
-              — {t("section 004 · work · 2026", "セクション004 · 実績 · 2026")}
+              — {t("section")}
             </div>
             <h2 className="font-[family-name:var(--font-instrument)] text-[clamp(3rem,7vw,6.75rem)] font-normal leading-[0.88] tracking-[-0.02em]">
-              {t("Seven things", "7つの事例")}
+              {t("titleA")}
               <br />
-              <span className="italic">{t("already paying", "既に元を")}</span>
+              <span className="italic">{t("titleB")}</span>
               <br />
-              <span className="text-warm">{t("for themselves.", "取っています。")}</span>
+              <span className="text-warm">{t("titleC")}</span>
             </h2>
           </div>
           <div className="text-right font-mono text-[11px] tracking-[0.2em] text-black/50">
             <div className="font-[family-name:var(--font-instrument)] text-[72px] italic leading-none tracking-[-0.02em] text-[#0A0A0A]">
               07
             </div>
-            <div className="mt-2 uppercase">{t("live · shipping", "稼働中・出荷中")}</div>
+            <div className="mt-2 uppercase">{t("liveShipping")}</div>
           </div>
         </motion.div>
 
@@ -91,16 +91,13 @@ export function Work() {
 
             <div className="relative">
               <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-warm">
-                {t("featured · #04", "注目 · #04")}
+                {t("featured")}
               </div>
               <h3 className="mt-5 font-[family-name:var(--font-instrument)] text-[clamp(2.75rem,5vw,4.75rem)] font-normal leading-[0.95] tracking-[-0.02em]">
-                {name(featured)}.
+                {featured.name}.
               </h3>
               <p className="mt-5 max-w-md text-base leading-relaxed text-paper/70">
-                {t(
-                  "Restaurants toss $400/wk in the dumpster. Toast makes you swap your whole POS. This doesn't. Log a loss in 3 taps, get a weekly heatmap.",
-                  "飲食店は週$400をゴミ箱に捨てている。Toastは全POS交換を強いる。これは違う。3タップで記録、週次ヒートマップを取得。"
-                )}
+                {t("description")}
               </p>
             </div>
 
@@ -110,7 +107,7 @@ export function Work() {
                   −34%
                 </div>
                 <div className="mt-2 font-mono text-[10px] tracking-[0.22em] text-paper/40">
-                  {t("WASTE · MO 1 → MO 3", "廃棄 · 1月→3月")}
+                  {t("wasteLabel")}
                 </div>
               </div>
               <div>
@@ -118,11 +115,11 @@ export function Work() {
                   $1.6k
                 </div>
                 <div className="mt-2 font-mono text-[10px] tracking-[0.22em] text-paper/40">
-                  {t("SAVED · FIRST QUARTER", "節約 · 第1四半期")}
+                  {t("savedLabel")}
                 </div>
               </div>
               <div className="ml-auto font-mono text-[11px] tracking-[0.18em] text-warm transition-transform group-hover:translate-x-1">
-                {t("TRY IT →", "試す →")}
+                {t("tryIt")}
               </div>
             </div>
           </Link>
@@ -136,15 +133,15 @@ export function Work() {
               >
                 <div>
                   <div className="mb-2 font-mono text-[10px] uppercase tracking-[0.22em] text-black/50">
-                    #{w.n} · {tag(w)}
+                    #{w.n} · {w.tag}
                   </div>
                   <h4 className="font-[family-name:var(--font-instrument)] text-[clamp(2rem,3.5vw,2.5rem)] font-normal leading-none tracking-[-0.02em]">
-                    {name(w)}
+                    {w.name}
                   </h4>
                 </div>
                 <div className="flex items-end justify-between">
                   <div className="font-[family-name:var(--font-instrument)] text-[clamp(2rem,3vw,2.625rem)] italic leading-none tracking-[-0.02em] text-warm">
-                    {stat(w)}
+                    {w.stat}
                   </div>
                   <div className="font-mono text-xs text-[#0A0A0A] transition-transform group-hover:translate-x-1">↗</div>
                 </div>
@@ -161,13 +158,13 @@ export function Work() {
               className="group flex min-h-[150px] flex-col justify-between rounded-2xl border border-black/10 bg-white p-6 transition-all hover:border-warm hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-warm"
             >
               <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-black/50">
-                #{w.n} · {tag(w)}
+                #{w.n} · {w.tag}
               </div>
               <div>
                 <h4 className="mb-1.5 font-[family-name:var(--font-instrument)] text-[clamp(1.5rem,2.5vw,1.875rem)] font-normal leading-tight tracking-[-0.01em]">
-                  {name(w)}
+                  {w.name}
                 </h4>
-                <div className="font-mono text-[13px] text-warm">{stat(w)}</div>
+                <div className="font-mono text-[13px] text-warm">{w.stat}</div>
               </div>
             </Link>
           ))}

@@ -1,7 +1,11 @@
 import type { Metadata, Viewport } from "next"
 import { Geist, Geist_Mono, Inter, Instrument_Serif, JetBrains_Mono } from "next/font/google"
-import "./globals.css"
+import { notFound } from "next/navigation"
+import { NextIntlClientProvider, hasLocale } from "next-intl"
+import { getTranslations, setRequestLocale } from "next-intl/server"
+import "../globals.css"
 import { Providers } from "@/components/providers"
+import { routing, type Locale } from "@/i18n/routing"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,87 +48,115 @@ export const viewport: Viewport = {
   ],
 }
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://nguyenetic.com"),
-  title: {
-    default: "Nguyenetic — a studio in orbit around you",
-    template: "%s | Nguyenetic",
-  },
-  description:
-    "Managed websites, design, and digital ops for small service businesses. Seven shipped products. Fixed price, fixed deadline, receipts on everything.",
-  keywords: [
-    "managed website",
-    "small business website",
-    "web development",
-    "SEO",
-    "digital operations",
-    "fixed price web development",
-    "restaurant website",
-    "contractor website",
-    "auto shop website",
-    "local SEO",
-    "Next.js",
-    "React",
-    "TypeScript",
-  ],
-  authors: [{ name: "John Nguyen", url: "https://nguyenetic.com" }],
-  creator: "John Nguyen",
-  publisher: "Nguyenetic",
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
-  manifest: "/manifest.json",
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: "https://nguyenetic.com",
-    siteName: "Nguyenetic",
-    title: "Nguyenetic — a studio in orbit around you",
-    description:
-      "Managed websites, design, and digital ops for small service businesses. Seven shipped products. Fixed price, fixed deadline, receipts on everything.",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Nguyenetic — a studio in orbit",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Nguyenetic — a studio in orbit around you",
-    description:
-      "Managed websites, design, and digital ops for small service businesses. Fixed price, fixed deadline, receipts on everything.",
-    images: ["/og-image.png"],
-    creator: "@nguyenetic",
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
-  alternates: {
-    canonical: "https://nguyenetic.com",
-  },
-  category: "technology",
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }))
 }
 
-export default function RootLayout({
+const ogLocaleMap: Record<Locale, string> = {
+  en: "en_US",
+  ja: "ja_JP",
+  zh: "zh_CN",
+  ko: "ko_KR",
+  vi: "vi_VN",
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  const safeLocale: Locale = hasLocale(routing.locales, locale)
+    ? locale
+    : routing.defaultLocale
+  const t = await getTranslations({ locale: safeLocale, namespace: "metadata" })
+
+  const baseUrl = "https://nguyenetic.com"
+  const path = safeLocale === routing.defaultLocale ? "" : `/${safeLocale}`
+  const canonical = `${baseUrl}${path || "/"}`
+
+  const languages: Record<string, string> = {}
+  for (const loc of routing.locales) {
+    languages[loc] = loc === routing.defaultLocale ? `${baseUrl}/` : `${baseUrl}/${loc}`
+  }
+  languages["x-default"] = `${baseUrl}/`
+
+  const title = t("title")
+  const description = t("description")
+
+  return {
+    metadataBase: new URL(baseUrl),
+    title: {
+      default: title,
+      template: "%s | Nguyenetic",
+    },
+    description,
+    authors: [{ name: "John Nguyen", url: baseUrl }],
+    creator: "John Nguyen",
+    publisher: "Nguyenetic",
+    formatDetection: {
+      email: false,
+      address: false,
+      telephone: false,
+    },
+    manifest: "/manifest.json",
+    openGraph: {
+      type: "website",
+      locale: ogLocaleMap[safeLocale],
+      url: canonical,
+      siteName: "Nguyenetic",
+      title,
+      description,
+      images: [
+        {
+          url: "/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: "Nguyenetic — a studio in orbit",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["/og-image.png"],
+      creator: "@nguyenetic",
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
+    },
+    alternates: {
+      canonical,
+      languages,
+    },
+    category: "technology",
+  }
+}
+
+export default async function LocaleLayout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode
+  params: Promise<{ locale: string }>
 }>) {
+  const { locale } = await params
+  if (!hasLocale(routing.locales, locale)) {
+    notFound()
+  }
+  setRequestLocale(locale)
+
   return (
-    <html lang="en" className="dark">
+    <html lang={locale} className="dark">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -163,7 +195,9 @@ export default function RootLayout({
         />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable}`}>
-        <Providers>{children}</Providers>
+        <NextIntlClientProvider>
+          <Providers>{children}</Providers>
+        </NextIntlClientProvider>
       </body>
     </html>
   )

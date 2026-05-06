@@ -1,22 +1,29 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Menu, X, Languages } from "lucide-react"
+import { Menu, X, Languages, Check } from "lucide-react"
+import { useTranslations, useLocale } from "next-intl"
+import { useRouter, usePathname } from "@/i18n/navigation"
+import { routing, localeNames, type Locale } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
 import { OrbitN } from "@/components/ui/orbit-n"
-import { useLanguage } from "@/lib/language-context"
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const { language, setLanguage, t } = useLanguage()
+  const [isLangOpen, setIsLangOpen] = useState(false)
+  const langButtonRef = useRef<HTMLDivElement | null>(null)
+  const t = useTranslations("header")
+  const locale = useLocale() as Locale
+  const router = useRouter()
+  const pathname = usePathname()
 
   const navItems = [
-    { label: t("Work", "実績"), href: "#work" },
-    { label: t("Services", "サービス"), href: "#services" },
-    { label: t("Receipts", "領収書"), href: "#proof" },
-    { label: t("Contact", "お問い合わせ"), href: "#contact" },
+    { label: t("nav.work"), href: "#work" },
+    { label: t("nav.services"), href: "#services" },
+    { label: t("nav.receipts"), href: "#proof" },
+    { label: t("nav.contact"), href: "#contact" },
   ]
 
   useEffect(() => {
@@ -27,8 +34,24 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  const toggleLanguage = () => {
-    setLanguage(language === "en" ? "ja" : "en")
+  useEffect(() => {
+    if (!isLangOpen) return
+    const onClick = (e: MouseEvent) => {
+      if (
+        langButtonRef.current &&
+        !langButtonRef.current.contains(e.target as Node)
+      ) {
+        setIsLangOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", onClick)
+    return () => document.removeEventListener("mousedown", onClick)
+  }, [isLangOpen])
+
+  const switchLocale = (next: Locale) => {
+    document.cookie = `NEXT_LOCALE=${next}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax`
+    router.replace(pathname, { locale: next })
+    setIsLangOpen(false)
   }
 
   return (
@@ -43,7 +66,6 @@ export function Header() {
         )}
       >
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
-          {/* Logo */}
           <a
             href="/"
             className="group inline-flex items-center transition-colors hover:text-warm focus:outline-none focus-visible:ring-2 focus-visible:ring-warm rounded"
@@ -52,7 +74,6 @@ export function Header() {
             <OrbitN size={36} />
           </a>
 
-          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
             {navItems.map((item) => (
               <a
@@ -66,37 +87,74 @@ export function Header() {
             ))}
           </nav>
 
-          {/* Language Toggle + CTA Button (Desktop) */}
           <div className="hidden md:flex items-center gap-3">
-            <button
-              onClick={toggleLanguage}
-              aria-label={language === "ja" ? "Switch to English" : "日本語に切り替え"}
-              className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm transition-all",
-                language === "ja"
-                  ? "bg-accent-sakura/20 text-accent-sakura"
-                  : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <Languages className="w-4 h-4" aria-hidden="true" />
-              <span className="text-xs font-medium" aria-hidden="true">{language === "ja" ? "日本語" : "EN"}</span>
-            </button>
+            <div ref={langButtonRef} className="relative">
+              <button
+                onClick={() => setIsLangOpen((v) => !v)}
+                aria-label={t("languageSwitch")}
+                aria-expanded={isLangOpen}
+                aria-haspopup="listbox"
+                className={cn(
+                  "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm transition-all",
+                  isLangOpen
+                    ? "bg-accent-sakura/20 text-accent-sakura"
+                    : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <Languages className="w-4 h-4" aria-hidden="true" />
+                <span className="text-xs font-medium" aria-hidden="true">
+                  {localeNames[locale]}
+                </span>
+              </button>
+              <AnimatePresence>
+                {isLangOpen && (
+                  <motion.ul
+                    role="listbox"
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute right-0 mt-2 min-w-[180px] rounded-xl border border-warm/15 bg-ink/95 backdrop-blur-xl py-2 shadow-lg shadow-ink/40"
+                  >
+                    {routing.locales.map((loc) => (
+                      <li key={loc}>
+                        <button
+                          role="option"
+                          aria-selected={loc === locale}
+                          onClick={() => switchLocale(loc)}
+                          className={cn(
+                            "w-full flex items-center justify-between gap-3 px-4 py-2 text-sm transition-colors",
+                            loc === locale
+                              ? "text-warm"
+                              : "text-paper/70 hover:text-paper hover:bg-warm/5"
+                          )}
+                        >
+                          <span>{localeNames[loc]}</span>
+                          {loc === locale && (
+                            <Check className="w-3.5 h-3.5" aria-hidden="true" />
+                          )}
+                        </button>
+                      </li>
+                    ))}
+                  </motion.ul>
+                )}
+              </AnimatePresence>
+            </div>
             <a
               href="#contact"
               className="text-sm px-5 py-2.5 rounded-full border border-neutral-border hover:border-warm hover:text-warm transition-all"
             >
-              {t("Let's Talk", "相談する")}
+              {t("letsTalk")}
             </a>
           </div>
 
-          {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center gap-2">
             <button
-              onClick={toggleLanguage}
-              aria-label={language === "ja" ? "Switch to English" : "日本語に切り替え"}
+              onClick={() => setIsLangOpen((v) => !v)}
+              aria-label={t("languageSwitch")}
               className={cn(
                 "w-9 h-9 rounded-full flex items-center justify-center transition-all",
-                language === "ja"
+                isLangOpen
                   ? "bg-accent-sakura/20 text-accent-sakura"
                   : "hover:bg-muted/50 text-muted-foreground"
               )}
@@ -118,7 +176,50 @@ export function Header() {
         </div>
       </motion.header>
 
-      {/* Mobile Menu */}
+      <AnimatePresence>
+        {isLangOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40 md:hidden"
+            onClick={() => setIsLangOpen(false)}
+          >
+            <div className="absolute inset-0 bg-background/80 backdrop-blur-xl" />
+            <motion.ul
+              role="listbox"
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="absolute bottom-0 inset-x-0 bg-card border-t border-border p-4 space-y-1"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {routing.locales.map((loc) => (
+                <li key={loc}>
+                  <button
+                    role="option"
+                    aria-selected={loc === locale}
+                    onClick={() => switchLocale(loc)}
+                    className={cn(
+                      "w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg text-base transition-colors",
+                      loc === locale
+                        ? "bg-warm/10 text-warm"
+                        : "text-paper/80 hover:text-paper hover:bg-warm/5"
+                    )}
+                  >
+                    <span>{localeNames[loc]}</span>
+                    {loc === locale && (
+                      <Check className="w-4 h-4" aria-hidden="true" />
+                    )}
+                  </button>
+                </li>
+              ))}
+            </motion.ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
@@ -163,7 +264,7 @@ export function Header() {
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="inline-block px-6 py-3 bg-foreground text-background rounded-full font-medium"
                   >
-                    {t("Let's Talk", "相談する")}
+                    {t("letsTalk")}
                   </a>
                 </motion.div>
               </div>

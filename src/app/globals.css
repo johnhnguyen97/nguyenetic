@@ -221,3 +221,119 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Blog prose typography — scoped to the <Prose> wrapper.
+   Reuses --color-* and --font-* tokens declared in @theme above. */
+/* Default font stack includes JP/CJK fallbacks so any post (even lang=en)
+   can include 漢字 / かな / 한국어 inline without tofu boxes. */
+.prose-blog {
+  font-family: var(--font-body), "Hiragino Sans", "Yu Gothic UI", "Noto Sans JP", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  color: var(--color-paper);
+  line-height: 1.8;
+  font-size: 1.0625rem;
+}
+
+.prose-blog h1,
+.prose-blog h2,
+.prose-blog h3,
+.prose-blog h4 {
+  font-family: var(--font-display), "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif;
+  color: var(--color-paper);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.prose-blog h2 { font-size: 2rem; margin-top: 3rem; margin-bottom: 1rem; }
+.prose-blog h3 { font-size: 1.5rem; margin-top: 2.25rem; margin-bottom: 0.75rem; }
+.prose-blog h4 { font-size: 1.125rem; margin-top: 1.75rem; margin-bottom: 0.5rem; }
+
+.prose-blog p { margin: 1.25rem 0; }
+
+.prose-blog a {
+  color: var(--color-warm);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+  transition: color 150ms ease;
+}
+.prose-blog a:hover { color: var(--color-warm-hover); }
+
+.prose-blog ul,
+.prose-blog ol { margin: 1.25rem 0; padding-left: 1.5rem; }
+.prose-blog ul { list-style: disc; }
+.prose-blog ol { list-style: decimal; }
+.prose-blog li { margin: 0.5rem 0; }
+.prose-blog li::marker { color: var(--color-paper-dim); }
+
+.prose-blog blockquote {
+  border-left: 2px solid var(--color-warm);
+  padding-left: 1.5rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: var(--color-paper-dim);
+}
+
+.prose-blog hr { border: 0; border-top: 1px solid var(--color-neutral-border); margin: 3rem 0; }
+.prose-blog strong { font-weight: 600; color: var(--color-paper); }
+.prose-blog em { font-style: italic; }
+
+/* Inline code (NOT inside <pre>) */
+.prose-blog :not(pre) > code {
+  font-family: var(--font-jetbrains);
+  font-size: 0.875em;
+  background: var(--color-ink-soft);
+  color: var(--color-warm);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--color-neutral-border);
+}
+
+/* Code blocks (Shiki output) — token colors come from Shiki theme inline.
+   Override background to match ink palette and add framing. */
+.prose-blog pre {
+  margin: 1.75rem 0;
+  padding: 1.25rem 1.5rem;
+  border-radius: 0.375rem;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  background: var(--color-ink-soft) !important;
+  border: 1px solid var(--color-neutral-border);
+  font-family: var(--font-jetbrains);
+}
+
+.prose-blog pre code {
+  background: transparent;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  font-size: inherit;
+}
+
+/* Heading anchors from rehype-autolink-headings (behavior: "wrap") */
+.prose-blog h2 a,
+.prose-blog h3 a,
+.prose-blog h4 a { color: inherit; text-decoration: none; }
+.prose-blog h2 a:hover,
+.prose-blog h3 a:hover,
+.prose-blog h4 a:hover { color: var(--color-warm); }
+
+/* Images inside posts */
+.prose-blog img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.375rem;
+  margin: 1.5rem 0;
+  border: 1px solid var(--color-neutral-border);
+}
+
+/* Japanese-language posts: prefer Noto/Hiragino fallbacks for kanji glyphs */
+.prose-blog[data-lang="ja"] {
+  font-family: var(--font-body), "Hiragino Sans", "Yu Gothic UI", "Noto Sans JP", sans-serif;
+}
+.prose-blog[data-lang="ja"] h1,
+.prose-blog[data-lang="ja"] h2,
+.prose-blog[data-lang="ja"] h3,
+.prose-blog[data-lang="ja"] h4 {
+  font-family: var(--font-display), "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif;
+}

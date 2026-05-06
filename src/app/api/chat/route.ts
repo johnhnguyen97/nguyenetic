@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from "next/server"
 
-const MOXIE_SYSTEM_PROMPT_EN = `You are Moxie, the friendly and knowledgeable AI assistant for Nguyenetic, a web development and digital solutions agency.
+const LANGUAGE_NAMES: Record<string, string> = {
+  en: "English",
+  ja: "Japanese (日本語)",
+  zh: "Simplified Chinese (简体中文)",
+  ko: "Korean (한국어)",
+  vi: "Vietnamese (Tiếng Việt)",
+}
+
+const MOXIE_BASE_PROMPT = `You are Moxie, the friendly and knowledgeable AI assistant for Nguyenetic, a web development and digital solutions agency.
 
 About Nguyenetic:
 - Founded by John Nguyen, a full-stack developer with 5+ years of experience
@@ -22,31 +30,17 @@ Your role:
 
 Always end with a subtle call-to-action when appropriate (like suggesting they reach out to discuss their project).`
 
-const MOXIE_SYSTEM_PROMPT_JA = `あなたは「Moxie（モクシー）」です。Ngueyeneticというウェブ開発およびデジタルソリューション会社のフレンドリーで知識豊富なAIアシスタントです。
-
-Ngueyeneticについて:
-- 5年以上の経験を持つフルスタック開発者、John Nguyenによって設立
-- サービス: ウェブ開発（Next.js、React）、SEO最適化、AIソリューション、カスタムウェブアプリ
-- 技術スタック: Next.js、React、TypeScript、Tailwind CSS、Vercel、Supabase
-- 代表的なプロジェクト: GoJun（言語学習）、FastFix（自動車修理）、EVWrap（自動車）、Ichiban（レストラン）
-
-あなたの性格:
-- フレンドリーで、親切で、熱心
-- 簡潔だが丁寧 - 詳細が必要でない限り、3文以内で回答
-- プロフェッショナルだが親しみやすい
-- ウェブ開発、SEO、AIに詳しい
-
-あなたの役割:
-- Ngueyeneticのサービスについての質問に答える
-- 訪問者が私たちに何を構築できるかを理解するのを助ける
-- リードを獲得するために、訪問者に連絡を促す
-- 技術的な概念を簡単な言葉で説明する
-
-すべての返答を日本語で行ってください。適切な場合は、さりげなくコールトゥアクションで締めくくってください（プロジェクトについて相談することを提案するなど）。`
-
 export async function POST(request: NextRequest) {
   try {
-    const { messages, isJapanese } = await request.json()
+    const body = await request.json()
+    const { messages, locale, isJapanese } = body
+    // Accept legacy isJapanese flag for backward compatibility
+    const resolvedLocale: string =
+      typeof locale === "string" && LANGUAGE_NAMES[locale]
+        ? locale
+        : isJapanese
+          ? "ja"
+          : "en"
 
     if (!process.env.GROQ_API_KEY) {
       return NextResponse.json(
@@ -55,9 +49,12 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const systemPrompt = isJapanese ? MOXIE_SYSTEM_PROMPT_JA : MOXIE_SYSTEM_PROMPT_EN
+    const languageName = LANGUAGE_NAMES[resolvedLocale]
+    const systemPrompt =
+      resolvedLocale === "en"
+        ? MOXIE_BASE_PROMPT
+        : `${MOXIE_BASE_PROMPT}\n\nIMPORTANT: Always respond in ${languageName}. The user has selected ${languageName} as their language.`
 
-    // Use fetch directly instead of SDK for better compatibility
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {

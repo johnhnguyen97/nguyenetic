@@ -1,17 +1,12 @@
 "use client"
 
 import { motion } from "framer-motion"
+import { useTranslations } from "next-intl"
 import { StaticReceipt } from "@/components/ui/static-receipt"
-import { useLanguage } from "@/lib/language-context"
 
 export function Proof() {
-  const { t } = useLanguage()
-
-  const promises: Array<[string, string, string, string, string]> = [
-    ["01", t("Fixed scope", "確定スコープ"), t("written before we start", "着手前に文書化"), "Fixed scope", "written before we start"],
-    ["02", t("Fixed price", "固定価格"), t("no surprise line items", "追加請求なし"), "Fixed price", "no surprise line items"],
-    ["03", t("Fixed deadline", "確定納期"), t("or the month is free", "遅延時は当月無料"), "Fixed deadline", "or the month is free"],
-  ]
+  const t = useTranslations("proof")
+  const pillars = t.raw("pillars") as Array<{ label: string; sub: string }>
 
   return (
     <section
@@ -27,33 +22,28 @@ export function Proof() {
       >
         <div>
           <div className="mb-8 font-mono text-[11px] uppercase tracking-[0.3em] text-warm">
-            — {t("section 002 · the promise", "セクション002 · 約束")}
+            — {t("section")}
           </div>
           <h2 className="font-[family-name:var(--font-instrument)] text-[clamp(3rem,6vw,5.5rem)] font-normal leading-[0.9] tracking-[-0.03em]">
-            {t("We hand you", "お渡しするのは")}
+            {t("titleA")}
             <br />
-            {t("the receipt,", "領収書。")}
+            {t("titleB")}
             <br />
-            <span className="italic text-warm">
-              {t("not the estimate.", "見積書ではなく。")}
-            </span>
+            <span className="italic text-warm">{t("titleC")}</span>
           </h2>
           <p className="mt-8 max-w-md text-[17px] leading-relaxed text-paper/70">
-            {t(
-              "Every engagement ends with a stamped receipt of exactly what we shipped, what it cost, and what it's earning you. No retainers you can't read. No \"strategic alignment.\" Just work and numbers.",
-              "全ての案件は、納品物・費用・収益効果を明記した押印済み領収書で締めくくります。不透明な顧問料なし。曖昧な『戦略的連携』なし。仕事と数字だけ。"
-            )}
+            {t("description")}
           </p>
 
           <div className="mt-10 grid gap-3.5 font-mono text-[12px] tracking-[0.12em] text-paper/80">
-            {promises.map(([n, title, sub]) => (
+            {pillars.map((pillar, i) => (
               <div
-                key={n}
+                key={i}
                 className="grid grid-cols-[40px_minmax(120px,180px)_1fr] items-baseline gap-4 border-b border-paper/10 py-3"
               >
-                <span className="text-warm">{n}</span>
-                <span>{title}</span>
-                <span className="lowercase text-paper/40">{sub}</span>
+                <span className="text-warm">{String(i + 1).padStart(2, "0")}</span>
+                <span>{pillar.label}</span>
+                <span className="lowercase text-paper/40">{pillar.sub}</span>
               </div>
             ))}
           </div>

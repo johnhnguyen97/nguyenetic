@@ -1,0 +1,167 @@
+{
+  "metadata": {
+    "title": "Nguyenetic — một studio xoay quanh bạn",
+    "description": "Quản lý website, thiết kế và vận hành kỹ thuật số cho doanh nghiệp dịch vụ nhỏ. Bảy sản phẩm đã ra mắt. Giá cố định, hạn cố định, có biên lai cho từng việc."
+  },
+  "blog": {
+    "indexTitle": "Blog kỹ thuật",
+    "indexDescription": "Ghi chú từ việc xây dựng Tashinamu, công việc cho khách hàng đại lý, và học tiếng Nhật với tư cách kỹ sư người Mỹ gốc Việt sắp sang Nhật.",
+    "eyebrow": "Ghi chú",
+    "emptyLocaleTitle": "Chưa có bài viết bằng ngôn ngữ này",
+    "emptyLocaleBody": "Bài viết đa ngôn ngữ vẫn đang được mở rộng. Kho lưu trữ tiếng Anh có đầy đủ.",
+    "emptyLocaleCta": "Đọc bằng tiếng Anh",
+    "backToIndex": "Quay lại danh sách",
+    "minutesShort": "phút đọc",
+    "toc": "Mục lục",
+    "relatedPosts": "Bài viết liên quan",
+    "tagEyebrow": "Thẻ",
+    "tagArchiveTitle": "Bài có thẻ {tag}",
+    "tagArchiveDescription": "{count} bài có thẻ {tag}",
+    "postsCount": "{count} bài",
+    "allTags": "Tất cả thẻ"
+  },
+  "header": {
+    "nav": {
+      "work": "Tác phẩm",
+      "services": "Dịch vụ",
+      "receipts": "Biên lai",
+      "contact": "Liên hệ"
+    },
+    "letsTalk": "Trò chuyện thôi",
+    "languageSwitch": "Đổi ngôn ngữ"
+  },
+  "hero": {
+    "statusBadge": "◇ 07 vệ tinh đang chạy · 01 người vận hành",
+    "titleA": "Một studio",
+    "titleB": "trên quỹ đạo",
+    "titleC": "quanh",
+    "titleD": "bạn.",
+    "description": "Quản lý website, thiết kế và vận hành kỹ thuật số cho doanh nghiệp dịch vụ nhỏ. Bảy sản phẩm đã ra mắt. Một con người ở trung tâm. Mỗi quỹ đạo là một bài toán có người sẵn sàng trả tiền để giải.",
+    "seeReceipts": "xem biên lai",
+    "whatIDo": "tôi làm gì",
+    "pillTurnaround": "giao trong 14 ngày",
+    "pillFixedPrice": "giá cố định",
+    "pillReceipts": "biên lai cho mọi thứ",
+    "core": "lõi",
+    "coords": "vĩ độ 37.7749° B · kinh độ 122.4194° T",
+    "fieldStable": "trường ổn định · tín hiệu mạnh",
+    "scrollHint": "cuộn ↓ để vào vùng hấp dẫn"
+  },
+  "proof": {
+    "section": "phần 002 · lời hứa",
+    "titleA": "Chúng tôi trao bạn",
+    "titleB": "biên lai,",
+    "titleC": "không phải báo giá.",
+    "description": "Mỗi dự án kết thúc bằng một biên lai có dấu, ghi rõ chúng tôi đã giao gì, chi phí bao nhiêu và mang lại bao nhiêu cho bạn. Không có phí giữ chỗ khó hiểu. Không có 'liên kết chiến lược' sáo rỗng. Chỉ có công việc và con số.",
+    "pillars": [
+      { "label": "Phạm vi cố định", "sub": "viết rõ trước khi bắt đầu" },
+      { "label": "Giá cố định", "sub": "không có khoản phát sinh" },
+      { "label": "Hạn cố định", "sub": "trễ thì tháng đó miễn phí" }
+    ]
+  },
+  "services": {
+    "section": "phần 003 · dịch vụ",
+    "titleA": "Sáu lời hứa.",
+    "titleB": "Một cái bắt tay.",
+    "description": "Mỗi con số bên dưới là hạn chót, không phải kỳ vọng. Trễ một mục, tháng đó miễn phí.",
+    "readTerms": "đọc điều khoản",
+    "items": [
+      { "label": "Phát triển web", "promise": "Từ wireframe đến production trong", "metric": "14 ngày" },
+      { "label": "SEO", "promise": "Thứ hạng địa phương dịch chuyển trong", "metric": "30 ngày" },
+      { "label": "Quảng cáo", "promise": "Lead đầu tiên đủ chuẩn trong", "metric": "72 giờ" },
+      { "label": "Thương hiệu", "promise": "Một dấu hiệu bạn còn yêu sau", "metric": "10 năm" },
+      { "label": "Công cụ AI", "promise": "Quy trình tùy chỉnh giao trong", "metric": "1 tuần" },
+      { "label": "Hợp đồng giữ", "promise": "Đội ngũ trực sẵn trong", "metric": "1 Slack" }
+    ]
+  },
+  "work": {
+    "section": "phần 004 · tác phẩm · 2026",
+    "titleA": "Bảy thứ",
+    "titleB": "đã tự",
+    "titleC": "trả lại tiền.",
+    "liveShipping": "đang chạy · đang giao",
+    "featured": "nổi bật · #04",
+    "description": "Nhà hàng vứt 400$/tuần vào thùng rác. Toast bắt bạn thay nguyên dàn POS. Cái này thì không. Ghi nhận thất thoát trong 3 chạm, nhận heatmap hàng tuần.",
+    "wasteLabel": "THẤT THOÁT · T1 → T3",
+    "savedLabel": "TIẾT KIỆM · QUÝ I",
+    "tryIt": "DÙNG THỬ →",
+    "items": [
+      { "name": "Sổ thất thoát", "stat": "$400/tuần", "tag": "nhà hàng" },
+      { "name": "Cứu nguy cuộc gọi", "stat": "$1,200/cuộc", "tag": "nhà thầu" },
+      { "name": "Trả lời đánh giá", "stat": "30 phút/ngày", "tag": "chủ tiệm" },
+      { "name": "Báo giá tự động", "stat": "3 bản", "tag": "khu sửa" },
+      { "name": "Giữ chỗ Reservation", "stat": "15-30%", "tag": "nhà hàng" },
+      { "name": "Bảng điểm SEO", "stat": "72/100", "tag": "địa phương" },
+      { "name": "Dịch báo giá", "stat": "+41%", "tag": "tiệm sửa xe" }
+    ]
+  },
+  "contact": {
+    "section": "phần 005 · phát đi",
+    "titleA": "Đưa vấn đề của bạn",
+    "titleB": "lên quỹ đạo.",
+    "description": "Hãy nói cho tôi biết cái gì đang hỏng. Tôi sẽ nói liệu tôi có sửa được không, chi phí bao nhiêu, khi nào giao. Nếu không, tôi sẽ chỉ bạn người làm được.",
+    "replyTime": "phản hồi trong 24h",
+    "freeCall": "cuộc gọi xác định phạm vi miễn phí",
+    "fixedQuote": "báo giá cố định",
+    "est": "thành lập 2024",
+    "fieldStable": "trường ổn định · tín hiệu mạnh",
+    "coords": "vĩ độ 37.7749° B · kinh độ 122.4194° T"
+  },
+  "playground": {
+    "section": "sân chơi · Playground · Công cụ tương tác",
+    "titleA": "Chơi thử với việc tôi đã làm.",
+    "titleB": "Trực tiếp.",
+    "description": "Bốn công cụ tôi tự dựng — chạy thật, không mô phỏng. Mỗi cái đều chạy hoàn toàn trong trình duyệt của bạn. Ảnh chụp là cho website; mấy cái này là hàng thật.",
+    "ariaLabel": "Demo tương tác",
+    "demos": {
+      "seo": { "label": "Xem trước SEO", "desc": "Dán bất kỳ URL — xem SERP giả, AI Overview và điểm Core Web Vitals." },
+      "pricing": { "label": "Máy tính báo giá", "desc": "Chọn phạm vi, thời gian, dịch vụ, quy mô đội — nhận báo giá trực tiếp có thể chia sẻ." },
+      "content": { "label": "Tạo nội dung", "desc": "Cho một chủ đề — nhận dàn ý blog, chuỗi tweet, bản tin hoặc kịch bản theo thời gian thực." },
+      "design": { "label": "Bóc tách hệ thiết kế", "desc": "Dán một URL — bóc tách bảng màu, kiểu chữ, khoảng cách và component thành các token Tailwind." }
+    }
+  },
+  "chatbot": {
+    "online": "Trực tuyến",
+    "placeholder": "Nhập tin nhắn…",
+    "trained": "Moxie đã được huấn luyện cho doanh nghiệp của bạn",
+    "greeting": "Chào! Tôi là **Moxie**, trợ lý AI của bạn. Cứ hỏi tôi về phát triển web, SEO hay app tùy chỉnh!",
+    "errorMessage": "Xin lỗi, đã xảy ra lỗi. Vui lòng thử lại!",
+    "chips": [
+      "Bạn cung cấp dịch vụ gì?",
+      "Cho tôi xem tác phẩm",
+      "Báo giá thế nào?"
+    ]
+  },
+  "receipt": {
+    "studio": "MỘT STUDIO TRÊN QUỸ ĐẠO",
+    "invoice": "HÓA ĐƠN №07 · 2026-03-14",
+    "client": "KHÁCH HÀNG: WASTE LEDGER CO.",
+    "total": "TỔNG",
+    "incl": "đã gồm",
+    "terms": "— GIÁ CỐ ĐỊNH · NGÀY GIAO CỐ ĐỊNH —",
+    "shipped": "GIAO 14 NGÀY · ĐÚNG HẠN",
+    "paid": "ĐÃ TRẢ · 07",
+    "footer": "biên lai · hóa đơn №07 · đóng dấu",
+    "signed": "ký bởi, nguyenetic",
+    "items": [
+      { "desc": "Cuộc gọi tìm hiểu", "qty": "1", "price": "$0" },
+      { "desc": "Wireframe + nội dung", "qty": "3", "price": "$800" },
+      { "desc": "Hệ thiết kế", "qty": "1", "price": "$1,200" },
+      { "desc": "Phát triển + tích hợp", "qty": "14 ngày", "price": "$4,400" },
+      { "desc": "SEO + phân tích", "qty": "1", "price": "$600" },
+      { "desc": "Hỗ trợ 30 ngày", "qty": "30 ngày", "price": "đã gồm" }
+    ]
+  },
+  "products": {
+    "AQ": { "name": "Báo giá tự động", "tag": "ô tô" },
+    "RG": { "name": "Đặt bàn", "tag": "nhà hàng" },
+    "SS": { "name": "Bảng điểm SEO", "tag": "địa phương" },
+    "WL": { "name": "Sổ thất thoát", "tag": "bếp" },
+    "RR": { "name": "Trả lời đánh giá", "tag": "chủ tiệm" },
+    "CR": { "name": "Cứu nguy cuộc gọi", "tag": "điện thoại" },
+    "ET": { "name": "Dịch báo giá", "tag": "khu sửa" }
+  },
+  "translation": {
+    "notice": "Trang này được dịch tự động và có thể chưa hoàn toàn chính xác."
+  }
+}

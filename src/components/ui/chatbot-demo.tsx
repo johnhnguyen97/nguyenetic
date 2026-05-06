@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { X, Send, Minus } from "lucide-react"
-import { useLanguage } from "@/lib/language-context"
+import { useTranslations, useLocale } from "next-intl"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 
@@ -15,20 +15,6 @@ interface Message {
   isBot: boolean
   role: "user" | "assistant"
 }
-
-const GREETING_EN = "Hi! I'm **Moxie**, your AI assistant. Ask me anything about web development, SEO, or custom apps!"
-const GREETING_JA = "こんにちは！**モクシー**です。ウェブ開発、SEO、カスタムアプリについて何でも聞いてください！"
-
-const PROMPT_CHIPS_EN = [
-  "What services do you offer?",
-  "Show me your work",
-  "日本語で話す",
-]
-const PROMPT_CHIPS_JA = [
-  "どのサービスを提供していますか？",
-  "実績を見せてください",
-  "Switch to English",
-]
 
 // Hexagon SVG path for a regular hexagon centered at (28,28), radius 22
 const HEX_PATH = "M28 6 L48 17 L48 39 L28 50 L8 39 L8 17 Z"
@@ -103,11 +89,13 @@ function TypingDots() {
 }
 
 export function ChatbotDemo() {
-  const { language, t } = useLanguage()
-  const isJapanese = language === "ja"
+  const t = useTranslations("chatbot")
+  const locale = useLocale()
+  const greetingText = t("greeting")
+  const errorMessage = t("errorMessage")
+  const chips = t.raw("chips") as string[]
   const [isOpen, setIsOpen] = useState(false)
   const [isMinimized, setIsMinimized] = useState(false)
-  const greetingText = isJapanese ? GREETING_JA : GREETING_EN
   const [messages, setMessages] = useState<Message[]>([
     { id: 1, text: greetingText, isBot: true, role: "assistant" },
   ])
@@ -131,11 +119,11 @@ export function ChatbotDemo() {
       const updated = [...prev]
       const idx = updated.findIndex((m) => m.id === 1)
       if (idx !== -1) {
-        updated[idx] = { ...updated[idx], text: isJapanese ? GREETING_JA : GREETING_EN }
+        updated[idx] = { ...updated[idx], text: greetingText }
       }
       return updated
     })
-  }, [isJapanese])
+  }, [greetingText])
 
   // Escape key closes panel
   useEffect(() => {
@@ -177,7 +165,7 @@ export function ChatbotDemo() {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: apiMessages, isJapanese }),
+        body: JSON.stringify({ messages: apiMessages, locale }),
       })
 
       const data = await response.json()
@@ -193,9 +181,7 @@ export function ChatbotDemo() {
         ...prev,
         {
           id: Date.now() + 1,
-          text: isJapanese
-            ? "申し訳ありません、エラーが発生しました。もう一度お試しください。"
-            : "Sorry, I encountered an error. Please try again!",
+          text: errorMessage,
           isBot: true,
           role: "assistant",
         },
@@ -203,9 +189,8 @@ export function ChatbotDemo() {
     } finally {
       setIsTyping(false)
     }
-  }, [input, isTyping, messages, isJapanese])
+  }, [input, isTyping, messages, locale, errorMessage])
 
-  const chips = isJapanese ? PROMPT_CHIPS_JA : PROMPT_CHIPS_EN
   const showChips = input.length === 0 && messages.length <= 2
 
   const handleTextareaKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -278,7 +263,7 @@ export function ChatbotDemo() {
                     className="inline-block w-2 h-2 rounded-full"
                     style={{ background: "#22c55e", boxShadow: "0 0 6px #22c55e" }}
                   />
-                  <span>{t("Online", "オンライン")}</span>
+                  <span>{t("online")}</span>
                 </div>
               </div>
               <button
@@ -483,7 +468,7 @@ export function ChatbotDemo() {
                             e.target.style.height = Math.min(e.target.scrollHeight, 72) + "px"
                           }}
                           onKeyDown={handleTextareaKeyDown}
-                          placeholder={t("Type a message…", "メッセージを入力…")}
+                          placeholder={t("placeholder")}
                           className="w-full resize-none bg-transparent text-sm py-2 pr-1 transition-all focus:outline-none"
                           style={{
                             color: "#f5f5f0",
@@ -518,7 +503,7 @@ export function ChatbotDemo() {
                       className="text-[10px] text-center mt-2"
                       style={{ color: "oklch(0.74 0.15 55 / 0.4)" }}
                     >
-                      {t("Moxie is trained for your business", "Moxieはあなたのビジネスのために訓練されています")}
+                      {t("trained")}
                     </p>
                   </div>
                 </motion.div>

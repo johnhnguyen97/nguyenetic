@@ -1,0 +1,167 @@
+{
+  "metadata": {
+    "title": "Nguyenetic — a studio in orbit around you",
+    "description": "Managed websites, design, and digital ops for small service businesses. Seven shipped products. Fixed price, fixed deadline, receipts on everything."
+  },
+  "blog": {
+    "indexTitle": "Engineering blog",
+    "indexDescription": "Notes from building Tashinamu, agency client work, and learning Japanese as a Vietnamese-American engineer headed to Japan.",
+    "eyebrow": "Notes & dispatches",
+    "emptyLocaleTitle": "No posts in this language yet",
+    "emptyLocaleBody": "Multi-language posts are still ramping up. The English archive has the full set.",
+    "emptyLocaleCta": "Read in English",
+    "backToIndex": "Back to all posts",
+    "minutesShort": "min read",
+    "toc": "Contents",
+    "relatedPosts": "Related",
+    "tagEyebrow": "Tag",
+    "tagArchiveTitle": "Posts tagged {tag}",
+    "tagArchiveDescription": "{count} posts tagged {tag}",
+    "postsCount": "{count, plural, one {# post} other {# posts}}",
+    "allTags": "All tags"
+  },
+  "header": {
+    "nav": {
+      "work": "Work",
+      "services": "Services",
+      "receipts": "Receipts",
+      "contact": "Contact"
+    },
+    "letsTalk": "Let's Talk",
+    "languageSwitch": "Switch language"
+  },
+  "hero": {
+    "statusBadge": "◇ 07 satellites live · 01 operator",
+    "titleA": "A studio",
+    "titleB": "in orbit",
+    "titleC": "around",
+    "titleD": "you.",
+    "description": "Managed websites, design, and digital ops for small service businesses. Seven shipped products. One human at the core. Each orbit is a problem someone wrote a check to solve.",
+    "seeReceipts": "see the receipts",
+    "whatIDo": "what I do",
+    "pillTurnaround": "14-day turnaround",
+    "pillFixedPrice": "fixed price",
+    "pillReceipts": "receipts on everything",
+    "core": "core",
+    "coords": "lat 37.7749° N · lon 122.4194° W",
+    "fieldStable": "field stable · signal strong",
+    "scrollHint": "scroll ↓ to enter gravity"
+  },
+  "proof": {
+    "section": "section 002 · the promise",
+    "titleA": "We hand you",
+    "titleB": "the receipt,",
+    "titleC": "not the estimate.",
+    "description": "Every engagement ends with a stamped receipt of exactly what we shipped, what it cost, and what it's earning you. No retainers you can't read. No \"strategic alignment.\" Just work and numbers.",
+    "pillars": [
+      { "label": "Fixed scope", "sub": "written before we start" },
+      { "label": "Fixed price", "sub": "no surprise line items" },
+      { "label": "Fixed deadline", "sub": "or the month is free" }
+    ]
+  },
+  "services": {
+    "section": "section 003 · services",
+    "titleA": "Six promises.",
+    "titleB": "One handshake.",
+    "description": "Each number below is a deadline, not a hope. Miss one, get the month free.",
+    "readTerms": "read the terms",
+    "items": [
+      { "label": "Web dev", "promise": "From wireframe to production in", "metric": "14 days" },
+      { "label": "SEO", "promise": "Local ranking moved within", "metric": "30 days" },
+      { "label": "Ads", "promise": "First qualified lead in", "metric": "72 hours" },
+      { "label": "Brand", "promise": "A mark you'll still love in", "metric": "10 years" },
+      { "label": "AI tools", "promise": "A custom workflow shipped in", "metric": "1 week" },
+      { "label": "Retainer", "promise": "A team on standby in", "metric": "1 Slack" }
+    ]
+  },
+  "work": {
+    "section": "section 004 · work · 2026",
+    "titleA": "Seven things",
+    "titleB": "already paying",
+    "titleC": "for themselves.",
+    "liveShipping": "live · shipping",
+    "featured": "featured · #04",
+    "description": "Restaurants toss $400/wk in the dumpster. Toast makes you swap your whole POS. This doesn't. Log a loss in 3 taps, get a weekly heatmap.",
+    "wasteLabel": "WASTE · MO 1 → MO 3",
+    "savedLabel": "SAVED · FIRST QUARTER",
+    "tryIt": "TRY IT →",
+    "items": [
+      { "name": "Waste Ledger", "stat": "$400/wk", "tag": "restaurants" },
+      { "name": "Call Rescue", "stat": "$1,200/call", "tag": "contractors" },
+      { "name": "Review Reply", "stat": "30 min/day", "tag": "owners" },
+      { "name": "Auto-Quote", "stat": "3 drafts", "tag": "service bays" },
+      { "name": "Reservation Guard", "stat": "15-30%", "tag": "restaurants" },
+      { "name": "SEO Scorecard", "stat": "72/100", "tag": "local" },
+      { "name": "Estimate Tx", "stat": "+41%", "tag": "auto shops" }
+    ]
+  },
+  "contact": {
+    "section": "section 005 · transmit",
+    "titleA": "Pull your problem",
+    "titleB": "into orbit.",
+    "description": "Tell me what's broken. I'll tell you if I can fix it, what it'll cost, and when it'll ship. If not, I'll tell you who can.",
+    "replyTime": "reply within 24h",
+    "freeCall": "free scope call",
+    "fixedQuote": "fixed price quote",
+    "est": "est 2024",
+    "fieldStable": "field stable · signal strong",
+    "coords": "lat 37.7749° N · lon 122.4194° W"
+  },
+  "playground": {
+    "section": "遊び場 · Playground · Interactive Tools",
+    "titleA": "Play with my work.",
+    "titleB": "Live.",
+    "description": "Four tools I built — working, not mocked. Every one runs entirely in your browser. Screenshots are for websites; these are the real thing.",
+    "ariaLabel": "Interactive demos",
+    "demos": {
+      "seo": { "label": "SEO Preview", "desc": "Paste any URL — see the mock SERP + AI Overview + Core Web Vitals scoring." },
+      "pricing": { "label": "Pricing Calculator", "desc": "Pick scope, timeline, services, team size — get a live quote you can share." },
+      "content": { "label": "Content Generator", "desc": "Give a topic — get a streaming blog outline, tweet thread, newsletter, or script." },
+      "design": { "label": "Design System Extractor", "desc": "Paste a URL — extract palette, typography, spacing, and components as Tailwind tokens." }
+    }
+  },
+  "chatbot": {
+    "online": "Online",
+    "placeholder": "Type a message…",
+    "trained": "Moxie is trained for your business",
+    "greeting": "Hi! I'm **Moxie**, your AI assistant. Ask me anything about web development, SEO, or custom apps!",
+    "errorMessage": "Sorry, I encountered an error. Please try again!",
+    "chips": [
+      "What services do you offer?",
+      "Show me your work",
+      "Tell me about pricing"
+    ]
+  },
+  "receipt": {
+    "studio": "A STUDIO IN ORBIT",
+    "invoice": "INVOICE №07 · 2026-03-14",
+    "client": "CLIENT: WASTE LEDGER CO.",
+    "total": "TOTAL",
+    "incl": "incl.",
+    "terms": "— FIXED PRICE · FIXED SHIP DATE —",
+    "shipped": "SHIPPED 14 DAYS · ON TIME",
+    "paid": "PAID · 07",
+    "footer": "receipt · invoice №07 · stamped",
+    "signed": "signed, nguyenetic",
+    "items": [
+      { "desc": "Discovery call", "qty": "1", "price": "$0" },
+      { "desc": "Wireframes + copy", "qty": "3", "price": "$800" },
+      { "desc": "Design system", "qty": "1", "price": "$1,200" },
+      { "desc": "Build + integration", "qty": "14d", "price": "$4,400" },
+      { "desc": "SEO + analytics", "qty": "1", "price": "$600" },
+      { "desc": "30-day support", "qty": "30d", "price": "incl." }
+    ]
+  },
+  "products": {
+    "AQ": { "name": "Auto-Quote", "tag": "auto" },
+    "RG": { "name": "Reservation", "tag": "restaurants" },
+    "SS": { "name": "SEO Scorecard", "tag": "local" },
+    "WL": { "name": "Waste Ledger", "tag": "kitchen" },
+    "RR": { "name": "Review Reply", "tag": "owners" },
+    "CR": { "name": "Call Rescue", "tag": "phones" },
+    "ET": { "name": "Estimate Tx", "tag": "service bays" }
+  },
+  "translation": {
+    "notice": ""
+  }
+}

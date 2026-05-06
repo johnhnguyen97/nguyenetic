@@ -1,10 +1,10 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { useLanguage } from "@/lib/language-context"
+import { useTranslations } from "next-intl"
 
 export function Contact() {
-  const { t } = useLanguage()
+  const t = useTranslations("contact")
 
   return (
     <section
@@ -25,20 +25,17 @@ export function Contact() {
         className="relative mx-auto max-w-[1000px] text-center"
       >
         <div className="mb-8 font-mono text-[11px] uppercase tracking-[0.3em] text-warm">
-          — {t("section 005 · transmit", "セクション005 · 送信")}
+          — {t("section")}
         </div>
 
         <h2 className="font-[family-name:var(--font-instrument)] text-[clamp(3.5rem,8vw,7.75rem)] font-normal leading-[0.9] tracking-[-0.03em]">
-          {t("Pull your problem", "あなたの問題を")}
+          {t("titleA")}
           <br />
-          <span className="italic text-warm">{t("into orbit.", "軌道へ。")}</span>
+          <span className="italic text-warm">{t("titleB")}</span>
         </h2>
 
         <p className="mx-auto mt-8 max-w-xl text-lg leading-snug text-paper/70">
-          {t(
-            "Tell me what's broken. I'll tell you if I can fix it, what it'll cost, and when it'll ship. If not, I'll tell you who can.",
-            "困っていることを教えてください。解決できるか、費用、納期をお伝えします。できない場合は、適任者を紹介します。"
-          )}
+          {t("description")}
         </p>
 
         <a
@@ -49,18 +46,18 @@ export function Contact() {
         </a>
 
         <div className="mt-9 flex flex-wrap items-center justify-center gap-6 font-mono text-[10px] uppercase tracking-[0.22em] text-paper/40">
-          <span>{t("reply within 24h", "24時間以内に返信")}</span>
+          <span>{t("replyTime")}</span>
           <span className="text-warm">·</span>
-          <span>{t("free scope call", "無料相談コール")}</span>
+          <span>{t("freeCall")}</span>
           <span className="text-warm">·</span>
-          <span>{t("fixed price quote", "固定価格見積")}</span>
+          <span>{t("fixedQuote")}</span>
         </div>
       </motion.div>
 
       <div className="mx-auto mt-28 flex max-w-[1440px] flex-wrap justify-between gap-4 border-t border-warm/20 pt-8 font-mono text-[10px] uppercase tracking-[0.22em] text-paper/40">
-        <span>© 2026 nguyenetic · {t("est 2024", "設立2024")}</span>
-        <span className="text-warm">◇ {t("field stable · signal strong", "軌道安定・信号強力")}</span>
-        <span className="hidden sm:inline">{t("lat 37.7749° N · lon 122.4194° W", "北緯 37.77° · 西経 122.42°")}</span>
+        <span>© 2026 nguyenetic · {t("est")}</span>
+        <span className="text-warm">◇ {t("fieldStable")}</span>
+        <span className="hidden sm:inline">{t("coords")}</span>
       </div>
     </section>
   )

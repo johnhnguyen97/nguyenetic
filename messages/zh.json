@@ -1,0 +1,167 @@
+{
+  "metadata": {
+    "title": "Nguyenetic — 围绕你运转的工作室",
+    "description": "为小型服务企业提供托管网站、设计与数字化运营。已交付七款产品。固定价格、固定工期、件件有凭证。"
+  },
+  "blog": {
+    "indexTitle": "工程博客",
+    "indexDescription": "构建 Tashinamu、代理客户工作,以及作为越裔美国工程师准备前往日本的日语学习笔记。",
+    "eyebrow": "笔记",
+    "emptyLocaleTitle": "暂无此语言的文章",
+    "emptyLocaleBody": "多语言版本仍在扩展中。英文存档包含全部文章。",
+    "emptyLocaleCta": "用英文阅读",
+    "backToIndex": "返回所有文章",
+    "minutesShort": "分钟阅读",
+    "toc": "目录",
+    "relatedPosts": "相关文章",
+    "tagEyebrow": "标签",
+    "tagArchiveTitle": "标签:{tag}",
+    "tagArchiveDescription": "标签 {tag} 下有 {count} 篇文章",
+    "postsCount": "{count} 篇文章",
+    "allTags": "全部标签"
+  },
+  "header": {
+    "nav": {
+      "work": "作品",
+      "services": "服务",
+      "receipts": "凭证",
+      "contact": "联系"
+    },
+    "letsTalk": "聊一聊",
+    "languageSwitch": "切换语言"
+  },
+  "hero": {
+    "statusBadge": "◇ 07颗卫星在轨 · 01位操作员",
+    "titleA": "一个",
+    "titleB": "围绕",
+    "titleC": "你运转",
+    "titleD": "的工作室。",
+    "description": "为小型服务企业提供托管网站、设计与数字化运营。七款已上线产品。核心由一个人操盘。每条轨道都是有人付费让我解决的真实问题。",
+    "seeReceipts": "查看凭证",
+    "whatIDo": "我的服务",
+    "pillTurnaround": "14天交付",
+    "pillFixedPrice": "固定价格",
+    "pillReceipts": "件件有凭证",
+    "core": "核心",
+    "coords": "北纬 37.7749° · 西经 122.4194°",
+    "fieldStable": "场域稳定 · 信号强劲",
+    "scrollHint": "向下滚动 ↓ 进入引力圈"
+  },
+  "proof": {
+    "section": "章节 002 · 承诺",
+    "titleA": "我们交给你的是",
+    "titleB": "凭证,",
+    "titleC": "而不是估价单。",
+    "description": "每一次合作都以一份盖章凭证收尾,清楚写明我们交付了什么、花了多少、又为你赚回了多少。没有看不懂的顾问费,没有空洞的『战略对齐』。只有工作和数字。",
+    "pillars": [
+      { "label": "固定范围", "sub": "动工之前先写清楚" },
+      { "label": "固定价格", "sub": "没有意外加项" },
+      { "label": "固定工期", "sub": "逾期当月免单" }
+    ]
+  },
+  "services": {
+    "section": "章节 003 · 服务",
+    "titleA": "六项承诺。",
+    "titleB": "一次握手。",
+    "description": "下面每个数字都是死线,不是愿望。错过一项,当月免单。",
+    "readTerms": "查看条款",
+    "items": [
+      { "label": "网站开发", "promise": "从线框到上线", "metric": "14 天" },
+      { "label": "SEO", "promise": "本地排名上升", "metric": "30 天" },
+      { "label": "广告", "promise": "首位合格客户", "metric": "72 小时" },
+      { "label": "品牌", "promise": "十年仍爱不释手的标识", "metric": "10 年" },
+      { "label": "AI 工具", "promise": "定制工作流交付", "metric": "1 周" },
+      { "label": "包月留任", "promise": "随时待命的团队", "metric": "1 个 Slack" }
+    ]
+  },
+  "work": {
+    "section": "章节 004 · 作品 · 2026",
+    "titleA": "七件作品",
+    "titleB": "已经在",
+    "titleC": "回本。",
+    "liveShipping": "在线 · 持续上线",
+    "featured": "精选 · #04",
+    "description": "餐厅每周往垃圾桶扔掉 400 美元。Toast 让你换掉整套 POS,这个不用。三下点击记录损耗,每周拿到热力图。",
+    "wasteLabel": "损耗 · 1月 → 3月",
+    "savedLabel": "节省 · 第一季度",
+    "tryIt": "试一下 →",
+    "items": [
+      { "name": "损耗台账", "stat": "$400/周", "tag": "餐饮" },
+      { "name": "来电救援", "stat": "$1,200/通", "tag": "承包商" },
+      { "name": "评论回复", "stat": "每天 30 分钟", "tag": "店主" },
+      { "name": "自动报价", "stat": "3 份草稿", "tag": "维修间" },
+      { "name": "预订守门员", "stat": "15-30%", "tag": "餐饮" },
+      { "name": "SEO 评分", "stat": "72/100", "tag": "本地" },
+      { "name": "报价翻译", "stat": "+41%", "tag": "汽修店" }
+    ]
+  },
+  "contact": {
+    "section": "章节 005 · 发射",
+    "titleA": "把你的问题",
+    "titleB": "送进轨道。",
+    "description": "告诉我哪里坏了。我会告诉你能不能修、要花多少钱、什么时候交付。如果不能,我会告诉你谁可以。",
+    "replyTime": "24 小时内回复",
+    "freeCall": "免费需求电话",
+    "fixedQuote": "固定价格报价",
+    "est": "成立于 2024",
+    "fieldStable": "场域稳定 · 信号强劲",
+    "coords": "北纬 37.7749° · 西经 122.4194°"
+  },
+  "playground": {
+    "section": "游乐场 · Playground · 互动工具",
+    "titleA": "玩一下我的作品。",
+    "titleB": "实时运行。",
+    "description": "我做了四个工具 —— 真在跑,不是模拟。每一个都完全在你的浏览器里运行。截图是给网站用的;这些是真家伙。",
+    "ariaLabel": "互动演示",
+    "demos": {
+      "seo": { "label": "SEO 预览", "desc": "粘贴任意网址 —— 查看搜索结果模拟、AI 概述与 Core Web Vitals 评分。" },
+      "pricing": { "label": "报价计算器", "desc": "选择范围、工期、服务和团队规模,生成可分享的实时报价。" },
+      "content": { "label": "内容生成器", "desc": "给一个主题,获得流式生成的博客大纲、推特连串、邮件或脚本。" },
+      "design": { "label": "设计系统提取器", "desc": "粘贴一个网址,把配色、排版、间距和组件提取成 Tailwind 令牌。" }
+    }
+  },
+  "chatbot": {
+    "online": "在线",
+    "placeholder": "输入消息…",
+    "trained": "Moxie 已为你的业务训练完成",
+    "greeting": "你好!我是 **Moxie**,你的 AI 助手。关于网站开发、SEO 或定制应用,尽管问我!",
+    "errorMessage": "抱歉,出现了错误,请再试一次!",
+    "chips": [
+      "你们提供哪些服务?",
+      "看看你们的作品",
+      "聊聊报价"
+    ]
+  },
+  "receipt": {
+    "studio": "一座轨道工作室",
+    "invoice": "发票 №07 · 2026-03-14",
+    "client": "客户:废弃记录公司",
+    "total": "合计",
+    "incl": "含",
+    "terms": "— 固定价格 · 固定交期 —",
+    "shipped": "14 天交付 · 准时",
+    "paid": "已付款 · 07",
+    "footer": "凭证 · 发票 №07 · 已盖章",
+    "signed": "签字,nguyenetic",
+    "items": [
+      { "desc": "需求电话", "qty": "1", "price": "$0" },
+      { "desc": "线框 + 文案", "qty": "3", "price": "$800" },
+      { "desc": "设计系统", "qty": "1", "price": "$1,200" },
+      { "desc": "开发 + 联调", "qty": "14天", "price": "$4,400" },
+      { "desc": "SEO + 分析", "qty": "1", "price": "$600" },
+      { "desc": "30 天支持", "qty": "30天", "price": "含" }
+    ]
+  },
+  "products": {
+    "AQ": { "name": "自动报价", "tag": "汽车" },
+    "RG": { "name": "餐厅预订", "tag": "餐饮" },
+    "SS": { "name": "SEO 评分", "tag": "本地" },
+    "WL": { "name": "损耗台账", "tag": "厨房" },
+    "RR": { "name": "评论回复", "tag": "店主" },
+    "CR": { "name": "来电救援", "tag": "电话" },
+    "ET": { "name": "报价翻译", "tag": "维修间" }
+  },
+  "translation": {
+    "notice": "本页内容由机器翻译,可能存在不准确之处。"
+  }
+}
