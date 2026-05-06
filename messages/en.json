@@ -3,6 +3,10 @@
     "title": "Nguyenetic — a studio in orbit around you",
     "description": "Managed websites, design, and digital ops for small service businesses. Seven shipped products. Fixed price, fixed deadline, receipts on everything."
   },
+  "footer": {
+    "blogCta": "writing about this work",
+    "tagline": "◇ signed · shipped · stamped"
+  },
   "blog": {
     "indexTitle": "Engineering blog",
     "indexDescription": "Notes from building Tashinamu, agency client work, and learning Japanese as a Vietnamese-American engineer headed to Japan.",

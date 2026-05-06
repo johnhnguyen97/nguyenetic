@@ -3,6 +3,10 @@
     "title": "Nguyenetic — một studio xoay quanh bạn",
     "description": "Quản lý website, thiết kế và vận hành kỹ thuật số cho doanh nghiệp dịch vụ nhỏ. Bảy sản phẩm đã ra mắt. Giá cố định, hạn cố định, có biên lai cho từng việc."
   },
+  "footer": {
+    "blogCta": "Tôi đang viết về công việc này",
+    "tagline": "◇ ký · gửi · đóng dấu"
+  },
   "blog": {
     "indexTitle": "Blog kỹ thuật",
     "indexDescription": "Ghi chú từ việc xây dựng Tashinamu, công việc cho khách hàng đại lý, và học tiếng Nhật với tư cách kỹ sư người Mỹ gốc Việt sắp sang Nhật.",

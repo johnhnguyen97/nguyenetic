@@ -4,6 +4,7 @@ import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Header } from "@/components/layout/Header";
+import { SiteFooter } from "@/components/layout/SiteFooter";
 import { EmptyLocaleNotice } from "@/components/blog/EmptyLocaleNotice";
 import { PostCard } from "@/components/blog/PostCard";
 import { getPostsByLocale } from "@/lib/blog/loader";
@@ -69,6 +70,7 @@ export default async function BlogIndexPage({
           </div>
         )}
       </main>
+      <SiteFooter />
     </div>
   );
 }

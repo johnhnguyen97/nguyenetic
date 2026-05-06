@@ -10,6 +10,7 @@ import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Header } from "@/components/layout/Header";
+import { SiteFooter } from "@/components/layout/SiteFooter";
 import { Prose } from "@/components/blog/Prose";
 import { mdxComponents } from "@/components/blog/MdxComponents";
 import { TableOfContents } from "@/components/blog/TableOfContents";
@@ -204,6 +205,7 @@ export default async function PostPage({
       </main>
 
       <TableOfContents headings={toc} label={t("toc")} />
+      <SiteFooter />
     </div>
   );
 }

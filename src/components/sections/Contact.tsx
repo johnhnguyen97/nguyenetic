@@ -53,12 +53,6 @@ export function Contact() {
           <span>{t("fixedQuote")}</span>
         </div>
       </motion.div>
-
-      <div className="mx-auto mt-28 flex max-w-[1440px] flex-wrap justify-between gap-4 border-t border-warm/20 pt-8 font-mono text-[10px] uppercase tracking-[0.22em] text-paper/40">
-        <span>© 2026 nguyenetic · {t("est")}</span>
-        <span className="text-warm">◇ {t("fieldStable")}</span>
-        <span className="hidden sm:inline">{t("coords")}</span>
-      </div>
     </section>
   )
 }

@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion"
 import { useRef, useState, useCallback } from "react"
 import { Header } from "@/components/layout/Header"
+import { SiteFooter } from "@/components/layout/SiteFooter"
 import { Hero } from "@/components/sections/Hero"
 import { Proof } from "@/components/sections/Proof"
 import { Services } from "@/components/sections/Services"
@@ -72,21 +73,7 @@ export default function Home() {
 
       <ChatbotDemo />
 
-      <footer className="border-t border-warm/10 bg-ink px-6 py-6">
-        <div className="mx-auto flex max-w-[1440px] flex-col items-center justify-between gap-3 font-mono text-[10px] uppercase tracking-[0.22em] text-paper/40 md:flex-row">
-          <p>
-            &copy; {new Date().getFullYear()}{" "}
-            <button
-              onClick={handleFooterClick}
-              className="font-medium transition-colors hover:text-paper focus:outline-none focus-visible:text-paper"
-              aria-label="Nguyenetic"
-            >
-              Nguyenetic
-            </button>
-          </p>
-          <p>◇ signed · shipped · stamped</p>
-        </div>
-      </footer>
+      <SiteFooter onLogoClick={handleFooterClick} />
     </>
   )
 }

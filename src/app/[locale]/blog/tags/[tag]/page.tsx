@@ -5,6 +5,7 @@ import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Header } from "@/components/layout/Header";
+import { SiteFooter } from "@/components/layout/SiteFooter";
 import { PostCard } from "@/components/blog/PostCard";
 import {
   getAllPosts,
@@ -102,6 +103,7 @@ export default async function TagArchivePage({
           ))}
         </div>
       </main>
+      <SiteFooter />
     </div>
   );
 }

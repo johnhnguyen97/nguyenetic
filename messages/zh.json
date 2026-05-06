@@ -3,6 +3,10 @@
     "title": "Nguyenetic — 围绕你运转的工作室",
     "description": "为小型服务企业提供托管网站、设计与数字化运营。已交付七款产品。固定价格、固定工期、件件有凭证。"
   },
+  "footer": {
+    "blogCta": "我在写关于这些工作的文章",
+    "tagline": "◇ 签名 · 发货 · 盖章"
+  },
   "blog": {
     "indexTitle": "工程博客",
     "indexDescription": "构建 Tashinamu、代理客户工作,以及作为越裔美国工程师准备前往日本的日语学习笔记。",
