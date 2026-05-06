@@ -1,0 +1,134 @@
+---
+title: "Two SVG satellites pretending to be one"
+description: "I needed a brand mark where a satellite passes behind the N glyph. First instinct: Three.js. Actual answer: two SVG circles layered above and below the text element, swapping visibility mid-orbit."
+date: 2026-04-24
+tags: [svg, design, brand, animation]
+lang: en
+draft: false
+---
+
+The brief I gave myself for the brand mark: "studio in orbit." Each shipped
+product is a satellite. The wordmark sits at the center; one satellite
+traces an orbit around it. For the metaphor to read, the satellite has to
+go *behind* the N when it's on the far side and *in front* when it's near.
+That's a depth-buffer problem — and depth buffers live in WebGL.
+
+So my first instinct was `react-three-fiber`. I sketched a Canvas, a
+directional light, a Blender-exported `N` glyph as a 3D mesh. It would
+have worked. It would also have been ~200 KB of WebGL bundle on a wordmark
+that ships in the page header on every route — most of which don't need
+3D anything.
+
+Before I got past the sketch, I tried something dumber and it worked.
+
+## The technique
+
+SVG renders elements in document order. An element later in the source
+appears *above* earlier elements. There's no z-index, no depth buffer —
+just paint order.
+
+That means if you have a `<text>N</text>` in the middle of an SVG and
+satellite circles both above and below it in the source, you can choose
+which paint layer the satellite occupies just by where you put it. Two
+satellites, one above the text, one below the text. Each animates along
+the same path with the same timing. Each is visible for exactly half the
+loop, controlled by an opacity keyframe.
+
+When the back satellite is visible, it paints below the N — so the N
+covers it where they overlap. When the front satellite takes over at the
+halfway point, it paints above the N. The illusion is one continuous
+satellite passing through a 3D-feeling orbit. It's two SVG circles taking
+shifts.
+
+```tsx
+<svg viewBox="0 0 120 120">
+  <defs>
+    <path id="orbit"
+          d="M -52 0 A 52 22 0 1 0 52 0 A 52 22 0 1 0 -52 0"
+          fill="none" />
+  </defs>
+
+  <ellipse cx="60" cy="60" rx="52" ry="22"
+           transform="rotate(-30 60 60)"
+           fill="none" stroke="var(--color-warm)" />
+
+  {/* Back-half satellite — paints under the N */}
+  <g transform="translate(60 60) rotate(-30)">
+    <circle r="6" fill="var(--color-warm)" opacity="0">
+      <animateMotion dur="14s" repeatCount="indefinite">
+        <mpath href="#orbit" />
+      </animateMotion>
+      <animate attributeName="opacity"
+               values="0;0;1;1" keyTimes="0;0.5;0.5;1"
+               dur="14s" repeatCount="indefinite" />
+    </circle>
+  </g>
+
+  <text x="60" y="82" textAnchor="middle"
+        fontFamily="var(--font-instrument)" fontSize="78"
+        fontStyle="italic" fill="var(--color-paper)">N</text>
+
+  {/* Front-half satellite — paints above the N */}
+  <g transform="translate(60 60) rotate(-30)">
+    <circle r="6" fill="var(--color-warm)" opacity="1">
+      <animateMotion dur="14s" repeatCount="indefinite">
+        <mpath href="#orbit" />
+      </animateMotion>
+      <animate attributeName="opacity"
+               values="1;1;0;0" keyTimes="0;0.5;0.5;1"
+               dur="14s" repeatCount="indefinite" />
+    </circle>
+  </g>
+</svg>
+```
+
+The two `<g>` wrappers apply `rotate(-30)` so the satellites trace the
+*tilted* ellipse, not a flat horizontal one. That tilt is what sells the
+depth — without it, the satellite would slide left and right across a flat
+plane, and the swap would feel like a cheap card flip.
+
+The `keyTimes="0;0.5;0.5;1"` is doing real work. Each satellite stays
+visible for exactly half the duration, and the swap is instantaneous at
+the midpoint. Any easing on the visibility transition would expose the
+trick.
+
+## What this got me
+
+- **Zero JS for animation.** SVG `animateMotion` is browser-native. The
+  whole effect is declarative XML.
+- **No bundle cost.** It's an inline `<svg>` element rendered in a React
+  component. No WebGL, no model files, no Suspense boundary, no fallback
+  needed.
+- **Reduced-motion is a one-line check.** Framer Motion's
+  `useReducedMotion()` flips a boolean; I render the satellite as a static
+  decoration in its rest position when motion is off. No `<Canvas>` to
+  unmount, no GPU to warm up.
+- **It's a pure component.** The whole mark is a functional React component
+  with `size`, `showLabel`, and `orbitSeconds` props. I drop it in the
+  header and the footer with different sizes; both work without re-doing
+  any setup.
+
+## What it cost
+
+The technique only works because there's exactly one element you want to
+occlude (the N glyph). If the orbit needed to pass *between* multiple
+elements at different depths — say, two letters with a layered depth
+relationship — the two-satellite trick scales badly. You'd need a satellite
+per layer and your keyTimes would get arithmetic-heavy fast.
+
+It also doesn't generalize to interactive 3D. If I ever wanted the
+satellite to respond to mouse movement with parallax, or for the orbit
+plane to tilt as you scroll, I'd have to reach for actual 3D. Today's
+brand mark is a static-feeling decorative loop, and the SVG version is
+strictly better for that.
+
+The biggest lesson — and the one I keep relearning — is that the metaphor
+doesn't always need the technology that the metaphor sounds like. "Depth
+buffer" sounds like a depth-buffer problem. It turned out to be a
+paint-order problem.
+
+---
+
+This is part of a series on the recent rebuild — see also
+[the day I pivoted from Selected Works to live products](/blog/portfolio-as-product-pivot)
+for the strategic context that made the brand mark worth investing in.
