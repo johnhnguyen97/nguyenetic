@@ -1,0 +1,62 @@
+---
+title: "Japanese UI for Western developers"
+description: "Notes from designing for Japanese users while shipping Tashinamu — line-height, number formatting, form input modes, and the encoding traps that still bite in 2026."
+date: 2026-05-05
+tags: [japanese, ui, i18n]
+lang: en
+draft: true
+---
+
+> ✏️ **Author draft.** This file is a skeleton — set `draft: false` in
+> frontmatter once the body is written. Suggested length per the plan is
+> 1,200–1,800 words.
+
+This post is the planned first "real" engineering article. Below is a working
+outline. Replace these bullets with your actual observations from building
+Tashinamu and from JP job-hunt research.
+
+## Outline
+
+1. **The line-height trap.** Western type defaults (1.4–1.5) crowd kanji.
+   Japanese pages typically run 1.7–2.0. Show the visual difference with a
+   side-by-side mockup of `日本語のUI設計` at `line-height: 1.4` vs `1.8`.
+2. **Letter-spacing is meaningful.** `letter-spacing: 0.05em` reads as
+   intentional spacing in Latin, but on a string like `お問い合わせ` the same
+   value can break the perceived word boundary.
+3. **Number formatting.** When does `1,000` vs `1000` matter? `Intl.NumberFormat`
+   in `ja-JP` locale, plus the Japanese yen symbol (`¥` vs `円`) — when each
+   convention applies.
+4. **Form input modes.** `inputmode="numeric"` is not enough — for postal codes
+   you also want the IME to switch to halfwidth. `<input type="text"
+   inputmode="numeric" pattern="\d{3}-\d{4}">` is the magic incantation.
+5. **Encoding traps that still bite in 2026.** Mojibake from bad legacy
+   integrations, EUC-JP edge cases when consuming RSS feeds from older
+   Japanese tech blogs, and why everything new should be UTF-8 with
+   `<meta charset>` set early.
+6. **Vertical text (`writing-mode: vertical-rl`).** Niche but useful for
+   editorial designs and tategaki contexts.
+
+## A glyph-fallback test
+
+This post intentionally contains kanji so you can confirm the body font stack
+falls back gracefully on every platform. The default `.prose-blog` rule lists
+`Hiragino Sans → Yu Gothic UI → Noto Sans JP` after Inter; if a glyph isn't in
+Inter, the browser walks the chain and renders `日本語のUI設計` correctly without
+tofu boxes.
+
+```ts
+// Programmatic check: Intl.NumberFormat handles the locale split.
+const yen = new Intl.NumberFormat("ja-JP", {
+  style: "currency",
+  currency: "JPY",
+}).format(1234567);
+// → "¥1,234,567"
+```
+
+## Replacement notes
+
+- Remove this entire "Author draft" / "Outline" preamble.
+- Keep the tags as-is; they're correct for the topic.
+- Add a cover image to `/content/blog/japanese-ui-for-western-developers/cover.png`
+  if you want one — the OG card pulls the title; the cover is for the post header.
+- When ready to publish: flip `draft: false`, run `npm run blog:og`, push.

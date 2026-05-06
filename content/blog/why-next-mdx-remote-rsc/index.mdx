@@ -1,0 +1,60 @@
+---
+title: "Why I picked next-mdx-remote/rsc over @next/mdx"
+description: "Notes on choosing an MDX engine for a Next.js 16 + next-intl blog with locale-aware routing — and why the file-system option was the wrong fit."
+date: 2026-05-04
+tags: [infra, nextjs, mdx]
+lang: en
+draft: false
+---
+
+When I started building this blog at `/[locale]/blog/...` inside an existing
+Next.js 16 + `next-intl` site, I had three real options for MDX: `@next/mdx`,
+`next-mdx-remote/rsc`, or rolling my own with `react-markdown` and a
+frontmatter parser. The constraint that ruled the day was **locale routing**.
+
+## The collision
+
+`@next/mdx` lets MDX files act as Next.js pages — drop a `page.mdx` into
+`src/app/foo/` and it becomes `/foo`. That's elegant when MDX *is* your
+routing primitive. It is not elegant when your route already has a dynamic
+segment in front of it.
+
+For me, every page lives under `[locale]`. To make `@next/mdx` work I'd have
+to either:
+
+- duplicate every post per locale folder (defeating the point), or
+- implement a shimmed `generateStaticParams` that maps file-system MDX into
+  the locale segment — possible, fragile, and at that point you've reinvented
+  the loader anyway.
+
+## Why content-as-data wins
+
+The actual content model I want is **frontmatter-driven**. A post is data
+with a body. It has a `lang`, a date, tags. The locale routing should query
+that data and decide where the post lives, not the other way around.
+
+```ts
+const PostFrontmatter = z.object({
+  title: z.string(),
+  description: z.string(),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  tags: z.array(z.string()).min(1),
+  lang: z.enum(routing.locales),
+});
+```
+
+With `next-mdx-remote/rsc`, the loader walks `/content/blog/`, validates
+frontmatter against this schema, and returns posts. The `[slug]` route asks
+"is there a post with this slug whose `lang` matches the active locale?" If
+no, 404. If yes, render via `<MDXRemote>`. Server-only, zero MDX runtime in
+the client bundle.
+
+## What I gave up
+
+Compile-time errors point to MDX syntax issues by file path but with less
+inline context than `@next/mdx` (which fails in your IDE). Worth it.
+
+## When `@next/mdx` would be right
+
+A docs site where MDX is the canonical content type and routing is a 1:1
+reflection of the file system. That's not a blog with locales.
