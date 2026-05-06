@@ -1,0 +1,108 @@
+---
+title: "The day I pivoted from Selected Works to live products"
+description: "I spent one focused day shipping four functional SaaS demos as my agency's portfolio. Each one is a working tool, not a screenshot. Here's why that pivot made sense and what it cost."
+date: 2026-04-17
+tags: [agency, portfolio, product-strategy]
+lang: en
+draft: false
+---
+
+For most of last quarter the `/work` page on this site was a grid of project
+cards: title, screenshot, one-line summary, dead link. That's the genre
+expectation for an agency portfolio. It also wasn't getting me work.
+
+On April 16 I deleted that section in one commit (`refactor(home): remove
+Selected Works section — portfolio-as-product pivot`) and spent the rest of
+the day shipping four new routes:
+
+- `/work/waste-ledger` — a restaurant food-waste tracker with a weekly
+  insights endpoint
+- `/work/review-reply` — a no-signup AI playground for drafting responses to
+  Google reviews
+- `/work/estimate-translate` — a tool that rewrites contractor estimates into
+  customer-friendly language
+- `/work/call-rescue` — a missed-call text-back simulator for service
+  businesses
+
+Plus polish on `/work/seo-audit` (positioned as a local-SEO retainer funnel)
+and the existing `/work/auto-quote` and `/work/reservation` routes. Seven
+working tools at the end of the day.
+
+## Why screenshots stopped being enough
+
+The pitch I was making — "I build managed websites and digital ops for small
+service businesses" — landed flat in cold conversations. People nodded, then
+asked the same three questions:
+
+1. Can you show me something that solved a problem like mine?
+2. Does it actually work, or is it a mockup?
+3. How much would something like this cost for me?
+
+A screenshot grid answers none of those well. A live tool answers all three:
+the demo *is* the proof, the URL *is* the working version, the page itself
+can carry pricing without feeling like a sales pitch.
+
+Each demo also doubles as SEO surface for a specific pain point. `auto-quote`
+ranks for "auto repair quote tool free." `review-reply` ranks for
+"how to reply to a bad google review." That's qualified inbound traffic by
+construction. People searching that query already have the problem the demo
+solves.
+
+## The architecture that made one-day-per-demo possible
+
+I'm not naturally fast at this stuff. The reason four demos shipped in a day
+was a deliberately boring shared scaffolding:
+
+```
+src/app/work/<slug>/
+  page.tsx              # the demo route, owns its own state
+  components/           # demo-local UI
+
+src/components/ui/      # cross-demo primitives (buttons, fields, frames)
+src/lib/ai/             # shared Claude client with typed errors + cache
+src/app/api/<slug>/     # optional API routes when the demo needs server state
+```
+
+Each demo is a single Next.js page that owns its own state with `useReducer`
+or local `useState`. No backend per demo unless one is genuinely required —
+`waste-ledger` has an `/api/waste-ledger/report` endpoint because the weekly
+insights need date math the LLM shouldn't redo from scratch; the others run
+entirely in the browser plus a single `/api/chat`-style call.
+
+Tailwind v4 with `@theme` tokens means every demo inherits the same
+`--color-ink` background, `--color-warm` accent, and font stack. None of them
+re-derive the visual system. That was the unlock — once the tokens were
+right, building a new demo became "lay out the form, wire the LLM call,
+write the empty state."
+
+## What it cost
+
+The honest tradeoff is maintenance. Seven live demos is seven things that
+can break. The day after the sprint I had to ship four bugfix commits in a
+row (`fix(work): resolve content/copy bugs from QA sweep (4 routes)` was the
+batched one). Hydration warnings, form validation gates, a date picker that
+let you select today when it shouldn't have. Each one was small; together
+they were a couple hours.
+
+I also have to be careful about scope creep on each demo. `review-reply`
+could become a real product with auth, billing, saved templates. The whole
+point of keeping it as a no-signup playground is that I *don't* maintain it
+like a real product. If someone wants the SaaS, that's a separate
+conversation with a real engagement.
+
+## What I'd tell someone considering the same pivot
+
+- A working demo beats five screenshots. People believe what they can click.
+- Each demo should target a specific question someone Googles when they have
+  the problem. If you can't articulate that query, the demo isn't going to
+  rank or convert.
+- Set a hard cap on demo complexity. The moment a demo needs auth, billing,
+  or persistent storage, it's not a portfolio piece anymore — it's a product.
+- Tokens-first design system. You'll re-derive layouts; you should not
+  re-derive colors and type.
+
+The pivot is a few weeks old and I don't have proper conversion data yet.
+The early signal is that the questions in cold conversations have shifted.
+Less "what would you build for me?" and more "I tried `auto-quote` — can you
+do that exact flow but for HVAC?" That's the conversation I wanted to be
+having.

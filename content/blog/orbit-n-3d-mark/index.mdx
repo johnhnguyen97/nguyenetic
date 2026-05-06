@@ -1,0 +1,120 @@
+---
+title: "An Orbit-N mark where the satellite actually goes behind the letter"
+description: "I rebuilt the brand mark in Three.js so a satellite passes behind the N — real depth occlusion, not z-index trickery. Here's what was worth the effort and what wasn't."
+date: 2026-04-24
+tags: [threejs, react, design, brand]
+lang: en
+draft: false
+---
+
+The brief I gave myself for the brand mark: "studio in orbit." Each shipped
+product is a satellite. The wordmark sits at the center; satellites pass
+around it.
+
+I tried this in CSS first. SVG arcs with `transform: translate3d(...)` to
+fake perspective. It looked fine until a satellite needed to pass *behind*
+the wordmark. CSS can layer a SVG above or below a piece of text; it can't
+make a satellite occlude itself depending on where in its orbit it is. That's
+a depth-buffer problem, and depth buffers live in WebGL.
+
+So I rebuilt the mark with `react-three-fiber` and `@react-three/drei`. The
+result: an `Orbit-N` glyph that's a 3D model with an actual surface, and a
+satellite that passes through the same scene with shared lighting and a
+shared depth pass. When the satellite is on the far side of the orbit, it's
+behind the N — and the N's shadow falls on it on the way through.
+
+## Why a brand mark gets a 3D scene
+
+I don't generally think marketing sites need 3D. The argument against is
+simple: bundle size, accessibility, performance budgets, the way 3D content
+ages. Most of the time you should reach for SVG and CSS animation.
+
+The argument in favor here was specific:
+
+1. **Depth was load-bearing.** The "in orbit" metaphor only works if you can
+   actually see the satellite go around. Around means *behind* and *in
+   front*. CSS can fake one direction; the metaphor needs both.
+2. **One scene, not a system.** I'm not building a 3D layout primitive that
+   runs on every page. The hero is a single `<Canvas>` with a single scene.
+   Everything else on the site is HTML + Tailwind. That's a contained cost.
+3. **The wordmark exists in 3D anyway.** I designed `N-Monolith.glb` in
+   Blender for the brand identity work. It already had the geometry. Loading
+   it in Three.js was cheaper than re-deriving a comparable SVG.
+
+## What's actually in the scene
+
+The whole thing lives behind a single dynamic import so it doesn't bloat the
+initial bundle:
+
+```tsx
+const OrbitN = dynamic(() => import("@/components/ui/orbit-n"), {
+  ssr: false,
+  loading: () => <OrbitNFallback />,
+});
+```
+
+The fallback is a static SVG of the wordmark — same shape, same color, no
+3D. People with `prefers-reduced-motion: reduce` see only the fallback
+because the dynamic import is gated behind a `useReducedMotion()` check from
+Framer Motion.
+
+When the 3D version does load, the assets it pulls are:
+
+- `N-Monolith.glb` — the wordmark itself
+- `paper.glb` — a paper plane mesh that doubles as the satellite
+- `hankostamp.glb` — a Japanese seal-style stamp used for the studio's
+  signature
+- `zen-garden-v2.glb` and `rocks/ryoanji-scene.glb` — for the larger zen-
+  garden scene further down the page (a separate `<Canvas>`, not the brand
+  mark)
+
+The orbit motion is parametric: a sine/cosine pair drives x/y, and a
+slightly out-of-phase z gives the depth that makes the occlusion work. No
+animation library, just the `useFrame` hook.
+
+```tsx
+useFrame((_, dt) => {
+  t.current += dt * speed;
+  satelliteRef.current.position.set(
+    Math.cos(t.current) * radius,
+    Math.sin(t.current * 0.6) * 0.3,
+    Math.sin(t.current) * radius,   // negative on the far side -> occluded
+  );
+});
+```
+
+That third axis is what I couldn't get from CSS. When `Math.sin(t)` is
+negative, the satellite is behind the N's bounding volume. The depth buffer
+handles the rest.
+
+## What it cost
+
+Dev complexity is real. The first version had a lighting setup that looked
+flat on hi-DPI MacBook screens because the directional light's intensity
+needed adjusting per device pixel ratio. I had to write a small `useEffect`
+that watches `window.devicePixelRatio` and scales intensity by it. That's
+not a problem you have with CSS.
+
+The accessibility story is fine but takes care:
+
+- Static SVG fallback for `prefers-reduced-motion`
+- The `<Canvas>` is wrapped in a `role="img"` with an `aria-label`
+- No essential information is conveyed by the 3D animation alone — the
+  wordmark is also rendered as text in the page header above
+
+## What I'd skip if I did this again
+
+The hankostamp model wasn't worth what I spent on it. I built a stamp as a
+3D object so the studio's signature could "stamp" the bottom of the page
+with a satisfying motion. In practice nobody scrolls that far on a marketing
+page, and the stamp animation triggers an extra GLTF load that's bigger than
+the visual payoff. I'm going to swap it for a static SVG mark in the next
+pass.
+
+The zen-garden scene is on the line. It's beautiful and it carries the
+"orbit around stillness" theme well, but it's a second `<Canvas>` and a few
+hundred KB of model data. If the next round of analytics says the scroll
+doesn't reach it, it's coming out.
+
+The Orbit-N hero scene stays. The depth-buffer occlusion is the entire
+point of the brand mark, and there's no cheaper way to get it.

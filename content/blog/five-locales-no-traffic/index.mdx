@@ -1,0 +1,129 @@
+---
+title: "Why I added five locales to a site with no traffic"
+description: "Most advice says defer i18n until you need it. I rewrote every route under /[locale]/ before any traffic showed up. Here's the case for doing it early — and the parts of the rewrite that bit."
+date: 2026-05-05
+tags: [nextjs, i18n, infrastructure]
+lang: en
+draft: false
+---
+
+The standard advice is: ship in one language, defer i18n, only invest in
+locale routing when you have demand for a second locale. It's good advice
+for most projects.
+
+I ignored it. Earlier this week I rewrote every route in this site under
+`/[locale]/`, added `next-intl` with five locales (`en`, `ja`, `zh`, `ko`,
+`vi`), and translated every UI string. The site has approximately zero
+organic traffic right now. So why?
+
+## Two specific reasons, not "internationalization is good"
+
+The generic argument for early i18n is weak. If you're building a B2B SaaS
+for the US market, English-first is correct and you should defer locale
+work until you have a customer asking for it.
+
+My case wasn't generic:
+
+1. **Tashinamu is a Japanese-language learning app**, and the marketing site
+   for the studio that builds it has to feel coherent in Japanese. Linking
+   from the JP product to an English-only studio site reads as a tell that
+   the studio doesn't actually operate in JP. That's a credibility leak in
+   the audience I'm trying to land with.
+
+2. **I'm targeting Japanese tech roles** for a move next year. A studio site
+   that has a `/ja/` version with hand-translated copy (not autotranslate)
+   is a low-cost signal that I can read and write the language at a level
+   that's at least useful for product copy. It doesn't *prove* fluency — but
+   the absence of a JP version proves the opposite.
+
+The other three locales (zh, ko, vi) are speculative. They were cheap to
+add once the routing was in place and they hedge the recruiting story for
+nearby markets. They'll show empty-state notices on `/zh/blog` etc. until
+content actually exists.
+
+## What "before any traffic" buys you
+
+The reason to do the rewrite now, with no traffic, is that **it's the
+cheapest moment it will ever be**. Nobody has links pointing at
+`/work/auto-quote` yet, so moving it to `/work/auto-quote` (default locale,
+no prefix) and `/ja/work/auto-quote` (Japanese variant) doesn't break any
+external link. If I'd waited until I had backlinks and SEO equity, I'd have
+been writing 301 redirects forever.
+
+`next-intl`'s `localePrefix: "as-needed"` setting also helps: the default
+locale serves at the unprefixed URL. So `/blog` is the English blog at
+`nguyenetic.com/blog`, not `nguyenetic.com/en/blog`. No SEO impact for
+English readers; the JP version lives at `/ja/blog`. The shape is exactly
+what I'd have wanted from day one.
+
+## The parts that bit
+
+The rewrite was not purely additive. Real things that broke:
+
+**The middleware matcher.** `next-intl`'s middleware needs a `matcher`
+config to know which paths to handle. The default exclusion pattern in most
+templates is `/((?!api|_next|_vercel|.*\\..*).*)`. That last `.*\\..*` skips
+*any path with a dot* — which means `.xml` and `.txt` paths bypass the
+middleware. That broke `/blog/feed.xml` (locale-prefixed RSS endpoint) and
+shadowed my dynamic `app/robots.ts` because `/robots.txt` wasn't being
+rewritten properly.
+
+The fix was to narrow the exclusion to specific static-asset extensions and
+explicitly skip the two root metadata routes (`sitemap.xml`, `robots.txt`)
+that don't need locale rewriting:
+
+```ts
+export const config = {
+  matcher: [
+    "/((?!api|_next|_vercel|sitemap\\.xml|robots\\.txt|.*\\.(?:js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|webp|avif|map|json|webmanifest)).*)",
+  ],
+};
+```
+
+That's the kind of thing you only learn by hitting it.
+
+**`generateStaticParams` shape change.** Every route under `[locale]` now
+has to enumerate `(locale, ...rest)` pairs at build time. For nested dynamic
+routes like `/[locale]/blog/[slug]`, that means the inner `generateStaticParams`
+returns objects with both segments:
+
+```ts
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  const pairs = await getAllSlugLocalePairs();
+  return pairs.map(({ slug, locale }) => ({ locale, slug }));
+}
+```
+
+Combined with `dynamicParams = false`, this gives you 404 by default for
+unknown slugs, which is what you want.
+
+**Hreflang in the sitemap.** Search engines reward `xhtml:link rel="alternate"`
+declarations that list every locale variant of a URL. The trap is that you
+shouldn't list a sibling URL that doesn't exist — that's a 404 in the
+sitemap. So my sitemap walks all posts and only emits `alternates.languages`
+entries for the locales where a given slug actually has content.
+
+**Testing the workflow.** With five locales the test matrix doubles in size
+fast. `/blog` works, but does `/zh/blog` show the empty-locale notice?
+Does `/ja/blog/<en-only-slug>` 404 correctly instead of falling back to the
+English version? I leaned on `curl` smoke tests during development and a
+single `npm run build` at the end that fails on any frontmatter that
+violates the Zod schema, which catches "draft set on a `lang: ja` post but
+no JP translation exists" early.
+
+## What I'd recommend
+
+If you're shipping a one-language SaaS for one market, defer i18n. The
+rewrite is real work and the discipline has a cost.
+
+If your product is bilingual or you have a credibility stake in a
+non-English market, do the locale rewrite *before* you build content. It's
+exponentially cheaper now than after you have inbound links and a content
+library.
+
+The unlock isn't translation — it's that **locale stops being a layer you
+bolt on and starts being a parameter your routes take from the URL**. Every
+generator, every metadata function, every fetch becomes locale-aware by
+default. That's a property of the architecture, not a feature you add.
